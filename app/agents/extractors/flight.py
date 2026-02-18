@@ -1,0 +1,185 @@
+"""
+Agent 3a: Flight Extractor
+
+Handles: Air Canada Internet, Westjet Internet, ADX/Intair, Expedia TAAP, generic airlines.
+Outputs 3 sections: Summary, Segments (array), Passenger Details (array).
+"""
+
+from app.agents.extractors.base import GLOBAL_RULES, call_claude
+
+# ── Vendor-specific commission rules ──────────────────────────────────────────
+
+AIR_CANADA_RULES = """\
+VENDOR RULES — AIR CANADA INTERNET:
+
+Inclusions: Commission applies to base fare, surcharges, and stopover charges.
+Exclusions: Do NOT apply commission to taxes, change fees, seat selection fees, meals,
+  upgrades, infants not occupying a seat, SMB tickets (PN#), corporate contract tickets.
+
+Mandatory Tour Code: ACTOT is required in the tour code box for ALL destinations EXCEPT
+  North America and Sun destinations. If ACTOT is missing or incorrect, add this to
+  invoiceRemarks: "ACTOT REQUIRED — VERIFY: ticketing error fee applies (min $50)"
+
+Service Combination Rule: If the itinerary mixes "Service Canada" with any of (Sun,
+  South America, Transatlantic, Transpacific), apply the LOWER rate to the entire ticket.
+
+Mixed Fare Class — North America: Mixed classes on same ticket → apply LOWEST rate.
+Mixed Fare Class — International: Apply rate based on the LOWEST booking class of the
+  international segments. Domestic "feeder" legs do NOT downgrade international commission.
+
+JV Carriers (Transatlantic): Air Canada, Lufthansa, Austrian, Swiss, Brussels Airlines,
+  Edelweiss, Discover, United.
+JV Carriers (Mainland China): Air Canada and Air China.
+
+COMMISSION RATES (check fare basis code on each ticket):
+  0% — Economy Basic: fare basis ending in BA, BV, BQ, or LGT (all regions)
+  3% — North America & Sun: Economy Standard (fare basis ending in TG)
+  3% — International Interline: non-JV partner segments (South America / Transatlantic /
+       Mainland China / Transpacific)
+  4% — North America & Sun: all other Economy, Premium Economy, Business
+  5% — International Online: AC or JV-operated (South America / Transatlantic /
+       Mainland China / Transpacific)\
+"""
+
+WESTJET_RULES = """\
+VENDOR RULES — WESTJET INTERNET:
+
+Call Centre bookings: ALWAYS 0% commission — do not calculate anything.
+Mixed Fare Rule: If a ticket has multiple fare classes, apply the HIGHER commission amount.
+
+COMMISSION RATES by RBD class and route:
+  Class E:              0%  Domestic/Transborder  |  0%  Latin America & Caribbean  |  0%  Transatlantic/ROW
+  Classes L,K,T,X,S,N,Q,H: 3%  Dom/Trans          |  7%  LAC                        |  7%  Transatlantic/ROW
+  Classes M,B,Y:        5%  Dom/Trans              |  8%  LAC                        |  9%  Transatlantic/ROW
+  Classes R,O,W:        8%  Dom/Trans              |  8%  LAC                        | 10%  Transatlantic/ROW
+  Classes D,C,J:       10%  Dom/Trans              |  8%  LAC                        | 15%  Transatlantic/ROW\
+"""
+
+ADX_INTAIR_RULES = """\
+VENDOR RULES — ADX / INTAIR:
+
+Commission: If the invoice has an explicit line labelled "COMMISSION" with a dollar amount
+  (e.g., "CAD $75.00"), use THAT EXACT figure for totalCommission and commission.
+  Do NOT calculate percentages — use the number verbatim.
+
+Locator fields (map from invoice labels):
+  confirmationNumber = value next to "TRIP REF" label on invoice
+  recordLocator      = value next to "PNR" label on invoice
+  ticketNumber       = value next to "TICKET NUMBER" label on invoice\
+"""
+
+GENERIC_FLIGHT_RULES = """\
+VENDOR RULES — GENERIC:
+Extract commission percentage or amount exactly as shown on the invoice.
+Use the standard PNR code as recordLocator.\
+"""
+
+RULE_SET_MAP = {
+    "air_canada": AIR_CANADA_RULES,
+    "westjet": WESTJET_RULES,
+    "adx_intair": ADX_INTAIR_RULES,
+    "expedia": GENERIC_FLIGHT_RULES,
+}
+
+# ── System prompt ──────────────────────────────────────────────────────────────
+
+_SYSTEM_PROMPT_TEMPLATE = """\
+You are a flight booking data extraction specialist for a travel agency (ClientBase Online).
+Extract data from the Markdown invoice and return ONLY a JSON array of section objects.
+
+{vendor_rules}
+
+{global_rules}
+
+═══════════════════════════════════════════════
+SCHEMA — 3 sections required
+═══════════════════════════════════════════════
+
+### SECTION 1 — Flight Summary
+{{
+  "reservationDate": "MM/DD/YY",
+  "vendorName": "Normalized vendor name (e.g., Air Canada Internet)",
+  "confirmationNumber": "String",
+  "recordLocator": "String",
+  "duration": <integer — total trip days>,
+  "totalBase": <number with 2 decimal places>,
+  "totalTax": <number — sum of carrier surcharges and fees>,
+  "totalCommission": "String — percentage (e.g., '4%') OR exact dollar if ADX/Intair",
+  "invoiceRemarks": "Seat selections block (see rules below)"
+}}
+
+SEAT MAPPING RULES for invoiceRemarks:
+  - Scan the ENTIRE document for seat assignments
+  - Format per line: [Flight Number]: [Pax Name] ([Seat]) | [Pax Name] ([Seat])
+  - One line per flight segment
+  - If seats unknown for a segment: [Flight Number]: Seat: N/A  (check airline site)
+  Example:
+    Seat Selections
+    ---------------
+    AC123: J. Smith (12A) | M. Smith (12B)
+    AC456: Seat: N/A
+
+### SECTION 2 — Flight Segments (array — one object per flight leg)
+[
+  {{
+    "serviceprovidercode": "2-letter airline IATA code",
+    "serviceprovidername": "Full airline name",
+    "flightno": "Flight number digits only (no prefix)",
+    "departcitycode": "3-letter IATA airport code",
+    "departcityname": "City name",
+    "startdate": "MM/DD/YY",
+    "starttime": "H:MM AM/PM",
+    "arrivecitycode": "3-letter IATA airport code",
+    "arrivecityname": "City name",
+    "enddate": "MM/DD/YY",
+    "endtime": "H:MM AM/PM"
+  }}
+]
+
+### SECTION 3 — Passenger Details (one object per passenger)
+{{
+  "passengerName": "Full Name",
+  "ticketNumber": "String",
+  "basePricePerPassenger": <totalBase ÷ passenger count, 2 decimal places>,
+  "taxPerPassenger": <totalTax ÷ passenger count, 2 decimal places>,
+  "commission": "Same value and format as Section 1 totalCommission"
+}}
+
+═══════════════════════════════════════════════
+OUTPUT FORMAT (return this exact structure)
+═══════════════════════════════════════════════
+[
+  {{"sectionTitle": "Flight Screen 1 (Summary)", "data": {{ ... }}}},
+  {{"sectionTitle": "Flight Screen 2 (Segments)", "data": [ ... ]}},
+  {{"sectionTitle": "Flight Screen 3 (Passengers)", "data": [ ... ]}}
+]
+Return ONLY the JSON array. No prose, no markdown fences.\
+"""
+
+
+async def run(markdown: str, routing: dict) -> list[dict]:
+    """Extract flight sections from invoice Markdown.
+
+    Args:
+        markdown: Full invoice content from Agent 1.
+        routing:  Routing result from Agent 2 (vendor, ruleSet, bookingTypes).
+
+    Returns:
+        List of 3 section dicts (Summary, Segments, Passengers).
+    """
+    rule_set = routing.get("ruleSet", "generic")
+    vendor_rules = RULE_SET_MAP.get(rule_set, GENERIC_FLIGHT_RULES)
+
+    system = _SYSTEM_PROMPT_TEMPLATE.format(
+        vendor_rules=vendor_rules,
+        global_rules=GLOBAL_RULES,
+    )
+
+    user_content = (
+        f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
+        f"RULE SET: {rule_set}\n\n"
+        f"INVOICE MARKDOWN:\n{markdown}\n\n"
+        "Extract all flight data and return the JSON array of 3 section objects."
+    )
+
+    return await call_claude(system, user_content, max_tokens=4096)

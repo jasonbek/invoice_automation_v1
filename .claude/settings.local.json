@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m py_compile:*)",
+      "Bash(py:*)",
+      "Bash(cmd /c \"where python\")",
+      "Bash(cmd /c \"python --version\")",
+      "Bash(cmd /c \"py --version\")"
+    ]
+  }
+}

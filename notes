@@ -1,3 +1,0 @@
-git remote add origin https://github.com/jasonbek/invoice_automation_v1.git
-git branch -M main
-git push -u origin main
