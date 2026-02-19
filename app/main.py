@@ -42,7 +42,7 @@ async def health():
 @web_app.post("/process-invoice", status_code=202)
 async def receive_invoice(
     vendor: str = Form(...),
-    callback_url: str = Form(...),
+    callback_url: str = Form(default="https://beks.app.n8n.cloud/webhook-test/invoice_results"),
     service_fee: float = Form(0.0),
     booking_type_hint: str = Form(""),
     files: list[UploadFile] = File(...),
@@ -107,7 +107,7 @@ async def receive_invoice_json(request: Request):
 
     run_pipeline.spawn(
         vendor=body.get("vendor", ""),
-        callback_url=body["callback_url"],
+        callback_url=body.get("callback_url", "https://beks.app.n8n.cloud/webhook-test/invoice_results"),
         service_fee=float(body.get("service_fee", 0.0)),
         booking_type_hint=body.get("booking_type_hint", ""),
         files_b64=body.get("files", []),
