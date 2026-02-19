@@ -15,8 +15,19 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 - Times: MUST be 12-hour with AM/PM (e.g., "4:40 PM"). Convert from 24-hour if needed.
 - Missing fields: DELETE the key entirely from the output JSON object.
   NEVER use null, undefined, "N/A", or empty string "".
-- Currency amounts: Extract the raw figure exactly as shown on the invoice.
-  Do NOT convert currencies unless the schema explicitly requires CAD conversion.
+- Currency amounts: If the invoice is in CAD, extract figures exactly as shown.
+  If the invoice is NOT in CAD, a LIVE EXCHANGE RATE line will be provided in the input
+  (e.g. "LIVE EXCHANGE RATE: 1 EUR = 1.4823 CAD (fetched 02/19/26)").
+  Use that exact rate to convert totalBase (and commission where applicable) to CAD,
+  and populate the agentRemarks field as follows:
+    DEPOSIT PAID: $[CAD amount] CAD
+    COMMISSION: [raw amount] [currency]
+    Invoiced in [currency] by Supplier
+    Amounts in CB Converted to CAD on [MM/DD/YY] @ rate of 1 [currency] : [rate] CAD
+  This applies to ALL booking types (flight, tour, hotel, cruise, etc.).
+- Accented characters: Replace with their unaccented ASCII equivalent in ALL string fields.
+  Examples: é→e, è→e, ê→e, ë→e, à→a, â→a, ô→o, î→i, û→u, ç→c, ü→u, ñ→n, etc.
+  Example: "Hôtel de Varenne" → "Hotel de Varenne"
 - Output: Return ONLY the JSON array described in the schema. No prose, no code fences.\
 """
 

@@ -1,7 +1,7 @@
 """
 Agent 3a: Flight Extractor
 
-Handles: Air Canada Internet, Westjet Internet, ADX/Intair, Expedia TAAP, generic airlines.
+Handles: Air Canada Internet, Westjet Internet, ADX/Intair, Expedia TAAP, Tourcan Vacations, generic airlines.
 Outputs 3 sections: Summary, Segments (array), Passenger Details (array).
 """
 
@@ -68,6 +68,15 @@ Locator fields (map from invoice labels):
   ticketNumber       = value next to "TICKET NUMBER" label on invoice\
 """
 
+TOURCAN_RULES = """\
+VENDOR RULES — TOURCAN VACATIONS:
+
+Commission: The invoice has a line labelled "TOTAL CREDIT" with a negative dollar amount
+  (e.g., "TOTAL CREDIT -75.00"). Use the absolute value of that figure as totalCommission
+  and commission for each passenger. Do NOT calculate percentages.
+  Example: "TOTAL CREDIT -75.00" → totalCommission = "75.00", commission = "75.00"\
+"""
+
 GENERIC_FLIGHT_RULES = """\
 VENDOR RULES — GENERIC:
 Extract commission percentage or amount exactly as shown on the invoice.
@@ -79,6 +88,7 @@ RULE_SET_MAP = {
     "westjet": WESTJET_RULES,
     "adx_intair": ADX_INTAIR_RULES,
     "expedia": GENERIC_FLIGHT_RULES,
+    "tourcan": TOURCAN_RULES,
 }
 
 # ── System prompt ──────────────────────────────────────────────────────────────
@@ -100,7 +110,7 @@ SCHEMA — 3 sections required
   "reservationDate": "MM/DD/YY",
   "vendorName": "Normalized vendor name (e.g., Air Canada Internet)",
   "confirmationNumber": "String",
-  "recordLocator": "String",
+  "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
   "duration": <integer — total trip days>,
   "totalBase": <number with 2 decimal places>,
   "totalTax": <number — sum of carrier surcharges and fees>,
@@ -157,12 +167,13 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict) -> list[dict]:
+async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None) -> list[dict]:
     """Extract flight sections from invoice Markdown.
 
     Args:
-        markdown: Full invoice content from Agent 1.
-        routing:  Routing result from Agent 2 (vendor, ruleSet, bookingTypes).
+        markdown:           Full invoice content from Agent 1.
+        routing:            Routing result from Agent 2 (vendor, ruleSet, bookingTypes).
+        exchange_rate_note: Live rate string from currency.py, or None if invoice is CAD.
 
     Returns:
         List of 3 section dicts (Summary, Segments, Passengers).
@@ -175,10 +186,12 @@ async def run(markdown: str, routing: dict) -> list[dict]:
         global_rules=GLOBAL_RULES,
     )
 
+    rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
     user_content = (
         f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {rule_set}\n\n"
-        f"INVOICE MARKDOWN:\n{markdown}\n\n"
+        f"INVOICE MARKDOWN:\n{markdown}\n"
+        f"{rate_line}\n"
         "Extract all flight data and return the JSON array of 3 section objects."
     )
 

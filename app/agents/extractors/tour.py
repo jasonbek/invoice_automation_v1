@@ -26,7 +26,7 @@ VENDOR RULES — TRAVEL BRANDS / INTAIR (Tour):
 """
 
 VIATOR_RULES = """\
-VENDOR RULES — VIATOR:
+VENDOR RULES — VIATOR ON LINE:
 
 - Default commission is 8% of the base price unless the invoice explicitly states a
   different percentage or dollar amount.
@@ -95,7 +95,7 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict) -> list[dict]:
+async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None) -> list[dict]:
     """Extract tour sections from invoice Markdown."""
     rule_set = routing.get("ruleSet", "generic")
     vendor_rules = RULE_SET_MAP.get(rule_set, GENERIC_TOUR_RULES)
@@ -105,10 +105,12 @@ async def run(markdown: str, routing: dict) -> list[dict]:
         global_rules=GLOBAL_RULES,
     )
 
+    rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
     user_content = (
         f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {rule_set}\n\n"
-        f"INVOICE MARKDOWN:\n{markdown}\n\n"
+        f"INVOICE MARKDOWN:\n{markdown}\n"
+        f"{rate_line}\n"
         "Extract all tour data and return the JSON array of 2 section objects."
     )
 

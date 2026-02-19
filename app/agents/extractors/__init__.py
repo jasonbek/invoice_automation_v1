@@ -8,6 +8,9 @@ Each extractor returns a list of section dicts:
   [{"sectionTitle": "...", "data": {...}}, ...]
 
 All section lists are flattened into a single ordered list.
+
+Currency handling: a live exchange rate is fetched ONCE here (before the gather)
+and injected into every extractor call. This keeps rate-fetching in one place.
 """
 
 import asyncio
@@ -21,6 +24,7 @@ from app.agents.extractors import (
     service_fee as sf_ext,
     new_traveller as nt_ext,
 )
+from app.agents.extractors.currency import build_rate_note
 
 # Maps booking type strings (from routing agent) to extractor functions
 EXTRACTOR_MAP = {
@@ -44,12 +48,16 @@ async def run_all(markdown: str, routing: dict, service_fee_amount: float) -> li
     Returns:
         Flat list of section dicts sorted by booking type order, then service fee last.
     """
+    # Fetch live exchange rate once — shared by all extractors in this run.
+    # Returns None if invoice is in CAD (no conversion needed).
+    exchange_rate_note = await build_rate_note(markdown)
+
     tasks = []
 
     for booking_type in routing.get("bookingTypes", []):
         extractor_fn = EXTRACTOR_MAP.get(booking_type)
         if extractor_fn:
-            tasks.append(extractor_fn(markdown, routing))
+            tasks.append(extractor_fn(markdown, routing, exchange_rate_note))
         else:
             # Unknown booking type — skip with a warning section
             tasks.append(

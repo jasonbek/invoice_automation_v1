@@ -115,7 +115,7 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict) -> list[dict]:
+async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None) -> list[dict]:
     """Extract new traveller profile sections from document."""
     user_content = (
         f"PROFILE DOCUMENT:\n{markdown}\n\n"

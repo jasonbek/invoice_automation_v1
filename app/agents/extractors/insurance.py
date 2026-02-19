@@ -56,7 +56,7 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict) -> list[dict]:
+async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None) -> list[dict]:
     """Extract insurance sections from invoice Markdown."""
     user_content = (
         f"INVOICE MARKDOWN:\n{markdown}\n\n"

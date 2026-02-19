@@ -67,11 +67,13 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict) -> list[dict]:
+async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None) -> list[dict]:
     """Extract cruise sections from invoice Markdown."""
+    rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
     user_content = (
         f"VENDOR: {routing.get('vendor', 'Unknown')}\n\n"
-        f"INVOICE MARKDOWN:\n{markdown}\n\n"
+        f"INVOICE MARKDOWN:\n{markdown}\n"
+        f"{rate_line}\n"
         "Extract all cruise data and return the JSON array of 2 section objects."
     )
 

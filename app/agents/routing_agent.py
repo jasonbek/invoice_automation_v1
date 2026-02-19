@@ -32,7 +32,8 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | Travel Brands       | Travel Brands — when booking type is Tour or Land                 |
 | ADX                 | ADX, or Intair when invoice has an explicit "COMMISSION" line     |
 | Manulife Insurance  | Any insurance policy document                                     |
-| Viator              | Viator                                                            |
+| Viator on Line      | Viator                                                            |
+| Tourcan Vacations   | TOURCAN VACATIONS, Tourcan                                        |
 | Service Fee         | Internal agency fee invoice                                       |
 
 RULE SET KEY MAPPING (must use these exact strings):
@@ -41,8 +42,9 @@ RULE SET KEY MAPPING (must use these exact strings):
   adx_intair    → ADX / Intair (explicit COMMISSION line present on invoice)
   expedia       → Expedia TAAP
   travel_brands → Travel Brands / Intair (tour bookings)
-  viator        → Viator
+  viator        → Viator on Line
   manulife      → Manulife Insurance
+  tourcan       → Tourcan Vacations
   generic       → all others
 
 ADX vs INTAIR DECISION:
