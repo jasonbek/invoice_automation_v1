@@ -25,6 +25,8 @@ OUTPUT RULES:
 - NO explanations, NO formatting, NO markdown headers (##)
 - If a field has multiple values (e.g. multiple passengers), list one per line
 - Preserve all values EXACTLY as printed: dates, amounts, codes, names
+- ALWAYS use the label "Passenger:" for every traveller/guest/client/pax name,
+  regardless of what the invoice calls them — one line per person
 
 EXTRACT THESE FIELDS (when present):
 Vendor/supplier name, confirmation number, PNR/record locator, trip ref,

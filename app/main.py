@@ -115,6 +115,26 @@ _FORM_HTML = """\
     }
     button:hover { background: #1d4ed8; }
     button:active { background: #1e40af; }
+    button:disabled { background: #93c5fd; cursor: not-allowed; }
+    .submitted {
+      display: none;
+      text-align: center;
+      padding: 24px 0 8px;
+    }
+    .submitted .check {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+    .submitted p {
+      margin: 0;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+    .submitted .sub {
+      color: #6b7280;
+      font-size: 0.82rem;
+      margin-top: 6px !important;
+    }
   </style>
 </head>
 <body>
@@ -122,7 +142,7 @@ _FORM_HTML = """\
     <h1>Invoice Processor</h1>
     <p class="subtitle">Upload a supplier invoice to extract and email the data.</p>
 
-    <form action="/process-invoice" method="post" enctype="multipart/form-data">
+    <form id="invoiceForm" action="/process-invoice" method="post" enctype="multipart/form-data">
 
       <div class="field">
         <label for="vendor">Vendor</label>
@@ -159,10 +179,33 @@ _FORM_HTML = """\
           Multiple files allowed.</p>
       </div>
 
-      <button type="submit">Process Invoice</button>
+      <button type="submit" id="submitBtn">Process Invoice</button>
 
     </form>
+
+    <div class="submitted" id="successMsg">
+      <div class="check">&#10003;</div>
+      <p>Invoice submitted successfully.</p>
+      <p class="sub">Results will arrive by email in about 30–60 seconds.</p>
+      <p class="sub" style="margin-top:16px !important">
+        <a href="/form" style="color:#2563eb">Submit another invoice</a>
+      </p>
+    </div>
   </div>
+
+  <script>
+    document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+      var btn = document.getElementById('submitBtn');
+      var msg = document.getElementById('successMsg');
+      btn.disabled = true;
+      btn.textContent = 'Submitting\u2026';
+      // Show confirmation after a short delay to allow the form POST to fire
+      setTimeout(function() {
+        document.getElementById('invoiceForm').style.display = 'none';
+        msg.style.display = 'block';
+      }, 800);
+    });
+  </script>
 </body>
 </html>
 """
@@ -257,33 +300,58 @@ async def receive_invoice_json(request: Request):
 
 # ── Traveller name extraction ──────────────────────────────────────────────────
 
-def _extract_traveller_name(sections: list[dict]) -> str:
-    """Scan extracted sections for the first usable traveller name.
+def _extract_traveller_name(sections: list[dict], markdown: str = "") -> str:
+    """Extract the first usable traveller name for the email subject line.
 
     Search order:
-      1. Flight Passengers section (array) → first item's passengerName
-      2. Profile Contact section (dict)    → firstName + lastName
-      3. Any dict section with a passengerName key
+      1. Agent 1 markdown  — regex scan for Passenger/Traveller/Guest lines
+      2. Flight Passengers section (array) → first item's passengerName
+      3. Profile Contact section (dict)    → firstName + lastName
+      4. Any dict section with a passengerName key
     Falls back to "Unknown" if nothing found.
+
+    The name is ONLY used for the email subject — it is never injected into
+    the CBO section schemas, so UI.Vision macro output is unaffected.
     """
+    import re
+
+    # 1. Parse markdown from Agent 1 — most reliable source across all booking types.
+    #    Matches lines like: "Passenger: John Smith", "Passengers: John Smith, Jane Smith",
+    #    "Traveller: ...", "Guest: ..." produced by the markdown agent.
+    if markdown:
+        match = re.search(
+            r"(?im)^Passenger:\s*(.+)$",
+            markdown,
+        )
+        if match:
+            first = match.group(1).strip()
+            if first:
+                return first
+
+    # 2. Flight: Section 3 (Passengers) data is an array of passenger objects
     for section in sections:
         title = section.get("sectionTitle", "")
         data = section.get("data")
 
-        # Flight: Section 3 (Passengers) is an array
         if "Passengers" in title and isinstance(data, list) and data:
             name = data[0].get("passengerName", "")
             if name:
                 return name
 
-        # New Traveller Profile: Section 1 (Contact) has firstName + lastName
+    # 3. New Traveller Profile: Section 1 (Contact) has firstName + lastName
+    for section in sections:
+        title = section.get("sectionTitle", "")
+        data = section.get("data")
+
         if "Contact" in title and isinstance(data, dict):
             first = data.get("firstName", "")
             last = data.get("lastName", "")
             if first or last:
                 return f"{first} {last}".strip()
 
-        # Fallback: any dict with a passengerName key
+    # 4. Fallback: any dict section with a passengerName key
+    for section in sections:
+        data = section.get("data")
         if isinstance(data, dict):
             name = data.get("passengerName", "")
             if name:
@@ -320,6 +388,7 @@ async def run_pipeline(
 
     routing: dict = {}
     sections: list[dict] = []
+    markdown: str = ""
     status = "success"
     error = None
 
@@ -343,7 +412,8 @@ async def run_pipeline(
         error = str(exc)
 
     # Step 4: Email results (always runs, even on error)
-    traveller_name = _extract_traveller_name(sections)
+    traveller_name = _extract_traveller_name(sections, markdown=markdown)
+
     await send_results(
         traveller_name=traveller_name,
         vendor=routing.get("vendor", vendor),
@@ -351,6 +421,7 @@ async def run_pipeline(
         sections=sections,
         status=status,
         error=error,
+        attachments=files_b64,
     )
 
     # Step 5: Also POST to callback_url if one was provided (n8n / API compat)

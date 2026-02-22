@@ -14,6 +14,7 @@ and injected into every extractor call. This keeps rate-fetching in one place.
 """
 
 import asyncio
+from datetime import date
 
 from app.agents.extractors import (
     flight as flight_ext,
@@ -52,12 +53,15 @@ async def run_all(markdown: str, routing: dict, service_fee_amount: float) -> li
     # Returns None if invoice is in CAD (no conversion needed).
     exchange_rate_note = await build_rate_note(markdown)
 
+    # Today's date injected as a fallback for missing booking/reservation dates.
+    today_date = date.today().strftime("%m/%d/%y")
+
     tasks = []
 
     for booking_type in routing.get("bookingTypes", []):
         extractor_fn = EXTRACTOR_MAP.get(booking_type)
         if extractor_fn:
-            tasks.append(extractor_fn(markdown, routing, exchange_rate_note))
+            tasks.append(extractor_fn(markdown, routing, exchange_rate_note, today_date))
         else:
             # Unknown booking type — skip with a warning section
             tasks.append(

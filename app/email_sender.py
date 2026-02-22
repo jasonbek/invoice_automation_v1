@@ -9,6 +9,7 @@ Reads RESEND_API_KEY, FROM_EMAIL, TO_EMAIL from environment (Modal secrets).
 """
 
 import html
+import json
 import os
 from datetime import datetime
 
@@ -71,11 +72,23 @@ def _section_html(section: dict) -> str:
     else:
         content = f"<p>{html.escape(str(data))}</p>"
 
+    raw_json = html.escape(json.dumps(data, indent=2, ensure_ascii=False))
+    json_block = (
+        f'<div style="margin-top:10px">'
+        f'<p style="margin:0 0 4px;font-size:0.75em;font-weight:600;color:#6b7280;'
+        f'text-transform:uppercase;letter-spacing:0.05em">Raw JSON — copy for UI.Vision</p>'
+        f'<pre style="margin:0;background:#1e293b;color:#e2e8f0;padding:12px;'
+        f'border-radius:6px;font-size:0.8em;overflow-x:auto;'
+        f'white-space:pre;word-break:normal">{raw_json}</pre>'
+        f'</div>'
+    )
+
     return (
-        f'<div style="margin-bottom:28px">'
+        f'<div style="margin-bottom:36px">'
         f'<h3 style="margin:0 0 8px;font-size:1rem;color:#1d4ed8;'
         f'border-bottom:2px solid #dbeafe;padding-bottom:6px">{title}</h3>'
         f"{content}"
+        f"{json_block}"
         f"</div>"
     )
 
@@ -129,6 +142,7 @@ async def send_results(
     sections: list[dict],
     status: str,
     error: str | None = None,
+    attachments: list[dict] | None = None,
 ) -> None:
     """Send processed invoice results as an HTML email via Resend.
 
@@ -139,6 +153,8 @@ async def send_results(
         sections:       Flat list of section dicts from run_all().
         status:         "success" or "error".
         error:          Error message string if status == "error".
+        attachments:    Original invoice files as list of
+                        {"filename": str, "content_type": str, "content_b64": str}.
 
     Raises:
         httpx.HTTPStatusError: If Resend returns a non-2xx response.
@@ -159,15 +175,23 @@ async def send_results(
         error=error,
     )
 
+    payload: dict = {
+        "from": from_email,
+        "to": [to_email],
+        "subject": subject,
+        "html": email_html,
+    }
+
+    if attachments:
+        payload["attachments"] = [
+            {"filename": f["filename"], "content": f["content_b64"]}
+            for f in attachments
+        ]
+
     async with httpx.AsyncClient(timeout=15.0) as client:
         resp = await client.post(
             RESEND_URL,
             headers={"Authorization": f"Bearer {api_key}"},
-            json={
-                "from": from_email,
-                "to": [to_email],
-                "subject": subject,
-                "html": email_html,
-            },
+            json=payload,
         )
         resp.raise_for_status()

@@ -28,6 +28,14 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 - Accented characters: Replace with their unaccented ASCII equivalent in ALL string fields.
   Examples: é→e, è→e, ê→e, ë→e, à→a, â→a, ô→o, î→i, û→u, ç→c, ü→u, ñ→n, etc.
   Example: "Hôtel de Varenne" → "Hotel de Varenne"
+- Booking/reservation date: If no booking or reservation date appears on the invoice,
+  use the TODAY'S DATE value provided in the input. Format it as MM/DD/YY.
+- Promotions and savings: If the invoice mentions any special deal, promotional discount,
+  loyalty reward, price reduction, or savings amount, ALWAYS include it in the
+  client-facing remarks field for that booking type:
+    · flights, tours, cruises → invoiceRemarks
+    · hotels                  → notesForClient
+  Example: "Special deal applied: 15% off (CA $224.91 savings)"
 - Output: Return ONLY the JSON array described in the schema. No prose, no code fences.\
 """
 

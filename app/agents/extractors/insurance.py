@@ -56,9 +56,11 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None) -> list[dict]:
+async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None, today_date: str = "") -> list[dict]:
     """Extract insurance sections from invoice Markdown."""
+    date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
     user_content = (
+        f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n\n"
         "Extract all insurance policy data and return the JSON array of 2 section objects."
     )
