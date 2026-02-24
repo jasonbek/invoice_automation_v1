@@ -69,7 +69,8 @@ tripType — determined by the stations on the itinerary:
   "serviceProviderName": "Rail operator name",
   "startDate": "MM/DD/YY — first departure date",
   "endDate": "MM/DD/YY — last arrival date",
-  "clientFeedback": "Segment itinerary — one line per segment (see format below)"
+  "description": "Rail",
+  "clientFeedback": "Segment itinerary — one line per segment (see format below). DO NOT include any pricing, commission, or financial figures — those belong in Screen 1 only."
 }}
 
 clientFeedback format — one line per segment:

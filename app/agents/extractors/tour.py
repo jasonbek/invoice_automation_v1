@@ -81,7 +81,7 @@ SCHEMA — 2 sections required
   "endDate": "MM/DD/YY",
   "category": "Category, class, or tier code if shown",
   "description": "High-level tour description (1–2 sentences)",
-  "clientFeedback": "Detailed itinerary as a plain text block with line breaks — include day-by-day breakdown, inclusions, meals, activities as found on invoice"
+  "clientFeedback": "Detailed itinerary as a plain text block with line breaks — include day-by-day breakdown, inclusions, meals, activities as found on invoice. DO NOT include any pricing, commission, deposit amounts, or financial figures — those belong in Screen 1 only."
 }}
 
 ═══════════════════════════════════════════════
