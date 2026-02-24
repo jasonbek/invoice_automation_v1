@@ -9,33 +9,36 @@ Outputs 2 sections: Summary, Details.
 from datetime import date
 from app.agents.extractors.base import call_claude
 
-_PAX_PROMPT_SYSTEM = """\
+_CONTEXT_PROMPT_SYSTEM = """\
 You are a data extraction assistant. Read the invoice Markdown and return ONLY a JSON object
-with one field: the total number of travellers/passengers mentioned.
+with these three fields:
 
-Output exactly:
-{"noofpax": <integer>}
+  noofpax   — total number of travellers/passengers (integer, default 1 if unknown)
+  startDate — first departure / check-in / tour start date in MM/DD/YY format
+  endDate   — last arrival / check-out / tour end date in MM/DD/YY format
 
-If you cannot determine the count, return: {"noofpax": 1}\
+Omit startDate or endDate if they cannot be determined from the invoice.
+
+Example output:
+{"noofpax": 2, "startDate": "08/26/24", "endDate": "09/02/24"}\
 """
 
 
-async def _get_pax_count(markdown: str) -> str:
-    """Quick Claude call to extract passenger count from invoice."""
+async def _get_invoice_context(markdown: str) -> dict:
+    """Single Claude call to extract pax count and trip dates from invoice."""
     import json, re, anthropic
 
     client = anthropic.AsyncAnthropic()
     message = await client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=64,
-        system=_PAX_PROMPT_SYSTEM,
+        system=_CONTEXT_PROMPT_SYSTEM,
         messages=[{"role": "user", "content": markdown}],
     )
     raw = message.content[0].text.strip()
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```\s*$", "", raw)
-    result = json.loads(raw.strip())
-    return str(result.get("noofpax", 1))
+    return json.loads(raw.strip())
 
 
 async def run(markdown: str, routing: dict, service_fee_amount: float) -> list[dict]:
@@ -50,7 +53,11 @@ async def run(markdown: str, routing: dict, service_fee_amount: float) -> list[d
         List of 2 section dicts (Service Fee Summary and Details).
     """
     today = date.today().strftime("%m/%d/%y")
-    noofpax = await _get_pax_count(markdown)
+    context = await _get_invoice_context(markdown)
+
+    noofpax = str(context.get("noofpax", 1))
+    start_date = context.get("startDate", today)
+    end_date = context.get("endDate", today)
 
     return [
         {
@@ -62,7 +69,7 @@ async def run(markdown: str, routing: dict, service_fee_amount: float) -> list[d
                 "noofpax": noofpax,
                 "noofunits": "1",
                 "tripType": "Domestic",
-                "chargedAs": "Per Booking",
+                "chargedAs": "Total",
                 "totalBase": f"{service_fee_amount:.2f}",
                 "commissionPercentage": "100",
                 "clientGstRate": "5",
@@ -72,8 +79,8 @@ async def run(markdown: str, routing: dict, service_fee_amount: float) -> list[d
             "sectionTitle": "Service Fee Screen 2",
             "data": {
                 "serviceProviderName": "Service Fee",
-                "startDate": today,
-                "endDate": today,
+                "startDate": start_date,
+                "endDate": end_date,
                 "description": "Agency Planning Fee",
             },
         },

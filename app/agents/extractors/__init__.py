@@ -24,6 +24,7 @@ from app.agents.extractors import (
     insurance as insurance_ext,
     service_fee as sf_ext,
     new_traveller as nt_ext,
+    rail as rail_ext,
 )
 from app.agents.extractors.currency import build_rate_note
 
@@ -35,6 +36,7 @@ EXTRACTOR_MAP = {
     "cruise": cruise_ext.run,
     "insurance": insurance_ext.run,
     "new_traveller": nt_ext.run,
+    "rail": rail_ext.run,
 }
 
 

@@ -71,12 +71,25 @@ async def call_claude(
 
     raw = message.content[0].text.strip()
 
-    # Strip accidental code fences (```json ... ```)
-    raw = re.sub(r"^```(?:json)?\s*", "", raw)
-    raw = re.sub(r"\s*```\s*$", "", raw)
-    raw = raw.strip()
+    # 1. If Claude wrapped output in a code fence, extract its contents
+    fence_match = re.search(r"```(?:json)?\s*\n?([\s\S]*?)\n?\s*```", raw)
+    if fence_match:
+        raw = fence_match.group(1).strip()
+    else:
+        # 2. If Claude added prose before the JSON array, skip to the first '['
+        bracket = raw.find("[")
+        if bracket > 0:
+            raw = raw[bracket:]
+        raw = raw.strip()
 
-    parsed = json.loads(raw)
+    try:
+        parsed = json.loads(raw)
+    except json.JSONDecodeError as e:
+        safe_preview = raw[:500].encode("ascii", "replace").decode("ascii")
+        print(f"[call_claude] JSON parse failed: {e}")
+        print(f"[call_claude] stop_reason={message.stop_reason!r}  content_length={len(raw)}")
+        print(f"[call_claude] raw response (first 500 chars): {safe_preview!r}")
+        raise
 
     if not isinstance(parsed, list):
         raise ValueError(f"Expected JSON array from extractor, got: {type(parsed)}")

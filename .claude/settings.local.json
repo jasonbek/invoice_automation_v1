@@ -5,7 +5,8 @@
       "Bash(py:*)",
       "Bash(cmd /c \"where python\")",
       "Bash(cmd /c \"python --version\")",
-      "Bash(cmd /c \"py --version\")"
+      "Bash(cmd /c \"py --version\")",
+      "Bash(modal app logs:*)"
     ]
   }
 }

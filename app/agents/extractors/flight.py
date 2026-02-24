@@ -91,6 +91,41 @@ RULE_SET_MAP = {
     "tourcan": TOURCAN_RULES,
 }
 
+# Vendors that use per-passenger ticketing in ClientBase Screen 3 —
+# totalBase/totalTax/totalCommission are NOT needed on Screen 1 for these.
+_TICKETING_VENDORS = {"air_canada", "westjet", "adx_intair"}
+
+# ── Section 1 schema variants ──────────────────────────────────────────────────
+
+# Used for air_canada, westjet, adx_intair — totals live in Screen 3 per passenger.
+_SECTION1_SUMMARY_ONLY = """\
+### SECTION 1 — Flight Summary
+{{
+  "reservationDate": "MM/DD/YY",
+  "vendorName": "Normalized vendor name (e.g., Air Canada Internet)",
+  "confirmationNumber": "String",
+  "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
+  "duration": <integer — total trip days>,
+  "invoiceRemarks": "Seat selections block (see rules below)"
+}}\
+"""
+
+# Used for tourcan, expedia, generic — no per-passenger ticketing section in ClientBase.
+_SECTION1_FULL = """\
+### SECTION 1 — Flight Summary
+{{
+  "reservationDate": "MM/DD/YY",
+  "vendorName": "Normalized vendor name (e.g., Air Canada Internet)",
+  "confirmationNumber": "String",
+  "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
+  "duration": <integer — total trip days>,
+  "totalBase": <number with 2 decimal places>,
+  "totalTax": <number — sum of carrier surcharges and fees>,
+  "totalCommission": "String — percentage (e.g., '4%') OR exact dollar if ADX/Intair",
+  "invoiceRemarks": "Seat selections block (see rules below)"
+}}\
+"""
+
 # ── System prompt ──────────────────────────────────────────────────────────────
 
 _SYSTEM_PROMPT_TEMPLATE = """\
@@ -105,18 +140,7 @@ Extract data from the Markdown invoice and return ONLY a JSON array of section o
 SCHEMA — 3 sections required
 ═══════════════════════════════════════════════
 
-### SECTION 1 — Flight Summary
-{{
-  "reservationDate": "MM/DD/YY",
-  "vendorName": "Normalized vendor name (e.g., Air Canada Internet)",
-  "confirmationNumber": "String",
-  "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
-  "duration": <integer — total trip days>,
-  "totalBase": <number with 2 decimal places>,
-  "totalTax": <number — sum of carrier surcharges and fees>,
-  "totalCommission": "String — percentage (e.g., '4%') OR exact dollar if ADX/Intair",
-  "invoiceRemarks": "Seat selections block (see rules below)"
-}}
+{section1_schema}
 
 SEAT MAPPING RULES for invoiceRemarks:
   - Scan the ENTIRE document for seat assignments
@@ -149,10 +173,46 @@ SEAT MAPPING RULES for invoiceRemarks:
 ### SECTION 3 — Passenger Details (one object per passenger)
 {{
   "passengerName": "Full Name",
-  "ticketNumber": "String",
-  "basePricePerPassenger": <totalBase ÷ passenger count, 2 decimal places>,
-  "taxPerPassenger": <totalTax ÷ passenger count, 2 decimal places>,
-  "commission": "Same value and format as Section 1 totalCommission"
+  "ticketNumber": "String — omit the first 3 digits (airline code prefix); e.g. '0141234567890' → '1234567890'",
+  "basePricePerPassenger": <base fare for this passenger from invoice, 2 decimal places>,
+  "taxPerPassenger": <taxes and carrier fees for this passenger from invoice, 2 decimal places>,
+  "commission": "Commission for this passenger — percentage (e.g. '4%') OR exact dollar amount"
+}}
+
+═══════════════════════════════════════════════
+SEAT CHARGES (CONDITIONAL — Sections 4 & 5)
+═══════════════════════════════════════════════
+Include ONLY if the invoice contains explicit seat selection charges with a dollar amount.
+If no seat charges appear, output exactly 3 sections and stop.
+
+If seat charges ARE present, append these 2 sections after Section 3:
+
+#### SECTION 4 — Seat Screen 1 (Summary)
+{{
+  "reservationDate": "MM/DD/YY — same as flight",
+  "vendorName": "Same vendor as flight",
+  "confirmationNumber": "Same as flight",
+  "duration": <integer — same trip duration>,
+  "noofpax": <integer — number of passengers charged for seats>,
+  "noofunits": <integer — total seat assignments being charged>,
+  "tripType": "Domestic | Transborder | International",
+  "totalBase": <total seat charge amount, 2 decimal places>,
+  "totalTax": <tax on seat charges if shown on invoice — omit key if none>,
+  "commissionAmount": "0%",
+  "gstStatus": "GST Included | GST Not Included"
+}}
+
+tripType — determined by the main flight route:
+  Domestic     — all segments within Canada
+  Transborder  — any Canada <-> USA segment, no overseas
+  International — any segment outside Canada and USA
+
+#### SECTION 5 — Seat Screen 2 (Details)
+{{
+  "serviceProviderName": "Airline name",
+  "startDate": "MM/DD/YY — first flight departure date",
+  "endDate": "MM/DD/YY — last flight return/arrival date",
+  "description": "Seat Selection Fees — [copy the seat-by-flight list from invoiceRemarks]"
 }}
 
 ═══════════════════════════════════════════════
@@ -161,7 +221,10 @@ OUTPUT FORMAT (return this exact structure)
 [
   {{"sectionTitle": "Flight Screen 1 (Summary)", "data": {{ ... }}}},
   {{"sectionTitle": "Flight Screen 2 (Segments)", "data": [ ... ]}},
-  {{"sectionTitle": "Flight Screen 3 (Passengers)", "data": [ ... ]}}
+  {{"sectionTitle": "Flight Screen 3 (Passengers)", "data": [ ... ]}},
+  // Only if seat charges exist on invoice:
+  {{"sectionTitle": "Seat Screen 1 (Summary)", "data": {{ ... }}}},
+  {{"sectionTitle": "Seat Screen 2 (Details)", "data": {{ ... }}}}
 ]
 Return ONLY the JSON array. No prose, no markdown fences.\
 """
@@ -180,10 +243,14 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
     """
     rule_set = routing.get("ruleSet", "generic")
     vendor_rules = RULE_SET_MAP.get(rule_set, GENERIC_FLIGHT_RULES)
+    section1_schema = (
+        _SECTION1_SUMMARY_ONLY if rule_set in _TICKETING_VENDORS else _SECTION1_FULL
+    )
 
     system = _SYSTEM_PROMPT_TEMPLATE.format(
         vendor_rules=vendor_rules,
         global_rules=GLOBAL_RULES,
+        section1_schema=section1_schema,
     )
 
     rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
@@ -194,7 +261,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
         f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n"
         f"{rate_line}\n"
-        "Extract all flight data and return the JSON array of 3 section objects."
+        "Extract all flight data and return the JSON array of sections (3 sections, or 5 if seat charges are present)."
     )
 
-    return await call_claude(system, user_content, max_tokens=4096)
+    return await call_claude(system, user_content, max_tokens=8192)

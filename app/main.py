@@ -155,6 +155,7 @@ _FORM_HTML = """\
         <select id="booking_type_hint" name="booking_type_hint">
           <option value="">Auto-detect (recommended)</option>
           <option value="flight">Flight</option>
+          <option value="rail">Rail / Train</option>
           <option value="tour">Tour / Land Package</option>
           <option value="hotel">Hotel</option>
           <option value="cruise">Cruise</option>

@@ -34,6 +34,10 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | Manulife Insurance  | Any insurance policy document                                     |
 | Viator on Line      | Viator                                                            |
 | Tourcan Vacations   | TOURCAN VACATIONS, Tourcan                                        |
+| VIA Rail            | VIA, VIA Rail Canada                                              |
+| Amtrak              | Amtrak, National Railroad Passenger                               |
+| Eurostar            | Eurostar                                                          |
+| Rail Europe         | Eurail, Rail Europe, The Trainline                                |
 | Service Fee         | Internal agency fee invoice                                       |
 
 RULE SET KEY MAPPING (must use these exact strings):
@@ -45,7 +49,7 @@ RULE SET KEY MAPPING (must use these exact strings):
   viator        → Viator on Line
   manulife      → Manulife Insurance
   tourcan       → Tourcan Vacations
-  generic       → all others
+  generic       → all others (including all rail vendors — VIA Rail, Amtrak, Eurostar, Rail Europe)
 
 ADX vs INTAIR DECISION:
   - Invoice header says "Intair" or "Travel Brands" AND has an explicit line labelled
@@ -64,6 +68,8 @@ BOOKING TYPE DETECTION SIGNALS
 - cruise       : ship name, cabin number, embarkation/debarkation ports, cruise line
 - insurance    : policy number, premium amount, coverage start/end dates
 - new_traveller: customer profile with personal contact details; no booking data
+- rail         : train ticket, rail reservation number, train segments with departure/arrival stations,
+                 seat/car/coach number, rail pass, VIA Rail, Amtrak, Eurostar, Eurail, Rail Europe, SNCF
 
 IMPORTANT: A single invoice may contain BOTH flights and a tour (air + land package).
 List ALL detected booking types in the bookingTypes array.
