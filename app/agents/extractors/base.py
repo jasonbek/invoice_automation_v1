@@ -69,14 +69,31 @@ async def call_claude(
         messages=[{"role": "user", "content": user_content}],
     )
 
+    if not message.content:
+        raise ValueError("Claude returned an empty message (no content blocks)")
+
     raw = message.content[0].text.strip()
 
-    # Strip accidental code fences (```json ... ```)
-    raw = re.sub(r"^```(?:json)?\s*", "", raw)
-    raw = re.sub(r"\s*```\s*$", "", raw)
+    # Strip all code fence markers wherever they appear (not just at start/end).
+    # Claude occasionally adds a preamble before the opening fence, which breaks
+    # the old ^-anchored regex and causes json.loads to fail at char 0.
+    raw = re.sub(r"```(?:json)?\s*", "", raw)
     raw = raw.strip()
 
-    parsed = json.loads(raw)
+    # Skip any prose that precedes the JSON array/object.
+    start = raw.find("[")
+    obj_start = raw.find("{")
+    if obj_start != -1 and (start == -1 or obj_start < start):
+        start = obj_start
+    if start > 0:
+        raw = raw[start:]
+
+    if not raw:
+        raise ValueError(f"Claude returned an empty or non-JSON response. Raw: {message.content[0].text[:200]!r}")
+
+    # raw_decode tolerates trailing text after the JSON (e.g. closing remarks).
+    decoder = json.JSONDecoder()
+    parsed, _ = decoder.raw_decode(raw)
 
     if not isinstance(parsed, list):
         raise ValueError(f"Expected JSON array from extractor, got: {type(parsed)}")
