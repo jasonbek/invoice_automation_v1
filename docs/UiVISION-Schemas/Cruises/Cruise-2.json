@@ -1,0 +1,78 @@
+{
+  "Name": "Cruise-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the JSON data for the cruise details:",
+      "Value": "cruiseDataString",
+      "Description": "Prompt user for JSON data string"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${cruiseDataString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString)[0];",
+      "Value": "jsonData",
+      "Description": "Clean and parse the JSON array"
+    },
+    {
+      "Command": "type",
+      "Target": "name=serviceprovidername",
+      "Value": "${jsonData.shipName}",
+      "Description": "Enter Ship Name"
+    },
+    {
+      "Command": "type",
+      "Target": "id=startDateTextId",
+      "Value": "${jsonData.startDate}",
+      "Description": "Enter Start Date"
+    },
+    {
+      "Command": "type",
+      "Target": "id=endDateTextId",
+      "Value": "${jsonData.endDate}",
+      "Description": "Enter End Date"
+    },
+    {
+      "Command": "type",
+      "Target": "name=category",
+      "Value": "${jsonData.category}",
+      "Description": "Enter Category"
+    },
+    {
+      "Command": "type",
+      "Target": "name=shipdeck",
+      "Value": "${jsonData.deck}",
+      "Description": "Enter Deck"
+    },
+    {
+      "Command": "type",
+      "Target": "name=cabinroom",
+      "Value": "${jsonData.cabinNumber}",
+      "Description": "Enter Cabin Number"
+    },
+    {
+      "Command": "type",
+      "Target": "name=dining",
+      "Value": "${jsonData.diningTime}",
+      "Description": "Enter Dining Time"
+    },
+    {
+      "Command": "type",
+      "Target": "id=bedding",
+      "Value": "${jsonData.bedding}",
+      "Description": "Enter Bedding Configuration"
+    },
+    {
+      "Command": "type",
+      "Target": "name=description",
+      "Value": "${jsonData.description}",
+      "Description": "Enter Description"
+    },
+    {
+      "Command": "type",
+      "Target": "name=clientfeedback",
+      "Value": "${jsonData.clientItinerary}",
+      "Description": "Enter Client Itinerary"
+    }
+  ]
+}

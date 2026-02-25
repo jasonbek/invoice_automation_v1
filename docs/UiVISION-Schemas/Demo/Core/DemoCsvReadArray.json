@@ -1,0 +1,168 @@
+{
+  "Name": "DemoCsvReadArray",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Create an array and save the content to a CSV file",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var arr = []; for(var x = 0; x < 5; x++){arr[x] = []; for(var y = 0; y < 3; y++){arr[x][y] = (x+1)*(y+1);}}; return arr",
+      "Value": "array1",
+      "Description": "Note that (non-sandbox) executeScript command  would run inside the webpage, so a website must be open in the browser. That is why we prefer the _sandbox version here."
+    },
+    {
+      "Command": "comment",
+      "Target": "Manually set two array values ",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var newArr = ${array1}; newArr[0][2] = 'Hello World'; return newArr",
+      "Value": "array1",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var newArr = ${array1}; newArr[2][1] = 'This is how you set an array value'; return newArr",
+      "Value": "array1",
+      "Description": "We must use executeScript here since the \"_Sandbox\" version can not return arrays. "
+    },
+    {
+      "Command": "csvSaveArray",
+      "Target": "array1",
+      "Value": "data_from_array.csv",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Read the array again from csv file",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "csvReadArray",
+      "Target": "data_from_array.csv",
+      "Value": "myCSV",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Number of rows = ${!CsvReadMaxRow}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${mycsv[0]}.length;",
+      "Value": "col",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Number of columns = ${col}",
+      "Value": "pink",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "loop over all CSV values",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "nodisplay",
+      "Value": "!replayspeed",
+      "Description": "Speed up replay by disabling animations/IDE updates. Log file still gets written, it is just not shown."
+    },
+    {
+      "Command": "forEach",
+      "Target": "myCSV",
+      "Value": "row",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "col1=${row[0]}, col2=${row[1]}, col3=${row[2]}",
+      "Value": "brown",
+      "Description": ""
+    },
+    {
+      "Command": "forEach",
+      "Target": "row",
+      "Value": "elem",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Element=${elem}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "row",
+      "Value": "elem",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": "Show the IDE updates again (such as the current line and log)"
+    },
+    {
+      "Command": "comment",
+      "Target": "Another way to loop over the array content",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "times",
+      "Target": "${!CsvReadMaxRow}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Substract 1 from !times, as the array index starts with 0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${!times} - 1;",
+      "Value": "i",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Row ${i}, 3rd Element => ${myCSV[${i}][2]}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

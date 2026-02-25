@@ -13,8 +13,8 @@ GLOBAL_RULES = """\
 GLOBAL FORMATTING RULES (apply to every field without exception):
 - Dates: MUST be MM/DD/YY (e.g., "08/26/24"). Convert from any other format.
 - Times: MUST be 12-hour with AM/PM (e.g., "4:40 PM"). Convert from 24-hour if needed.
-- Missing fields: DELETE the key entirely from the output JSON object.
-  NEVER use null, undefined, "N/A", or empty string "".
+- Missing fields: Use "" (empty string) for any field where no value is available.
+  NEVER omit a key. NEVER use null, undefined, or "N/A".
 - Currency amounts: If the invoice is in CAD, extract figures exactly as shown.
   If the invoice is NOT in CAD, a LIVE EXCHANGE RATE line will be provided in the input
   (e.g. "LIVE EXCHANGE RATE: 1 EUR = 1.4823 CAD (fetched 02/19/26)").

@@ -1,0 +1,66 @@
+{
+  "Name": "Sub_XDesktopAutomation_Area",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "comment",
+      "Target": "SUBROUTINE used by DemoXDesktopAutomation",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "It uses two anchor images to define the new search area",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualAssert",
+      "Target": "desktop_area_topleft3_dpi_96.png@0.4",
+      "Value": "",
+      "Description": "Find image to calculate the top left x/y for visionLimitSearchArea "
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${!imagex}-${!imagewidth}/1.5",
+      "Value": "x1",
+      "Description": "New limited area top left corner = bottom left corner of the anchor image. We use image x/y and image width/height to calculate this value. For X we use /1.5 instead of /2 in the formular below to make the area a bit wider."
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${!imagey}+${!imageheight}/2",
+      "Value": "y1",
+      "Description": ""
+    },
+    {
+      "Command": "visualAssert",
+      "Target": "desktop_area_bottomright_dpi_96.png@0.4",
+      "Value": "",
+      "Description": "Find image to calculate the bottom right x/y for visionLimitSearchArea."
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${!imagex}+${!imagewidth}/2",
+      "Value": "x2",
+      "Description": "New Search Area bottom right corner = top right corner of the anchor image."
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${!imagey}-${!imageheight}/2",
+      "Value": "y2",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "x1=${x1}, y1=${y1}, x2=${x2}, y2=${y2}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "visionLimitSearchArea",
+      "Target": "area=${x1},${y1},${x2},${y2}",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

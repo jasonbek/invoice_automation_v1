@@ -1,0 +1,84 @@
+{
+  "Name": "Rail-1",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data for the Rail Reservation:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${jsonDataString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString);",
+      "Value": "jsonData",
+      "Description": "Clean and parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=resdate",
+      "Value": "${jsonData.reservationDate}",
+      "Description": "Fill the Reservation Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=vendorName",
+      "Value": "${jsonData.vendorName}",
+      "Description": "Fill the Vendor Name field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=confirmationnumber",
+      "Value": "${jsonData.confirmationNumber}",
+      "Description": "Fill the Confirmation Number field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=duration",
+      "Value": "${jsonData.duration}",
+      "Description": "Fill the Duration field"
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=${jsonData.tripType}",
+      "Description": "Select Trip Type (Domestic, International, etc.)"
+    },
+    {
+      "Command": "select",
+      "Target": "id=includegst",
+      "Value": "label=${jsonData.gstStatus}",
+      "Description": "Select GST inclusion status"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalbase",
+      "Value": "${jsonData.totalBase}",
+      "Description": "Fill the Total Base Amount field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totaltax",
+      "Value": "${jsonData.totalTax}",
+      "Description": "Fill the Total Tax Amount field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalcommission",
+      "Value": "${jsonData.totalCommission}",
+      "Description": "Fill the Total Commission field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=invoiceremarks",
+      "Value": "${jsonData.invoiceRemarks}",
+      "Description": "Fill the Invoice Remarks field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=agentremarks",
+      "Value": "${jsonData.agentRemarks}",
+      "Description": "Fill the Agent Remarks field"
+    }
+  ]
+}

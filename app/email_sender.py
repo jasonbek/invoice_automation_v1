@@ -41,9 +41,9 @@ def _kv_table(d: dict) -> str:
     return f"<table {_TABLE_STYLE}>{rows}</table>"
 
 
-def _section_html(section: dict) -> str:
+def _section_html(section: dict, display_title: str | None = None) -> str:
     """Render one section (title + data) as an HTML block."""
-    title = html.escape(section.get("sectionTitle", "Section"))
+    title = html.escape(display_title or section.get("sectionTitle", "Section"))
     data = section.get("data")
 
     if isinstance(data, dict):
@@ -113,7 +113,22 @@ def _build_html(
             f"</div>"
         )
     else:
-        body = "".join(_section_html(s) for s in sections)
+        # Number repeated section titles so the reader can tell segments apart.
+        # e.g. two "Rail Screen 2 (Details)" become "Rail Screen 2 (Details) — 1 of 2"
+        #      and "Rail Screen 2 (Details) — 2 of 2".
+        # The raw JSON blocks are unaffected — CBO copy-paste still works.
+        from collections import Counter
+        title_counts = Counter(s.get("sectionTitle", "Section") for s in sections)
+        title_seen: dict[str, int] = {}
+        display_titles = []
+        for s in sections:
+            t = s.get("sectionTitle", "Section")
+            if title_counts[t] > 1:
+                title_seen[t] = title_seen.get(t, 0) + 1
+                display_titles.append(f"{t} — {title_seen[t]} of {title_counts[t]}")
+            else:
+                display_titles.append(t)
+        body = "".join(_section_html(s, dt) for s, dt in zip(sections, display_titles))
 
     return f"""<!DOCTYPE html>
 <html>

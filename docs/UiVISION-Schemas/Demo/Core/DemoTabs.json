@@ -1,0 +1,150 @@
+{
+  "Name": "DemoTabs",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/tabs",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "linkText=Open new web page in new browser tab",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "*1* TAB1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "TabIndexAbsolute=${!current_tab_number} TabIndexRELATIVE=${!current_tab_number_relative}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext1",
+      "Value": "this is tab 1",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "linkText=Open yet another web page in a new browser tab",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "*2* TAB2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext2",
+      "Value": "And this is tab 2!",
+      "Description": ""
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "*1* TAB1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext1",
+      "Value": "Now back in tab 1 - test done!",
+      "Description": ""
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=close",
+      "Value": "",
+      "Description": "Close the current tab (tab1)"
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "*2* TAB2",
+      "Value": "",
+      "Description": "What was tab2 is now the tab with the relative ID=1 (since the old tab1 is closed)"
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=1",
+      "Value": "",
+      "Description": "Now switching to the NEW tab1 means being on what was formerly tab2. It is the tab we are already on."
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "*2* TAB2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "We can also open new tabs",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "TabIndexAbsolute=${!current_tab_number} TabIndexRELATIVE=${!current_tab_number_relative}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=open",
+      "Value": "https://ui.vision",
+      "Description": ""
+    },
+    {
+      "Command": "selectWindow",
+      "Target": "tab=open",
+      "Value": "https://ocr.space",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=imageUrl",
+      "Value": "UI.Vision RPA Tab Test done",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "TabIndexAbsolute=${!current_tab_number} TabIndexRELATIVE=${!current_tab_number_relative}",
+      "Value": "brown",
+      "Description": ""
+    },
+    {
+      "Command": "assert",
+      "Target": "!current_tab_number_relative",
+      "Value": "3",
+      "Description": ""
+    }
+  ]
+}

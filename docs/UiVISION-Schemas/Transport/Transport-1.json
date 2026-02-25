@@ -1,0 +1,96 @@
+{
+  "Name": "Transport-1",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${jsonDataString});",
+      "Value": "jsonData",
+      "Description": "Parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=resdate",
+      "Value": "${jsonData.dateReserved}",
+      "Description": "Fill the Date Reserved field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=vendorName",
+      "Value": "${jsonData.vendor}",
+      "Description": "Fill the Vendor field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=confirmationnumber",
+      "Value": "${jsonData.confirmationNumber}",
+      "Description": "Fill the Confirmation Number field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=duration",
+      "Value": "${jsonData.duration}",
+      "Description": "Fill the Duration field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=noofpax",
+      "Value": "${jsonData.numberOfTravellers}",
+      "Description": "Fill the No. of Pax field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=noofunits",
+      "Value": "${jsonData.numberOfUnits}",
+      "Description": "Fill the No. of Units field"
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=${jsonData.tripType}",
+      "Description": "Select the Trip Type (D/I/T)"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalbase",
+      "Value": "${jsonData.basePrice}",
+      "Description": "Fill the Base field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totaltax",
+      "Value": "${jsonData.tax}",
+      "Description": "Fill the Tax field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalcommission",
+      "Value": "${jsonData.commission}",
+      "Description": "Fill the Commission field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalcommpercent",
+      "Value": "${jsonData.commissionPercent}",
+      "Description": "Fill the Comm % field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=invoiceremarks",
+      "Value": "${jsonData.invoiceRemarks}",
+      "Description": "Fill the Invoice Remarks field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=agentremarks",
+      "Value": "${jsonData.agentRemarks}",
+      "Description": "Fill the Agent Remarks field"
+    }
+  ]
+}

@@ -32,7 +32,7 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | Travel Brands       | Travel Brands — when booking type is Tour or Land                 |
 | ADX                 | ADX, or Intair when invoice has an explicit "COMMISSION" line     |
 | Manulife Insurance  | Any insurance policy document                                     |
-| Viator on Line      | Viator                                                            |
+| Viator on Line      | Viator (bookingType: day_tour — NOT tour)                         |
 | Tourcan Vacations   | TOURCAN VACATIONS, Tourcan                                        |
 | VIA Rail            | VIA, VIA Rail Canada                                              |
 | Amtrak              | Amtrak, National Railroad Passenger                               |
@@ -64,6 +64,9 @@ BOOKING TYPE DETECTION SIGNALS
 ═══════════════════════════════════════════════
 - flight       : airline ticket, PNR locator, flight segments with departure/arrival cities and times
 - tour         : multi-day land package, tour code, land arrangements, accommodation + guided activities
+                 (Travel Brands, Intair, generic tour operators — NOT Viator)
+- day_tour     : Viator on Line invoice; single-day excursion, shore excursion, or day activity;
+                 may contain multiple individual activities on one booking — always use day_tour for Viator
 - hotel        : accommodation-only booking, check-in/check-out dates, no flights included
 - cruise       : ship name, cabin number, embarkation/debarkation ports, cruise line
 - insurance    : policy number, premium amount, coverage start/end dates

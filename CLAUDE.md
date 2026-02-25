@@ -66,7 +66,7 @@ agentmdv2.txt                        # Original monolithic instructions — sour
 ## Critical Business Rules (from agentmdv2.txt)
 1. **Dates:** MUST be `MM/DD/YY` (e.g., "08/26/24") — no exceptions
 2. **Times:** MUST be 12-hour with AM/PM (e.g., "4:40 PM")
-3. **Missing fields:** DELETE the key — NEVER use `null`, `undefined`, or `"N/A"`
+3. **Missing fields:** Use `""` (empty string) — NEVER omit a key or use `null`, `undefined`, `"N/A"`
 4. **Sections:** Each schema section = separate JSON object = separate Telegram message
 5. **Non-CAD invoices (Tour/Cruise):** Must include `agentRemarks` with live conversion rate
 6. **Commission:** Never calculate unless rules require; extract exact figure from invoice

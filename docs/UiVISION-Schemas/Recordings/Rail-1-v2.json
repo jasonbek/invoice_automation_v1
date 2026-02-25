@@ -1,0 +1,301 @@
+{
+  "Name": "Rail-1-v2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://clientbaseonline.trams.com/3IZ0/rescard_reservation_rail_edit.jsp?mode=1&rescardno=27204",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=resdate",
+      "Value": "",
+      "Targets": [
+        "name=resdate",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[2]/td/table/tbody/tr[2]/td/nobr/input",
+        "xpath=//input[@name='resdate']",
+        "xpath=//nobr/input",
+        "css=#rescardreservation > table:nth-child(26) > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > nobr > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=vendorName",
+      "Value": "",
+      "Targets": [
+        "id=vendorName",
+        "name=vendorName",
+        "xpath=//*[@id=\"vendorName\"]",
+        "xpath=//input[@id='vendorName']",
+        "xpath=//td/input[2]",
+        "css=#vendorName"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=confirmationnumber",
+      "Value": "",
+      "Targets": [
+        "name=confirmationnumber",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[4]/td/table/tbody/tr[2]/td/input",
+        "xpath=//input[@name='confirmationnumber']",
+        "xpath=//tr[4]/td/table/tbody/tr[2]/td/input",
+        "css=#rescardreservation > table:nth-child(26) > tbody > tr:nth-child(4) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=duration",
+      "Value": "",
+      "Targets": [
+        "name=duration",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[7]/td/table/tbody/tr[2]/td/input",
+        "xpath=//input[@name='duration']",
+        "xpath=//tr[7]/td/table/tbody/tr[2]/td/input",
+        "css=#rescardreservation > table:nth-child(26) > tbody > tr:nth-child(7) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=interLinkcode",
+      "Value": "",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=Domestic",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=interLinkcode",
+      "Value": "",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=interLinkcode",
+      "Value": "",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=International",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=interLinkcode",
+      "Value": "",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=interLinkcode",
+      "Value": "",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=Transborder",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=interLinkcode",
+      "Value": "",
+      "Targets": [
+        "id=interLinkcode",
+        "name=interLinkcode",
+        "xpath=//*[@id=\"interLinkcode\"]",
+        "xpath=//select[@id='interLinkcode']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/select",
+        "css=#interLinkcode"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=includegst",
+      "Value": "",
+      "Targets": [
+        "id=includegst",
+        "name=includegst",
+        "xpath=//*[@id=\"includegst\"]",
+        "xpath=//select[@id='includegst']",
+        "xpath=//td[3]/select",
+        "css=#includegst"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "select",
+      "Target": "id=includegst",
+      "Value": "label=Do Not Include GST/HST",
+      "Targets": [
+        "id=includegst",
+        "name=includegst",
+        "xpath=//*[@id=\"includegst\"]",
+        "xpath=//select[@id='includegst']",
+        "xpath=//td[3]/select",
+        "css=#includegst"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=includegst",
+      "Value": "",
+      "Targets": [
+        "id=includegst",
+        "name=includegst",
+        "xpath=//*[@id=\"includegst\"]",
+        "xpath=//select[@id='includegst']",
+        "xpath=//td[3]/select",
+        "css=#includegst"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=totalbase",
+      "Value": "",
+      "Targets": [
+        "id=totalbase",
+        "name=totalbase",
+        "xpath=//*[@id=\"totalbase\"]",
+        "xpath=//input[@id='totalbase']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td/input",
+        "css=#totalbase"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=totaltax",
+      "Value": "",
+      "Targets": [
+        "id=totaltax",
+        "name=totaltax",
+        "xpath=//*[@id=\"totaltax\"]",
+        "xpath=//input[@id='totaltax']",
+        "xpath=//table[2]/tbody/tr/td/table/tbody/tr[2]/td[2]/input",
+        "css=#totaltax"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=totalcommission",
+      "Value": "",
+      "Targets": [
+        "id=totalcommission",
+        "name=totalcommission",
+        "xpath=//*[@id=\"totalcommission\"]",
+        "xpath=//input[@id='totalcommission']",
+        "xpath=//td[4]/input",
+        "css=#totalcommission"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=invoiceremarks",
+      "Value": "",
+      "Targets": [
+        "name=invoiceremarks",
+        "xpath=//*[@id=\"rescardreservation\"]/table[4]/tbody/tr[2]/td/textarea",
+        "xpath=//textarea[@name='invoiceremarks']",
+        "xpath=//textarea",
+        "css=#rescardreservation > table:nth-child(33) > tbody > tr:nth-child(2) > td > textarea"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=agentremarks",
+      "Value": "",
+      "Targets": [
+        "name=agentremarks",
+        "xpath=//*[@id=\"rescardreservation\"]/table[5]/tbody/tr[2]/td/textarea",
+        "xpath=//textarea[@name='agentremarks']",
+        "xpath=//table[5]/tbody/tr[2]/td/textarea",
+        "css=#rescardreservation > table:nth-child(34) > tbody > tr:nth-child(2) > td > textarea"
+      ],
+      "Description": ""
+    }
+  ]
+}

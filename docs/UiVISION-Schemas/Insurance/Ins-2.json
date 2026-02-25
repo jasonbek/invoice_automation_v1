@@ -1,0 +1,36 @@
+{
+  "Name": "Ins-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the JSON data for the insurance policy (Screen 2):",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${jsonDataString});",
+      "Value": "jsonData",
+      "Description": "Parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "id=startDateValue",
+      "Value": "${jsonData.startDate}",
+      "Description": "Fill the Start Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=endDateValue",
+      "Value": "${jsonData.endDate}",
+      "Description": "Fill the End Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=descriptionValue",
+      "Value": "${jsonData.description}",
+      "Description": "Fill the Description field"
+    }
+  ]
+}

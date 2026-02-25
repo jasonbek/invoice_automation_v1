@@ -1,0 +1,136 @@
+{
+  "Name": "DemoAutofill",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "15",
+      "Value": "!TIMEOUT_WAIT",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "60",
+      "Value": "!TIMEOUT_PAGELOAD",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://docs.google.com/forms/d/1cbI5dMRs0-t_IwNzPm6T3lAG_nPgsnJZEA-FEYVARxg/",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//span[contains(text(),\"UI.Vision IDE\")]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//*[text()[contains(.,'Web Testing')]]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//span[contains(text(),\"Form Autofilling\")]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//*[text()[contains(.,\"General Web Automation\")]]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "pause",
+      "Target": "500",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureScreenshot",
+      "Target": "AutoFill1stPage${!LOOP}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "xpath=//*[@id=\"mG61Hd\"]/div/div/div[3]/div/div/div/span/span",
+      "Value": "",
+      "Targets": [
+        "xpath=//*[@id=\"mG61Hd\"]/div/div/div[3]/div/div/div/span/span",
+        "xpath=//*[@id=\"mG61Hd\"]/div[2]/div/div[3]/div/div/div/span/span"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//input[@type='text']",
+      "Value": "This is a single line test...",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//textarea",
+      "Value": "...and this a multiline test:\nLine2\nLine3",
+      "Description": ""
+    },
+    {
+      "Command": "captureScreenshot",
+      "Target": "AutoFill2ndPage${!LOOP}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "pause",
+      "Target": "1000",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "xpath=//*[@id=\"mG61Hd\"]/div/div/div[3]/div[1]/div[1]/div[2]/span/span",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureScreenshot",
+      "Target": "AutoFill3rdPage${!LOOP}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "DemoAutofill macro completed (shown as notification because of #shownotification in the 3rd column)",
+      "Value": "#shownotification",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Open form filling tutorial page",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/rpa/docs/selenium-ide/form-filling",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "*Form Filling*",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

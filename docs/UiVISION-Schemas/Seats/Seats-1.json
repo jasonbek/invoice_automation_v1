@@ -1,0 +1,84 @@
+{
+  "Name": "Seats-1",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Paste JSON for Seat Reservation:",
+      "Value": "seatDataString",
+      "Description": "Get JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${seatDataString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString)[0];",
+      "Value": "jsonData",
+      "Description": "Clean and parse JSON"
+    },
+    {
+      "Command": "type",
+      "Target": "name=resdate",
+      "Value": "${jsonData.reservationDate}",
+      "Description": "Enter Reservation Date"
+    },
+    {
+      "Command": "type",
+      "Target": "id=vendorName",
+      "Value": "${jsonData.vendorName}",
+      "Description": "Enter Vendor Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=confirmationnumber",
+      "Value": "${jsonData.confirmationNumber}",
+      "Description": "Enter Confirmation Number"
+    },
+    {
+      "Command": "type",
+      "Target": "name=duration",
+      "Value": "${jsonData.duration}",
+      "Description": "Enter Duration"
+    },
+    {
+      "Command": "type",
+      "Target": "id=noofpax",
+      "Value": "${jsonData.noofpax}",
+      "Description": "Enter Pax"
+    },
+    {
+      "Command": "type",
+      "Target": "id=noofunits",
+      "Value": "${jsonData.noofunits}",
+      "Description": "Enter Units"
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=${jsonData.tripType}",
+      "Description": "Domestic/International/Transborder"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalbase",
+      "Value": "${jsonData.totalBase}",
+      "Description": "Base Fare"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totaltax",
+      "Value": "${jsonData.totalTax}",
+      "Description": "Total Tax"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalcommission",
+      "Value": "${jsonData.commissionAmount}",
+      "Description": "Commission Amount"
+    },
+    {
+      "Command": "select",
+      "Target": "id=includegst",
+      "Value": "label=${jsonData.gstStatus}",
+      "Description": "GST Inclusion status"
+    }
+  ]
+}

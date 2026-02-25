@@ -1,0 +1,84 @@
+{
+  "Name": "Flight-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${jsonDataString});",
+      "Value": "jsonData",
+      "Description": "Parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[2]/td[1]/input[1]",
+      "Value": "${jsonData.serviceprovidercode}",
+      "Description": "Fill the Airline Code field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[4]/td[1]/input[1]",
+      "Value": "${jsonData.serviceprovidername}",
+      "Description": "Fill the Airline field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[7]/td/input[1]",
+      "Value": "${jsonData.flightno}",
+      "Description": "Fill the Flight Number field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[9]/td[1]/input[1]",
+      "Value": "${jsonData.departcitycode}",
+      "Description": "Fill the Depart City Code field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[11]/td[1]/input[1]",
+      "Value": "${jsonData.departcityname}",
+      "Description": "Fill the Depart City Name field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[15]/td[1]/input",
+      "Value": "${jsonData.startdate}",
+      "Description": "Fill the Depart Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[15]/td[2]/input",
+      "Value": "${jsonData.starttime}",
+      "Description": "Fill the Depart Time field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[17]/td[1]/input[1]",
+      "Value": "${jsonData.arrivecitycode}",
+      "Description": "Fill the Arrive City Code field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[19]/td[1]/input[1]",
+      "Value": "${jsonData.arrivecityname}",
+      "Description": "Fill the Arrive City Name field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[23]/td[1]/input",
+      "Value": "${jsonData.enddate}",
+      "Description": "Fill the Arrival Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "/html/body/div[5]/div[2]/form/table[2]/tbody/tr[23]/td[2]/input",
+      "Value": "${jsonData.endtime}",
+      "Description": "Fill the Arrival Time field"
+    }
+  ]
+}

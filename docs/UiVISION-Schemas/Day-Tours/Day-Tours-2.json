@@ -1,0 +1,54 @@
+{
+  "Name": "Day-Tours-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Paste JSON for Seat Provider Details:",
+      "Value": "daytourDetailsString",
+      "Description": "Get JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${daytourDetailsString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString);",
+      "Value": "jsonData",
+      "Description": "Clean and parse JSON"
+    },
+    {
+      "Command": "type",
+      "Target": "name=serviceprovidername",
+      "Value": "${jsonData.serviceProviderName}",
+      "Description": "The end supplier for the day tour"
+    },
+    {
+      "Command": "type",
+      "Target": "id=startDateValue",
+      "Value": "${jsonData.startDate}",
+      "Description": "Tour Start Date"
+    },
+    {
+      "Command": "type",
+      "Target": "id=endDateValue",
+      "Value": "${jsonData.endDate}",
+      "Description": "Tour End Date"
+    },
+    {
+      "Command": "type",
+      "Target": "name=description",
+      "Value": "${jsonData.description}",
+      "Description": "Short Description"
+    },
+    {
+      "Command": "type",
+      "Target": "name=clientfeedback",
+      "Value": "${jsonData.clientfeedback}",
+      "Description": "clientfeedback (e.g., Start time, meeting point, what to bring, everything the traveller needs to know to prepare etc)"
+    },
+    {
+      "Command": "type",
+      "Target": "name=agentremarks",
+      "Value": "${jsonData.agentremarks}",
+      "Description": "agentremarks"
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "Name": "DemoFrames",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/webtest/frames/",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Reduce replay speed so we can better see what is going on...",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "medium",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=mytext1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext1",
+      "Value": "Frame1 (index=0)",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=mytext2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext2",
+      "Value": "Frame2 (index=1)",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=mytext3",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext3",
+      "Value": "Frame3 (index=2)",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=3",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=mytext4",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext4",
+      "Value": "Frame4 (index=3)",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=4",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=mytext5",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext5",
+      "Value": "Frame5 (index=4)",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext3",
+      "Value": "now testing iframe inside this frame",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//span[contains(text(),\"UI.Vision IDE\")]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//input[@type='text']",
+      "Value": "iframe in frame: works!",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "xpath=//div[3]/div/div/div/span",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=entry.1572386418",
+      "Value": "Form Filling Test Done!",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "xpath=//*[@id=\"mG61Hd\"]/div/div/div[3]/div[1]/div[1]/div[2]/span/span",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=mytext3",
+      "Value": "Test completed!",
+      "Description": ""
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "Name": "DemoXClickTextRelative",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/draw",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "linkText=calculator",
+      "Value": "",
+      "Description": "The calculator website is NOT affiliated with Ui.Vision."
+    },
+    {
+      "Command": "pause",
+      "Target": "1000",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClickTextRelative",
+      "Target": "AC#R8,-10",
+      "Value": "",
+      "Description": "Click 8. Anchor button has the text AC"
+    },
+    {
+      "Command": "XClickTextRelative",
+      "Target": "CE#R30,-10",
+      "Value": "",
+      "Description": "times"
+    },
+    {
+      "Command": "XClickTextRelative",
+      "Target": "CE#R8,-10",
+      "Value": "",
+      "Description": "Click 8. Anchor button has the text CE now"
+    },
+    {
+      "Command": "XClickTextRelative",
+      "Target": "CE#R30,-37",
+      "Value": "",
+      "Description": "= sign "
+    },
+    {
+      "Command": "OCRExtractbyTextRelative",
+      "Target": "CE#R30,22H12W10",
+      "Value": "s",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Extracted string (Calculator result) is \"${s}\"",
+      "Value": "blue",
+      "Description": "String maybe still contains line breaks like /r/n from the OCR"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return parseInt(${s}) ;",
+      "Value": "i",
+      "Description": "Convert string to integer number (remove spaces, line breaks etc)"
+    },
+    {
+      "Command": "if",
+      "Target": "${i} == 64",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "8 x 8 is ${i}, Calculator works!",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "else",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "i = ${i}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "throwError",
+      "Target": "Calculator result is wrong",
+      "Value": "",
+      "Description": "We trigger an error if the value is not 64 (this is useful for automated testing)"
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

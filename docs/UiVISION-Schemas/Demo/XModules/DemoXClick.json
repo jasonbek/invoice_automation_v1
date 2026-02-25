@@ -1,0 +1,306 @@
+{
+  "Name": "DemoXClick",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/draw",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "bringBrowserToForeground",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "linkText=this link",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "pause",
+      "Target": "1000",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualAssert",
+      "Target": "draw_canvas_dpi_96.png",
+      "Value": "",
+      "Description": "Check we are on the right page"
+    },
+    {
+      "Command": "XClick",
+      "Target": "draw_plus_dpi_96.png",
+      "Value": "",
+      "Description": "Click the plus icon to start a new drawing"
+    },
+    {
+      "Command": "XClick",
+      "Target": "draw_redbutton_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "We use a relative click, since the pencil icon can change shape",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClickRelative",
+      "Target": "draw_pencil_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XType",
+      "Target": "${KEY_ESC}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClickRelative",
+      "Target": "draw_startingpoint_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Starting point: x=${!imagex} y=${!imagey}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${!imagex}",
+      "Value": "x",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "${!imagey}",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Draw top line --->",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#down",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${x}) +100",
+      "Value": "x",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#move",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#up",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Draw right line down",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#down",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${y}) +100",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#move",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#up",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Draw bottom line <---",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#down",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${x}) - 100",
+      "Value": "x",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#move",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#up",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Draw left line up",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#down",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${y}) - 100",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#move",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "${x},${y}",
+      "Value": "#up",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "visualVerify // draw_compare_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Add some text...",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "draw_text1_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XType",
+      "Target": "${KEY_ESC}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Now click on the canvas. This is the place where the text starts.",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${y}) +180",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "${x},${y}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Send keystrokes",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XType",
+      "Target": "Demo completed.",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Click once more on the canvas to close text menu",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Number (${y}) - 150",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "${x},${y}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Confirm that the text is shown. @0.5 overwrites the global confidence level.",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualAssert",
+      "Target": "draw_checkresult1_dpi_96.png@0.4",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "DemoXClick completed",
+      "Value": "#shownotification",
+      "Description": ""
+    }
+  ]
+}

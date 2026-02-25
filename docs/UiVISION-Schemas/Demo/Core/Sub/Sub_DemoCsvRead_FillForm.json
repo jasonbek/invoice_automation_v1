@@ -1,0 +1,48 @@
+{
+  "Name": "Sub_DemoCsvRead_FillForm",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "comment",
+      "Target": "Subroutine used by DemoCsvReadWithLoop and DemoCsvReadWithWhile",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Inside subroutine: Status = ${!csvReadStatus}, Line = ${!csvReadLineNumber}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://docs.google.com/forms/d/e/1FAIpQLScGWVjexH2FNzJqPACzuzBLlTWMJHgLUHjxehtU-2cJxtu6VQ/viewform",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//input[@type='text']",
+      "Value": "${!COL1}_${!csvReadLineNumber}",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//div[3]/div/div/div[2]/div/div/div/div/input",
+      "Value": "${!COL2}",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//div[4]/div/div/div[2]/div/div/div/div/input",
+      "Value": "${!COL3}",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "xpath=//span/span",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "Name": "DemoTakeScreenshots",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/blog/",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureEntirePageScreenshot",
+      "Target": "rpablog",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "linkText=read more@POS=1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureEntirePageScreenshot",
+      "Target": "article1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/blog/",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "linkText=read more@POS=2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureEntirePageScreenshot",
+      "Target": "article2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureScreenshot",
+      "Target": "article2_just_viewport",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "take screenshot of an _element_ with storeImage",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeImage",
+      "Target": "partialLinkText=Blog",
+      "Value": "blogtitle",
+      "Description": ""
+    }
+  ]
+}

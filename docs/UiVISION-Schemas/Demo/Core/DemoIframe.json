@@ -1,0 +1,72 @@
+{
+  "Name": "DemoIframe",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/iframes",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//*[@id=\"content\"]/div[2]/div/p[1]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//*[@id=\"content\"]/div[2]/div/h2[1]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "First iframe: Embedded Google Doc",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "index=0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//span[contains(text(),\"UI.Vision IDE\")]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "xpath=//input[@type='text']",
+      "Value": "Automating a website inside an embedded iframe",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "xpath=//div[3]/div/div/div/span",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "name=entry.1572386418",
+      "Value": "Form Filling Test Done!",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "xpath=//*[@id=\"mG61Hd\"]/div/div/div[3]/div[1]/div[1]/div[2]/span/span",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "selectFrame",
+      "Target": "relative=top",
+      "Value": "",
+      "Description": "Back to main page (top frame)"
+    }
+  ]
+}

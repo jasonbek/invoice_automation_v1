@@ -1,0 +1,216 @@
+{
+  "Name": "DemoIfElse",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/executeScript",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "How to use gotoIf and label(s) for flow control. For a while/endWhile demo, see the DemoSaveCSV macro.",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "return (new Date().getHours())",
+      "Value": "mytime",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "mytime = ${mytime}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${mytime}  > 16",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Good afternoon!",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "else",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Good morning!",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeAttribute",
+      "Target": "//input[@id='sometext-WRONG-ID-TEST']@size",
+      "Value": "boxsize",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${boxsize} == \"#LNF\"",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "The xpath was not found. In this case the variable gets filled with #LNF (Locator Not Found).",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "storeAttribute",
+      "Target": "//input[@id='sometext']@size",
+      "Value": "boxsize",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "With correct Xpath ID we get: Boxsize = ${boxsize}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "gotoIf",
+      "Target": "${boxsize} > 70",
+      "Value": "BOX-TOO-BIG",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext",
+      "Value": "This box is ${boxsize} chars wide",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "document.title = ${boxsize};",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "gotoLabel",
+      "Target": "END",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "label",
+      "Target": "BOX-TOO-BIG",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Input box too big. This is just a test of gotoIf",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "document.title = \"Just a gotoIf test. This line should not be reached unless you edit the macro\"",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "label",
+      "Target": "END",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "test case completed",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "onError",
+      "Target": "#goto",
+      "Value": "fixerror",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext",
+      "Value": "this line works",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometextXXXXX",
+      "Value": "this line has the wrong ID...",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "this line is never reached, because of the error above",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "gotoLabel",
+      "Target": "end-part2",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "label",
+      "Target": "fixerror",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "here we can have code that handles the error..",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext",
+      "Value": "Fix Error Section: This command works.",
+      "Description": ""
+    },
+    {
+      "Command": "label",
+      "Target": "end-part2",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

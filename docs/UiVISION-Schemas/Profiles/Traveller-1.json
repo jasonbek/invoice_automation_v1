@@ -1,0 +1,66 @@
+{
+  "Name": "Traveller-1",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the companion traveler's JSON data:",
+      "Value": "companionDataString",
+      "Description": "Prompt user to paste JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${companionDataString});",
+      "Value": "jsonData",
+      "Description": "Parse user data into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=lastname",
+      "Value": "${jsonData.lastName}",
+      "Description": "Enter Last Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=firstname",
+      "Value": "${jsonData.firstName}",
+      "Description": "Enter First Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=middleinit",
+      "Value": "${jsonData.middlenames}",
+      "Description": "Enter Middle Names"
+    },
+    {
+      "Command": "type",
+      "Target": "name=citizenship",
+      "Value": "${jsonData.citizenship}",
+      "Description": "Enter Citizenship"
+    },
+    {
+      "Command": "click",
+      "Target": "name=phone1Permission",
+      "Value": "",
+      "Description": "Click Phone Permission Checkbox"
+    },
+    {
+      "Command": "select",
+      "Target": "id=passengerSpecialdateMonthIdx",
+      "Value": "label=${jsonData.birthMonth}",
+      "Description": "Select Birth Month"
+    },
+    {
+      "Command": "type",
+      "Target": "id=passengerSpecialdateDay",
+      "Value": "${jsonData.birthDay}",
+      "Description": "Enter Birth Day"
+    },
+    {
+      "Command": "type",
+      "Target": "id=passengerSpecialdateYear",
+      "Value": "${jsonData.birthYear}",
+      "Description": "Enter Birth Year"
+    }
+  ]
+}

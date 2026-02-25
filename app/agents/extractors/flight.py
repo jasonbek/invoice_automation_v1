@@ -197,9 +197,9 @@ If seat charges ARE present, append these 2 sections after Section 3:
   "noofunits": <integer — total seat assignments being charged>,
   "tripType": "Domestic | Transborder | International",
   "totalBase": <total seat charge amount, 2 decimal places>,
-  "totalTax": <tax on seat charges if shown on invoice — omit key if none>,
+  "totalTax": <tax on seat charges if shown on invoice — use "" if none>,
   "commissionAmount": "0%",
-  "gstStatus": "GST Included | GST Not Included"
+  "includegst": "Include GST/HST | Do Not Include GST/HST"
 }}
 
 tripType — determined by the main flight route:

@@ -1,7 +1,8 @@
 """
 Agent 3b: Tour Extractor
 
-Handles: Travel Brands, Intair (tour), Viator, generic tour operators.
+Handles: Travel Brands, Intair (tour), generic tour operators.
+NOTE: Viator is handled by day_tour.py — do not route viator ruleSet here.
 Outputs 2 sections: Summary, Details.
 
 Note on currency: If the invoice is NOT in CAD, Claude must include conversion details
@@ -25,14 +26,6 @@ VENDOR RULES — TRAVEL BRANDS / INTAIR (Tour):
 - finalPaymentDue: use the "Final Payment Due" or "Balance Due" date on the invoice.\
 """
 
-VIATOR_RULES = """\
-VENDOR RULES — VIATOR ON LINE:
-
-- Default commission is 8% of the base price unless the invoice explicitly states a
-  different percentage or dollar amount.
-- commision field: calculate 8% of basePrice (in CAD) unless overridden by invoice.\
-"""
-
 GENERIC_TOUR_RULES = """\
 VENDOR RULES — GENERIC TOUR OPERATOR:
 
@@ -42,7 +35,6 @@ VENDOR RULES — GENERIC TOUR OPERATOR:
 
 RULE_SET_MAP = {
     "travel_brands": TRAVEL_BRANDS_RULES,
-    "viator": VIATOR_RULES,
 }
 
 # ── System prompt ──────────────────────────────────────────────────────────────

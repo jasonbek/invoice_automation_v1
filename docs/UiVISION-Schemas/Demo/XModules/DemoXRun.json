@@ -1,0 +1,90 @@
+{
+  "Name": "DemoXRun",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "echo",
+      "Target": "This demo macro uses hard-coded paths for the default calculator app. But the correct path depends on your operating system version and language. So the default path in this macro might be wrong and needs to be adjusted.",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${!os}==\"mac\"",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XRun",
+      "Target": "/Applications/Calculator.app/Contents/MacOS/Calculator",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "elseif",
+      "Target": "${!os}==\"linux\"",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XRun",
+      "Target": "/snap/bin/gnome-calculator",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "elseif",
+      "Target": "${!os}==\"windows\"",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XRun",
+      "Target": "C:\\Windows\\System32\\calc.exe",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "You find the example PowerShell script for this demo in the UI.Vision docs for \"XRunAndWait\"",
+      "Value": "-executionpolicy bypass -File  c:\\test\\test1.ps1  c:\\test\\test.txt Hello",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "XRunAndWait // Powershell.exe ",
+      "Value": "-executionpolicy bypass -File  c:\\test\\test1.ps1  c:\\test\\test.txt Hello",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "echo // Exitcode = ${!xrun_exitcode}  (Note: The exit code is only captured if you use XRunAndWait)",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "else",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "This should never happen",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Calculator app launched ",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

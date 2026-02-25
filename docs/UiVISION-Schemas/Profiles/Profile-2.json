@@ -1,0 +1,78 @@
+{
+  "Name": "Profile-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the traveler's JSON data:",
+      "Value": "profileDataString",
+      "Description": "Prompt user to paste JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${profileDataString});",
+      "Value": "jsonData",
+      "Description": "Parse user data into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "id=lastname",
+      "Value": "${jsonData.lastName}",
+      "Description": "Enter Last Name"
+    },
+    {
+      "Command": "type",
+      "Target": "id=firstname",
+      "Value": "${jsonData.firstName}",
+      "Description": "Enter First Name"
+    },
+    {
+      "Command": "type",
+      "Target": "id=middleinit",
+      "Value": "${jsonData.middlenames}",
+      "Description": "Enter Middle Names"
+    },
+    {
+      "Command": "type",
+      "Target": "id=phone1AreaCode",
+      "Value": "${jsonData.phoneAreaCode}",
+      "Description": "Enter Phone Area Code"
+    },
+    {
+      "Command": "type",
+      "Target": "id=phone1Commvalue",
+      "Value": "${jsonData.phoneNumber}",
+      "Description": "Enter Phone Number"
+    },
+    {
+      "Command": "type",
+      "Target": "name=emailCommvalue",
+      "Value": "${jsonData.email}",
+      "Description": "Enter Email Address"
+    },
+    {
+      "Command": "click",
+      "Target": "id=phone1MarketingPermission",
+      "Value": "",
+      "Description": "Click Phone Marketing Permission Checkbox"
+    },
+    {
+      "Command": "select",
+      "Target": "id=passengerSpecialdateMonthIdx",
+      "Value": "label=${jsonData.birthMonth}",
+      "Description": "Select Birth Month"
+    },
+    {
+      "Command": "type",
+      "Target": "id=passengerSpecialdateDay",
+      "Value": "${jsonData.birthDay}",
+      "Description": "Enter Birth Day"
+    },
+    {
+      "Command": "type",
+      "Target": "id=passengerSpecialdateYear",
+      "Value": "${jsonData.birthYear}",
+      "Description": "Enter Birth Year"
+    }
+  ]
+}

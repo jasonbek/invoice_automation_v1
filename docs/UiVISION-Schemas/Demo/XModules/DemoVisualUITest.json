@@ -1,0 +1,126 @@
+{
+  "Name": "DemoVisualUITest",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "setWindowSize",
+      "Target": "1024x768",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualVerify",
+      "Target": "uitest_logo_wide_dpi_96.png@0.70",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualVerify",
+      "Target": "uitest_share_dpi_96.png@0.70",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Resize to iPhone6 screen size",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "setWindowSize",
+      "Target": "375x768",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualVerify",
+      "Target": "uitest_logo_mobile_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Missing menu is critical, so we use ASSERT (instead of just VERIFY)",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualAssert",
+      "Target": "uitest_hamburger_dpi_96.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Check that Share buttons do not show",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "At this point, page is surely loaded => reduce wait for (normally missing) image",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "2",
+      "Value": "!timeout_wait",
+      "Description": ""
+    },
+    {
+      "Command": "visualSearch",
+      "Target": "uitest_share_dpi_96.png@0.70",
+      "Value": "count",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${count} > 0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "throwError",
+      "Target": "Share buttons should NOT show on mobile phones",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Restore default wait (not really needed here, since macro stops now anyway)",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "10",
+      "Value": "!timeout_wait",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Done, enlarge browser again",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "setWindowSize",
+      "Target": "1024x768",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "Name": "Rail-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data for Rail Provider Details:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${jsonDataString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString);",
+      "Value": "jsonData",
+      "Description": "Clean and parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=serviceprovidername",
+      "Value": "${jsonData.serviceProviderName}",
+      "Description": "Fill the Service Provider (e.g., VIA Rail)"
+    },
+    {
+      "Command": "type",
+      "Target": "name=flightno",
+      "Value": "${jsonData.trainNumber}",
+      "Description": "Fill Train Number (System uses flightno)"
+    },
+    {
+      "Command": "type",
+      "Target": "name=departcitycode",
+      "Value": "${jsonData.departCityCode}",
+      "Description": "Fill Depart City Code"
+    },
+    {
+      "Command": "type",
+      "Target": "name=departcityname",
+      "Value": "${jsonData.departCityName}",
+      "Description": "Fill Depart City Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=checkinterminal",
+      "Value": "${jsonData.departTerminal}",
+      "Description": "Fill Depart Station/Terminal"
+    },
+    {
+      "Command": "type",
+      "Target": "id=departDateTimeValue",
+      "Value": "${jsonData.startDate}",
+      "Description": "Fill Depart Date"
+    },
+    {
+      "Command": "type",
+      "Target": "name=starttime",
+      "Value": "${jsonData.startTime}",
+      "Description": "Fill Depart Time"
+    },
+    {
+      "Command": "type",
+      "Target": "name=arrivecitycode",
+      "Value": "${jsonData.arriveCityCode}",
+      "Description": "Fill Arrive City Code"
+    },
+    {
+      "Command": "type",
+      "Target": "name=arrivecityname",
+      "Value": "${jsonData.arriveCityName}",
+      "Description": "Fill Arrive City Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=checkoutterminal",
+      "Value": "${jsonData.arriveTerminal}",
+      "Description": "Fill Arrive Station/Terminal"
+    },
+    {
+      "Command": "type",
+      "Target": "id=arriveDateTimeValue",
+      "Value": "${jsonData.endDate}",
+      "Description": "Fill Arrival Date"
+    },
+    {
+      "Command": "type",
+      "Target": "name=endtime",
+      "Value": "${jsonData.endTime}",
+      "Description": "Fill Arrival Time"
+    },
+    {
+      "Command": "type",
+      "Target": "name=aircraftlocator",
+      "Value": "${jsonData.recordLocator}",
+      "Description": "Fill the Confirmation/Locator (System uses aircraftlocator)"
+    },
+    {
+      "Command": "type",
+      "Target": "name=miscellaneous",
+      "Value": "${jsonData.miscellaneous}",
+      "Description": "Fill Miscellaneous (e.g., Seat/Class details)"
+    },
+    {
+      "Command": "type",
+      "Target": "name=description",
+      "Value": "${jsonData.description}",
+      "Description": "Fill Description"
+    },
+    {
+      "Command": "type",
+      "Target": "name=clientfeedback",
+      "Value": "${jsonData.clientFeedback}",
+      "Description": "Fill Client Feedback"
+    },
+    {
+      "Command": "type",
+      "Target": "name=agentremarks",
+      "Value": "${jsonData.agentRemarks}",
+      "Description": "Fill Agent Remarks"
+    }
+  ]
+}

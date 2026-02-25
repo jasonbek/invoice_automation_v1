@@ -13,6 +13,8 @@ the pipeline also POSTs the JSON payload to that URL.
 """
 
 import base64
+import io
+import zipfile
 
 import modal
 from fastapi import FastAPI, File, Form, Request, UploadFile
@@ -157,6 +159,7 @@ _FORM_HTML = """\
           <option value="flight">Flight</option>
           <option value="rail">Rail / Train</option>
           <option value="tour">Tour / Land Package</option>
+          <option value="day_tour">Day Tour (Viator)</option>
           <option value="hotel">Hotel</option>
           <option value="cruise">Cruise</option>
           <option value="insurance">Insurance</option>
@@ -175,8 +178,8 @@ _FORM_HTML = """\
       <div class="field">
         <label for="files">Invoice Files</label>
         <input type="file" id="files" name="files" multiple
-               accept=".pdf,.eml,.md">
-        <p class="hint">Accepts PDF, .eml (email with attachment), or .md files.
+               accept=".pdf,.eml,.md,.zip">
+        <p class="hint">Accepts PDF, .eml, .md, or .zip (zip is unpacked automatically).
           Multiple files allowed.</p>
       </div>
 
@@ -210,6 +213,53 @@ _FORM_HTML = """\
 </body>
 </html>
 """
+
+# ── Zip expansion helper ───────────────────────────────────────────────────────
+
+def _expand_upload(filename: str, content_type: str, raw: bytes) -> list[dict]:
+    """Return a list of file dicts for the pipeline.
+
+    Zip files are transparently unpacked — each inner PDF, .eml, or .md is
+    returned as its own entry. Non-zip files are returned as-is in a 1-item list.
+    macOS metadata entries (__MACOSX/, .DS_Store) are silently skipped.
+    """
+    is_zip = filename.lower().endswith(".zip") or "zip" in content_type.lower()
+    if is_zip:
+        results = []
+        try:
+            with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+                for member in zf.namelist():
+                    # Skip directories, macOS metadata, and hidden files
+                    if member.endswith("/") or "__MACOSX" in member or member.split("/")[-1].startswith("."):
+                        continue
+                    lower = member.lower()
+                    if lower.endswith(".pdf"):
+                        ct = "application/pdf"
+                    elif lower.endswith(".eml"):
+                        ct = "message/rfc822"
+                    elif lower.endswith(".md"):
+                        ct = "text/markdown"
+                    else:
+                        continue  # ignore non-invoice files inside the zip
+                    member_bytes = zf.read(member)
+                    basename = member.split("/")[-1]
+                    results.append({
+                        "filename": basename,
+                        "content_type": ct,
+                        "content_b64": base64.b64encode(member_bytes).decode(),
+                    })
+        except zipfile.BadZipFile:
+            pass  # fall through — treat as a regular file
+        if results:
+            return results
+
+    # Non-zip or unreadable zip — return as-is
+    return [{
+        "filename": filename,
+        "content_type": content_type,
+        "content_b64": base64.b64encode(raw).decode(),
+    }]
+
 
 # ── FastAPI app (runs inside Modal ASGI container) ─────────────────────────────
 
@@ -249,12 +299,12 @@ async def receive_invoice(
     files_b64 = []
     for f in files:
         raw = await f.read()
-        files_b64.append(
-            {
-                "filename": f.filename or "attachment",
-                "content_type": f.content_type or "application/octet-stream",
-                "content_b64": base64.b64encode(raw).decode(),
-            }
+        files_b64.extend(
+            _expand_upload(
+                f.filename or "attachment",
+                f.content_type or "application/octet-stream",
+                raw,
+            )
         )
 
     run_pipeline.spawn(

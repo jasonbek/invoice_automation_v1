@@ -1,0 +1,108 @@
+{
+  "Name": "Profile-1",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the traveler's JSON data:",
+      "Value": "profileDataString",
+      "Description": "Prompt user to paste JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${profileDataString});",
+      "Value": "jsonData",
+      "Description": "Parse user data into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "id=lastname",
+      "Value": "${jsonData.lastName}",
+      "Description": "Enter Last Name"
+    },
+    {
+      "Command": "type",
+      "Target": "id=firstname",
+      "Value": "${jsonData.firstName}",
+      "Description": "Enter First Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=middleinit",
+      "Value": "${jsonData.middlenames}",
+      "Description": "Enter Middle Names"
+    },
+    {
+      "Command": "type",
+      "Target": "name=addressAddress1",
+      "Value": "${jsonData.address1}",
+      "Description": "Enter Address Line 1"
+    },
+    {
+      "Command": "type",
+      "Target": "name=addressAddress2",
+      "Value": "${jsonData.address2}",
+      "Description": "Enter Address Line 2"
+    },
+    {
+      "Command": "type",
+      "Target": "name=addressAptsuite",
+      "Value": "${jsonData.aptSuite}",
+      "Description": "Enter Apt/Suite"
+    },
+    {
+      "Command": "type",
+      "Target": "id=addressZip",
+      "Value": "${jsonData.zipCode}",
+      "Description": "Enter Zip/Postal Code"
+    },
+    {
+      "Command": "type",
+      "Target": "id=addressCity",
+      "Value": "${jsonData.city}",
+      "Description": "Enter City"
+    },
+    {
+      "Command": "type",
+      "Target": "id=addressState",
+      "Value": "${jsonData.state}",
+      "Description": "Enter State/Province"
+    },
+    {
+      "Command": "type",
+      "Target": "id=addressCountry",
+      "Value": "${jsonData.country}",
+      "Description": "Enter Country"
+    },
+    {
+      "Command": "type",
+      "Target": "id=phone1AreaCode",
+      "Value": "${jsonData.phoneAreaCode}",
+      "Description": "Enter Phone Area Code"
+    },
+    {
+      "Command": "type",
+      "Target": "id=phone1Commvalue",
+      "Value": "${jsonData.phoneNumber}",
+      "Description": "Enter Phone Number"
+    },
+    {
+      "Command": "click",
+      "Target": "id=phone1MarketingPermission",
+      "Value": "",
+      "Description": "Click Phone Marketing Permission Checkbox"
+    },
+    {
+      "Command": "click",
+      "Target": "id=checkbox106",
+      "Value": "",
+      "Description": "Click Interest Checkbox 1"
+    },
+    {
+      "Command": "click",
+      "Target": "id=checkbox105",
+      "Value": "",
+      "Description": "Click Interest Checkbox 2"
+    }
+  ]
+}

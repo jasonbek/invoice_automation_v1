@@ -1,0 +1,54 @@
+{
+  "Name": "Tour-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${jsonDataString});",
+      "Value": "jsonData",
+      "Description": "Parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=serviceprovidername",
+      "Value": "${jsonData.serviceProviderName}",
+      "Description": "Fill the Service Provider Name field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=startDate",
+      "Value": "${jsonData.startDate}",
+      "Description": "Fill the Start Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=endDate",
+      "Value": "${jsonData.endDate}",
+      "Description": "Fill the End Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=category",
+      "Value": "${jsonData.category}",
+      "Description": "Fill the Category field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=description",
+      "Value": "${jsonData.description}",
+      "Description": "Fill the Description field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=clientfeedback",
+      "Value": "${jsonData.clientFeedback}",
+      "Description": "Fill the Client Feedback (Itinerary) field"
+    }
+  ]
+}

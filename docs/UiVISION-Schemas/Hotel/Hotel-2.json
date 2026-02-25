@@ -1,0 +1,78 @@
+{
+  "Name": "Hotel-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${jsonDataString});",
+      "Value": "jsonData",
+      "Description": "Parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "id=serviceprovidername",
+      "Value": "${jsonData.serviceProviderName}",
+      "Description": "Fill the Service Provider Name field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=startdate",
+      "Value": "${jsonData.checkInDate}",
+      "Description": "Fill the Check-in Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=enddate",
+      "Value": "${jsonData.checkOutDate}",
+      "Description": "Fill the Check-out Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=starttime",
+      "Value": "${jsonData.checkInTime}",
+      "Description": "Fill the Check-in Time field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=endtime",
+      "Value": "${jsonData.checkOutTime}",
+      "Description": "Fill the Check-out Time field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=category",
+      "Value": "${jsonData.roomCategory}",
+      "Description": "Fill the Room Category field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=description",
+      "Value": "${jsonData.roomDescription}",
+      "Description": "Fill the Room Description field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=bedding",
+      "Value": "${jsonData.beddingType}",
+      "Description": "Fill the Bedding Type field"
+    },
+    {
+      "Command": "click",
+      "Target": "id=printProviderAddOnInvAndProposal",
+      "Value": "",
+      "Description": "Uncheck the 'Print on Invoice' checkbox"
+    },
+    {
+      "Command": "type",
+      "Target": "name=clientfeedback",
+      "Value": "${jsonData.notesForClient}",
+      "Description": "Fill the Notes for Client field"
+    }
+  ]
+}

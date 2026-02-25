@@ -1,0 +1,259 @@
+{
+  "Name": "Rail-2-v2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "open",
+      "Target": "https://clientbaseonline.trams.com/3IZ0/rescard_service_provider_rail_edit.jsp?mode=1&providerno=96387&reservationno=51072&bck2rsrvtn=true",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=serviceprovidername",
+      "Value": "",
+      "Targets": [
+        "name=serviceprovidername",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[2]/td/table/tbody/tr[2]/td/input",
+        "xpath=//input[@name='serviceprovidername']",
+        "xpath=//td/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > input:nth-child(1)"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=flightno",
+      "Value": "",
+      "Targets": [
+        "name=flightno",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[2]/td/table/tbody/tr[4]/td/input",
+        "xpath=//input[@name='flightno']",
+        "xpath=//tr[4]/td/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(2) > td > table > tbody > tr:nth-child(4) > td > input:nth-child(1)"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=departcitycode",
+      "Value": "",
+      "Targets": [
+        "name=departcitycode",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[3]/td/table/tbody/tr[2]/td/input",
+        "xpath=//input[@name='departcitycode']",
+        "xpath=//tr[3]/td/table/tbody/tr[2]/td/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > input:nth-child(1)"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=checkinterminal",
+      "Value": "",
+      "Targets": [
+        "name=checkinterminal",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[3]/td/table/tbody/tr[4]/td/input",
+        "xpath=//input[@name='checkinterminal']",
+        "xpath=//tr[3]/td/table/tbody/tr[4]/td/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(4) > td > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=departcityname",
+      "Value": "",
+      "Targets": [
+        "name=departcityname",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[3]/td/table/tbody/tr[2]/td[3]/input",
+        "xpath=//input[@name='departcityname']",
+        "xpath=//td[3]/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(2) > td:nth-child(3) > input:nth-child(1)"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=departDateTimeValue",
+      "Value": "",
+      "Targets": [
+        "id=departDateTimeValue",
+        "name=startdate",
+        "xpath=//*[@id=\"departDateTimeValue\"]",
+        "xpath=//input[@id='departDateTimeValue']",
+        "xpath=//tr[4]/td/table/tbody/tr[2]/td/input",
+        "css=#departDateTimeValue"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[3]/td/table/tbody/tr[4]/td",
+      "Value": "",
+      "Targets": [
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[3]/td/table/tbody/tr[4]/td",
+        "xpath=//tr[3]/td/table/tbody/tr[4]/td",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(3) > td > table > tbody > tr:nth-child(4) > td"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=starttime",
+      "Value": "",
+      "Targets": [
+        "name=starttime",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[4]/td/table/tbody/tr[2]/td[2]/input",
+        "xpath=//input[@name='starttime']",
+        "xpath=//td[2]/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(4) > td > table > tbody > tr:nth-child(2) > td:nth-child(2) > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=starttime",
+      "Value": "",
+      "Targets": [
+        "name=starttime",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[4]/td/table/tbody/tr[2]/td[2]/input",
+        "xpath=//input[@name='starttime']",
+        "xpath=//td[2]/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(4) > td > table > tbody > tr:nth-child(2) > td:nth-child(2) > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=arrivecitycode",
+      "Value": "",
+      "Targets": [
+        "name=arrivecitycode",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[5]/td/table/tbody/tr[2]/td/input",
+        "xpath=//input[@name='arrivecitycode']",
+        "xpath=//tr[5]/td/table/tbody/tr[2]/td/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(2) > td:nth-child(1) > input:nth-child(1)"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=arrivecityname",
+      "Value": "",
+      "Targets": [
+        "name=arrivecityname",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[5]/td/table/tbody/tr[2]/td[3]/input",
+        "xpath=//input[@name='arrivecityname']",
+        "xpath=//tr[5]/td/table/tbody/tr[2]/td[3]/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(2) > td:nth-child(3) > input:nth-child(1)"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=checkoutterminal",
+      "Value": "",
+      "Targets": [
+        "name=checkoutterminal",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[5]/td/table/tbody/tr[4]/td/input",
+        "xpath=//input[@name='checkoutterminal']",
+        "xpath=//tr[5]/td/table/tbody/tr[4]/td/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(5) > td > table > tbody > tr:nth-child(4) > td > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "id=arriveDateTimeValue",
+      "Value": "",
+      "Targets": [
+        "id=arriveDateTimeValue",
+        "name=enddate",
+        "xpath=//*[@id=\"arriveDateTimeValue\"]",
+        "xpath=//input[@id='arriveDateTimeValue']",
+        "xpath=//tr[6]/td/table/tbody/tr[2]/td/input",
+        "css=#arriveDateTimeValue"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=endtime",
+      "Value": "",
+      "Targets": [
+        "name=endtime",
+        "xpath=//*[@id=\"rescardreservation\"]/table/tbody/tr[6]/td/table/tbody/tr[2]/td[2]/input",
+        "xpath=//input[@name='endtime']",
+        "xpath=//tr[6]/td/table/tbody/tr[2]/td[2]/input",
+        "css=#rescardreservation > table:nth-child(9) > tbody > tr:nth-child(6) > td > table > tbody > tr:nth-child(2) > td:nth-child(2) > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=miscellaneous",
+      "Value": "",
+      "Targets": [
+        "name=miscellaneous",
+        "xpath=//*[@id=\"rescardreservation\"]/table[2]/tbody/tr[2]/td/table[3]/tbody/tr[4]/td/input",
+        "xpath=//input[@name='miscellaneous']",
+        "xpath=//table[3]/tbody/tr[4]/td/input",
+        "css=#rescardreservation > table:nth-child(10) > tbody > tr:nth-child(2) > td > table:nth-child(3) > tbody > tr:nth-child(4) > td > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=description",
+      "Value": "",
+      "Targets": [
+        "name=description",
+        "xpath=//*[@id=\"rescardreservation\"]/table[2]/tbody/tr[2]/td/table[3]/tbody/tr[6]/td/input",
+        "xpath=//input[@name='description']",
+        "xpath=//tr[6]/td/input",
+        "css=#rescardreservation > table:nth-child(10) > tbody > tr:nth-child(2) > td > table:nth-child(3) > tbody > tr:nth-child(6) > td > input"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=clientfeedback",
+      "Value": "",
+      "Targets": [
+        "name=clientfeedback",
+        "xpath=//*[@id=\"rescardreservation\"]/table[3]/tbody/tr[2]/td/textarea",
+        "xpath=//textarea[@name='clientfeedback']",
+        "xpath=//textarea",
+        "css=#rescardreservation > table:nth-child(11) > tbody > tr:nth-child(2) > td > textarea"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=agentremarks",
+      "Value": "",
+      "Targets": [
+        "name=agentremarks",
+        "xpath=//*[@id=\"rescardreservation\"]/table[3]/tbody/tr[4]/td/textarea",
+        "xpath=//textarea[@name='agentremarks']",
+        "xpath=//tr[4]/td/textarea",
+        "css=#rescardreservation > table:nth-child(11) > tbody > tr:nth-child(4) > td > textarea"
+      ],
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "name=aircraftlocator",
+      "Value": "",
+      "Targets": [
+        "name=aircraftlocator",
+        "xpath=//*[@id=\"rescardreservation\"]/table[2]/tbody/tr[2]/td/table[3]/tbody/tr[2]/td[2]/input",
+        "xpath=//input[@name='aircraftlocator']",
+        "xpath=//table[3]/tbody/tr[2]/td[2]/input",
+        "css=#rescardreservation > table:nth-child(10) > tbody > tr:nth-child(2) > td > table:nth-child(3) > tbody > tr:nth-child(2) > td:nth-child(2) > input"
+      ],
+      "Description": ""
+    }
+  ]
+}

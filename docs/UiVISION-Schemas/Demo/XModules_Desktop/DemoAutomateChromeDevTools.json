@@ -1,0 +1,180 @@
+{
+  "Name": "DemoAutomateChromeDevTools",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "XDesktopAutomation",
+      "Target": "true",
+      "Value": "",
+      "Description": "We need desktop automation, since we are not working inside the browser viewport"
+    },
+    {
+      "Command": "store",
+      "Target": "Console",
+      "Value": "WordConsole",
+      "Description": "In English the tab is called \"Console\". If your browser uses a different language, enter \"your word\" for Console here"
+    },
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${!os}==\"mac\" || ${!os}==\"windows\"",
+      "Value": "",
+      "Description": "|| means \"or\" in Javascript notation"
+    },
+    {
+      "Command": "store",
+      "Target": "99",
+      "Value": "!ocrengine",
+      "Description": "99 = XModule integrated OCR (Mac and Windows, no Linux yet)"
+    },
+    {
+      "Command": "else",
+      "Target": "",
+      "Value": "",
+      "Description": "For Linux we have no local OCR XModule yet, so use online OCR"
+    },
+    {
+      "Command": "store",
+      "Target": "2",
+      "Value": "!ocrengine",
+      "Description": "Engine 1 and 2 are Online OCR. They work on all platforms and offer more languages. For more information please see https://ui.vision/x/desktop-automation#ocr"
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "eng",
+      "Value": "!OCRlanguage",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/rpa/x/desktop-automation/screen-scraping",
+      "Value": "",
+      "Description": "Show the relevant Ui.Vision Docs page"
+    },
+    {
+      "Command": "bringBrowserToForeground",
+      "Target": "",
+      "Value": "",
+      "Description": "Make sure the browser is in the foreground, so it receives the XTYPE keystrokes"
+    },
+    {
+      "Command": "OCRSearch",
+      "Target": "${WordConsole}",
+      "Value": "words_found",
+      "Description": "Check if the developer console is already open"
+    },
+    {
+      "Command": "echo",
+      "Target": "How often is this word on the screen?: ${words_found} ",
+      "Value": "pink",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${words_found} > 0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Developer Console already open",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "else",
+      "Target": "Dev window already open",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Open Developer Console",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${!os}==\"mac\"",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XType",
+      "Target": "${KEY_OPTION+KEY_CMD+KEY_I}",
+      "Value": "",
+      "Description": "Mac "
+    },
+    {
+      "Command": "else",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XType",
+      "Target": "${KEY_CTRL+KEY_SHIFT+KEY_I}",
+      "Value": "",
+      "Description": "Windows and Linux"
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": "Mac/Win,Linux"
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": "Open/NotOpen"
+    },
+    {
+      "Command": "XClickText",
+      "Target": "${WordConsole}",
+      "Value": "",
+      "Description": "Select Tab \"Console\""
+    },
+    {
+      "Command": "XClickTextRelative",
+      "Target": "${WordConsole}#R5,-4",
+      "Value": "",
+      "Description": "Click in FILTER box. We find this box RELATIVE to the word \"Console\""
+    },
+    {
+      "Command": "XType",
+      "Target": "${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}${KEY_BACKSPACE}",
+      "Value": "",
+      "Description": "Clear box from previous macro runs (if any)"
+    },
+    {
+      "Command": "XType",
+      "Target": "Demo",
+      "Value": "",
+      "Description": "Set a filter (just as text entry demo)"
+    },
+    {
+      "Command": "XClickTextRelative",
+      "Target": "${WordConsole}#R5,-30",
+      "Value": "",
+      "Description": "Click in console window, again we find this window by starting at the CONSOLE word"
+    },
+    {
+      "Command": "XType",
+      "Target": "* Demo completed, Runtime =${!runtime} *",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

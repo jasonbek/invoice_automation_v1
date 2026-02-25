@@ -1,0 +1,72 @@
+{
+  "Name": "Flight-1",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste your JSON data:",
+      "Value": "jsonDataString",
+      "Description": "Prompt the user to enter or paste the JSON data"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return JSON.parse(${jsonDataString});",
+      "Value": "jsonData",
+      "Description": "Parse the JSON string into an object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=resdate",
+      "Value": "${jsonData.reservationDate}",
+      "Description": "Fill the Reservation Date field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=vendorName",
+      "Value": "${jsonData.vendorName}",
+      "Description": "Fill the Vendor Name field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=confirmationnumber",
+      "Value": "${jsonData.confirmationNumber}",
+      "Description": "Fill the Confirmation Number field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=recordlocator",
+      "Value": "${jsonData.recordLocator}",
+      "Description": "Fill the Record Locator field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=duration",
+      "Value": "${jsonData.duration}",
+      "Description": "Fill the Duration field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalbase",
+      "Value": "${jsonData.totalBase}",
+      "Description": "Fill the Total Base Amount field"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totaltax",
+      "Value": "${jsonData.totalTax}",
+      "Description": "Fill the Total Tax Amount field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=totalcommission",
+      "Value": "${jsonData.totalCommission}",
+      "Description": "Fill the Total Commission field"
+    },
+    {
+      "Command": "type",
+      "Target": "name=invoiceremarks",
+      "Value": "${jsonData.invoiceRemarks}",
+      "Description": "Fill the Invoice Remarks field"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "Name": "SFee-2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the JSON data for the service fee details:",
+      "Value": "feeDetailsDataString",
+      "Description": "Prompt user for JSON data string"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${feeDetailsDataString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString);",
+      "Value": "jsonData",
+      "Description": "Clean and parse the JSON array"
+    },
+    {
+      "Command": "type",
+      "Target": "name=serviceprovidername",
+      "Value": "${jsonData.serviceProviderName}",
+      "Description": "Enter Service Provider Name"
+    },
+    {
+      "Command": "type",
+      "Target": "id=startDateValue",
+      "Value": "${jsonData.startDate}",
+      "Description": "Enter Start Date"
+    },
+    {
+      "Command": "type",
+      "Target": "id=endDateValue",
+      "Value": "${jsonData.endDate}",
+      "Description": "Enter End Date"
+    },
+    {
+      "Command": "type",
+      "Target": "name=description",
+      "Value": "${jsonData.description}",
+      "Description": "Enter Description"
+    }
+  ]
+}

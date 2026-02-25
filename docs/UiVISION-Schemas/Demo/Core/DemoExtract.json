@@ -1,0 +1,348 @@
+{
+  "Name": "DemoExtract",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/executescript",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Current page URL = ${!URL}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Current loop value = ${!LOOP}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "This macro shows various methods to extract and save data from a website",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeAttribute",
+      "Target": "css=img.responsive-img@src",
+      "Value": "mylink",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "href=${mylink}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeAttribute",
+      "Target": "css=img.responsive-img@alt",
+      "Value": "myalttext",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "alt text = ${myalttext}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeAttribute",
+      "Target": "//input[@id='sometext']@size",
+      "Value": "boxsize",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "input box size =${boxsize}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext",
+      "Value": "This box is ${boxsize} chars wide",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "document.title = ${boxsize};",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "70",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "//*[@id=\"content\"]/div[2]/div/h2[3]",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeText",
+      "Target": "//*[@id=\"content\"]/div[2]/div/h2[3]",
+      "Value": "myheader",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "header = ${myheader}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeTitle",
+      "Target": "",
+      "Value": "mytitle",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "page title = ${mytitle}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "page title = ${mytitle}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "page title = ${mytitle}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "page title = ${mytitle}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Now test some extraction with storeValue",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeValue",
+      "Target": "id=sometext",
+      "Value": "mytext",
+      "Description": ""
+    },
+    {
+      "Command": "select",
+      "Target": "id=tesla",
+      "Value": "label=Model Y",
+      "Description": ""
+    },
+    {
+      "Command": "storeValue",
+      "Target": "id=tesla",
+      "Value": "mytesla",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "The text box contains [${mytext}] and the select box has the value [${mytesla}] selected",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "verifyValue",
+      "Target": "id=tesla",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "storeChecked",
+      "Target": "name=vehicle",
+      "Value": "hasbike",
+      "Description": ""
+    },
+    {
+      "Command": "storeChecked",
+      "Target": "xpath=(//input[@name='vehicle'])[2]",
+      "Value": "hascar",
+      "Description": ""
+    },
+    {
+      "Command": "storeChecked",
+      "Target": "xpath=(//input[@name='vehicle'])[3]",
+      "Value": "hasboat",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "User has bike:${hasbike}, car:${hascar}, boat:${hasboat}",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Search and extract directly from the page SOURCE",
+      "Value": "y",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=[\\$\\£\\€](\\d+(?:\\.\\d{1,2})?)",
+      "Value": "match1",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=[\\$\\£\\€](\\d+(?:\\.\\d{1,2})?)@2",
+      "Value": "match2",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "You can also extract without regex with the * symbol",
+      "Value": "match2b",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "$*<",
+      "Value": "match2b",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Coffee costs ${match1} and tea ${match2}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=_width: (\\d+)",
+      "Value": "match1",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=_width: (\\d+)@1,1",
+      "Value": "match1group1",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=_width: (\\d+)@2",
+      "Value": "match2",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=_width: (\\d+)@2,1",
+      "Value": "match2group1",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "match1 = [${MATCH1}] (group1 = [${match1group1}]) match2 =  [${MATCH2}]  (group1 = [${MATCH2GROUP1}])",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Extract Google Analytics ID",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "G-*,",
+      "Value": "ga_option1",
+      "Description": ""
+    },
+    {
+      "Command": "sourceExtract",
+      "Target": "regex=G-[0-9]+-[0-9]+",
+      "Value": "ga_option2",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Google Analytics ID = ${ga_option2}",
+      "Value": "pink",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Some assertion test for QA",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${match2group1} != 22",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "throwError",
+      "Target": "Regex Extraction failed for Match2(1):  ${match2group1}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Last but not least, taking a screenshot is another way to extract data",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "captureScreenshot",
+      "Target": "myscreenshot_${mytitle}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeImage",
+      "Target": "//*[@id=\"page-header\"]/div/div/h1",
+      "Value": "pagetitle.png",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Export images to download folder",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "localStorageExport",
+      "Target": "myscreenshot_${mytitle}.png",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "localStorageExport",
+      "Target": "pagetitle.png",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

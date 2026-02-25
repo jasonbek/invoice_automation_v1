@@ -1,0 +1,312 @@
+{
+  "Name": "DemoExecuteScript",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/executescript",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertText",
+      "Target": "//*[@id=\"content\"]/div[2]/div/h2[1]",
+      "Value": "Input box to display some results",
+      "Description": ""
+    },
+    {
+      "Command": "verifyText",
+      "Target": "//*[@id=\"content\"]/div[2]/div/h2[1]",
+      "Value": "Input box to display some results",
+      "Description": ""
+    },
+    {
+      "Command": "verifyTitle",
+      "Target": "Selenium IDE executeScript Demo Page",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "Selenium IDE executeScript Demo Page",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "function randomString(length, chars) {\n    var result = '';\n    for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];\n    return result;\n}\n\n//The executeScript script(s) can have multiple lines!\n\n//Demo: Here we generate a random key \nvar s = randomString(8, '0123456789ABCDE') + \"<= Random String\";\n\n//Set the page title to the random key \ndocument.title = s;\n\nreturn s;\n",
+      "Value": "s",
+      "Description": "executeScript can run Javascript... and store the result in a variable (optional)"
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "${s}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Use sourceSearch to assert we have the right Google Analytics Code",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "sourceSearch",
+      "Target": "G-VJNCDYRXBP",
+      "Value": "matches",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${matches} == 0",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "throwError",
+      "Target": "Google Analytics ID is wrong!",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "First some basic calculations with STORE",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "15",
+      "Value": "AAA",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "10",
+      "Value": "BBB",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return (Number (${AAA}) - Number (${BBB}) )",
+      "Value": "CCC",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "${CCC}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "document.title = ${CCC};",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "assertTitle",
+      "Target": "5",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "SELenium IDe",
+      "Value": "AAA",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${AAA}.toUpperCase()",
+      "Value": "CCC",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "${CCC}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext",
+      "Value": "${CCC}",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Generate TODAYs date in in YYYY-MM-DD format ",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Create today's date in the YYYY-MM-DD format",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var d = new Date(); \nvar m = ((d.getMonth()+1)<10)?'0'+(d.getMonth()+1):(d.getMonth()+1);\nvar d2 = (d.getDate() <10)?'0'+d.getDate():d.getDate(); \nvar date_today = d.getFullYear()+\"-\"+m+\"-\"+d2; \nreturn date_today",
+      "Value": "mydate",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Today is ${mydate}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Pick a random item from a list, useful for data-driven testing",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return new Array ('cat','dog','fish','dog','deer','frog','whale','dog','seal','horse','elephant')",
+      "Value": "names",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${names}.length",
+      "Value": "len",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "array length = ${len}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return Math.floor(Math.random()*${len})",
+      "Value": "num",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "num=${num}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "The next command picks the random item",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "return ${names}[${num}]",
+      "Value": "myrandomname",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "Today is ${mydate}, and we draw a ${myrandomname}",
+      "Value": "output",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "To is ${mydate}, and we draw a ${myrandomname}",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "type",
+      "Target": "id=sometext",
+      "Value": "${output}",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "parseFloat(${!runtime}) > 20",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "throwError",
+      "Target": "Runtime too slow (${!runtime} seconds), test failed",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "else",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Runtime Ok, test passed!",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "With @POS you click on the (in this case) 3rd link with the same name. Great for looping over a list of links with the same name.",
+      "Value": "green",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "linkText=This link@POS=3",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Demo: Create array and then loop over it with forEach",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "executeScript",
+      "Target": "var arr = [\"Hello\",\"World\", \"2020\"]; \nreturn arr;",
+      "Value": "myarray",
+      "Description": "We must use executeScript here, since executeScript _Sandbox does not support returning arrays."
+    },
+    {
+      "Command": "forEach",
+      "Target": "myarray",
+      "Value": "elem",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "${elem}",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

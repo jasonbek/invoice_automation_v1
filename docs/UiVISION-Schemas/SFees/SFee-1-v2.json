@@ -1,0 +1,78 @@
+{
+  "Name": "SFee-1-v2",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "prompt",
+      "Target": "Please paste the JSON data for the service fee:",
+      "Value": "feeDataString",
+      "Description": "Prompt user for JSON data string"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var cleanedString = ${feeDataString}.replace(/\\u00A0/g, ' '); return JSON.parse(cleanedString);",
+      "Value": "jsonData",
+      "Description": "Clean and parse the JSON object"
+    },
+    {
+      "Command": "type",
+      "Target": "name=resdate",
+      "Value": "${jsonData.reservationDate}",
+      "Description": "Enter Reservation Date"
+    },
+    {
+      "Command": "type",
+      "Target": "id=vendorName",
+      "Value": "${jsonData.vendorName}",
+      "Description": "Enter Vendor Name"
+    },
+    {
+      "Command": "type",
+      "Target": "name=duration",
+      "Value": "${jsonData.duration}",
+      "Description": "Enter Duration"
+    },
+    {
+      "Command": "type",
+      "Target": "id=noofpax",
+      "Value": "${jsonData.noofpax}",
+      "Description": "Enter Number of Passengers"
+    },
+    {
+      "Command": "type",
+      "Target": "id=noofunits",
+      "Value": "${jsonData.noofunits}",
+      "Description": "Enter Number of Units"
+    },
+    {
+      "Command": "select",
+      "Target": "id=interLinkcode",
+      "Value": "label=${jsonData.tripType}",
+      "Description": "Select Trip Type"
+    },
+    {
+      "Command": "select",
+      "Target": "id=chargedas",
+      "Value": "label=${jsonData.chargedAs}",
+      "Description": "Select 'Charged As' type"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalbase",
+      "Value": "${jsonData.totalBase}",
+      "Description": "Enter Total Base Amount"
+    },
+    {
+      "Command": "type",
+      "Target": "id=totalcommpercent",
+      "Value": "${jsonData.commissionPercentage}",
+      "Description": "Enter Commission Percentage"
+    },
+    {
+      "Command": "type",
+      "Target": "id=clientgstrateID",
+      "Value": "${jsonData.clientGstRate}",
+      "Description": "Enter Client GST Rate"
+    }
+  ]
+}

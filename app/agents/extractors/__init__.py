@@ -19,6 +19,7 @@ from datetime import date
 from app.agents.extractors import (
     flight as flight_ext,
     tour as tour_ext,
+    day_tour as day_tour_ext,
     hotel as hotel_ext,
     cruise as cruise_ext,
     insurance as insurance_ext,
@@ -32,6 +33,7 @@ from app.agents.extractors.currency import build_rate_note
 EXTRACTOR_MAP = {
     "flight": flight_ext.run,
     "tour": tour_ext.run,
+    "day_tour": day_tour_ext.run,
     "hotel": hotel_ext.run,
     "cruise": cruise_ext.run,
     "insurance": insurance_ext.run,

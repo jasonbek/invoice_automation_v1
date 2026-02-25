@@ -1,0 +1,90 @@
+{
+  "Name": "DemoImplicitWaiting",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "comment",
+      "Target": "waitForElementVisible is not part of implicit waiting",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/waitforelementvisible",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "waitForElementVisible",
+      "Target": "css=#div1 > h1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "css=#div1 > h1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "20",
+      "Value": "!timeout_wait",
+      "Description": ""
+    },
+    {
+      "Command": "waitForElementVisible",
+      "Target": "css=#div2 > h1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "css=#div2 > h1",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Implicit waiting: Wait for elements to be loaded  or <timeout_wait> is reached",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/webtest/implicitwaiting/",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "store",
+      "Target": "15",
+      "Value": "!TIMEOUT_WAIT",
+      "Description": ""
+    },
+    {
+      "Command": "assertText",
+      "Target": "/html/body/header/center/p[2]",
+      "Value": "Use the select box to start the timer...",
+      "Description": ""
+    },
+    {
+      "Command": "select",
+      "Target": "id=minutesSelect",
+      "Value": "label=5 Seconds",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "The next element (target) is not available yet... UI.Vision RPA waits for it up to ${!TIMEOUT_WAIT} seconds to appear.",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "/html/body/header/center/img",
+      "Value": "",
+      "Description": ""
+    }
+  ]
+}

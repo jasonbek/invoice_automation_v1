@@ -1,0 +1,108 @@
+{
+  "Name": "DemoXMove",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "comment",
+      "Target": "This demo shows *two* methods to select an image from a list of matches",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "open",
+      "Target": "https://ui.vision/demo/draw",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "clickAndWait",
+      "Target": "linkText=this external website",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Move 2nd range slider using #POS method",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XMove",
+      "Target": "slider_handle_dpi_96.png@0.75#2",
+      "Value": "#down",
+      "Description": "Press slider handle down"
+    },
+    {
+      "Command": "executeScript_Sandbox",
+      "Target": "var x = ${!imagex}; return x+200",
+      "Value": "xnew",
+      "Description": "Calcuate new X position. "
+    },
+    {
+      "Command": "XMove",
+      "Target": "${xnew}, ${!imagey}",
+      "Value": "#up",
+      "Description": "Move slider handle and release left mouse button"
+    },
+    {
+      "Command": "comment",
+      "Target": "Move 3rd slider with AREALIMIT method",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "click",
+      "Target": "xpath=//ion-list[3]/ion-item/div/div/ion-range",
+      "Value": "#down",
+      "Description": "CLICK is not needed. We used it just to find the XPath for use with visionLimitSearchArea below."
+    },
+    {
+      "Command": "pause",
+      "Target": "2000",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visionLimitSearchArea",
+      "Target": "element: xpath=//ion-list[3]/ion-item/div/div/ion-range",
+      "Value": "",
+      "Description": "Restrict computer vision image search to the HTML tag area"
+    },
+    {
+      "Command": "XMove",
+      "Target": "slider_handle_dpi_96.png@0.6",
+      "Value": "#down",
+      "Description": "We do not need to add \"#1\" because in the new (limited) area there is only one slider handle, so the BEST MATCH option (=without #) is most reliable"
+    },
+    {
+      "Command": "XMoveRelative",
+      "Target": "slider_red_dpi_96.png@0.6",
+      "Value": "#up",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Confirm slider is in the right position.",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "storeText",
+      "Target": "xpath=//ion-list[3]/ion-list-header/div/ion-badge",
+      "Value": "warmth",
+      "Description": "Extract slider position"
+    },
+    {
+      "Command": "echo",
+      "Target": "Slider WARMTH value is: ${warmth}",
+      "Value": "red",
+      "Description": ""
+    },
+    {
+      "Command": "assert",
+      "Target": "warmth",
+      "Value": "2000",
+      "Description": "Show error if slider has not the expected value"
+    }
+  ]
+}

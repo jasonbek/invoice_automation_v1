@@ -1,0 +1,114 @@
+{
+  "Name": "DemoXDesktopAutomation",
+  "CreationDate": "2026-2-25",
+  "Commands": [
+    {
+      "Command": "store",
+      "Target": "fast",
+      "Value": "!replayspeed",
+      "Description": ""
+    },
+    {
+      "Command": "echo",
+      "Target": "Running DESKTOP image search now",
+      "Value": "#shownotification",
+      "Description": ""
+    },
+    {
+      "Command": "XDesktopAutomation",
+      "Target": "true",
+      "Value": "",
+      "Description": "Look at the desktop, not only the browser"
+    },
+    {
+      "Command": "run",
+      "Target": "Sub/Sub_XDesktopAutomation_Area",
+      "Value": "",
+      "Description": "In the sub, we limit the search area for better performance"
+    },
+    {
+      "Command": "store",
+      "Target": "true",
+      "Value": "!errorignore",
+      "Description": "Log button can be greyed out - try both options. "
+    },
+    {
+      "Command": "XClick",
+      "Target": "desktop_logstab_white_dpi_96.png@0.5",
+      "Value": "",
+      "Description": "Log button can have white or grey background"
+    },
+    {
+      "Command": "store",
+      "Target": "false",
+      "Value": "!errorignore",
+      "Description": ""
+    },
+    {
+      "Command": "if",
+      "Target": "${!statusOK} == false",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "desktop_logstab_grey_dpi_96.png@0.5",
+      "Value": "",
+      "Description": "Now try the GREY button image"
+    },
+    {
+      "Command": "store",
+      "Target": "true",
+      "Value": "!statusOK",
+      "Description": "Reset !statusOK value. It does NOT reset by itself during macro run."
+    },
+    {
+      "Command": "end",
+      "Target": "",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "desktop_clearbutton_dpi_96.png@0.5",
+      "Value": "",
+      "Description": "Press Clear button"
+    },
+    {
+      "Command": "echo",
+      "Target": "Log cleared by macro (clear button pressed)",
+      "Value": "blue",
+      "Description": ""
+    },
+    {
+      "Command": "comment",
+      "Target": "Now search and open other tabs",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "desktop_vartab_dpi_96.png@0.5",
+      "Value": "",
+      "Description": "Open Variable tab"
+    },
+    {
+      "Command": "XClick",
+      "Target": "desktop_scrtab_dpi_96.png@0.4",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "XClick",
+      "Target": "desktop_vitab_dpi_96.png@0.4",
+      "Value": "",
+      "Description": ""
+    },
+    {
+      "Command": "visualAssert",
+      "Target": "desktop_check_v_tab_dpi_96.png@0.5",
+      "Value": "",
+      "Description": "Make sure that we are on the correct tab. For that, we search for the icons."
+    }
+  ]
+}
