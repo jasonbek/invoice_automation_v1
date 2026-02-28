@@ -14,12 +14,14 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 - Dates: MUST be MM/DD/YY (e.g., "08/26/24"). Convert from any other format.
 - Times: MUST be 12-hour with AM/PM (e.g., "4:40 PM"). Convert from 24-hour if needed.
 - Missing fields: Use "" (empty string) for any field where no value is available.
-  NEVER omit a key. NEVER use null, undefined, or "N/A".
+  NEVER omit a key. NEVER use null, undefined, "N/A", "?", "??", or any other placeholder.
+  If you are uncertain about a value, use "" — never use a question mark.
 - Currency amounts: If the invoice is in CAD, extract figures exactly as shown.
   If the invoice is NOT in CAD, a LIVE EXCHANGE RATE line will be provided in the input
   (e.g. "LIVE EXCHANGE RATE: 1 EUR = 1.4823 CAD (fetched 02/19/26)").
-  Use that exact rate to convert totalBase (and commission where applicable) to CAD,
-  and populate the agentRemarks field as follows:
+  Use that exact rate to convert totalBase to CAD.
+  Do NOT convert commission — always record commission in the original invoice currency.
+  Populate the agentRemarks field as follows:
     DEPOSIT PAID: $[CAD amount] CAD
     COMMISSION: [raw amount] [currency]
     Invoiced in [currency] by Supplier

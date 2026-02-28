@@ -17,13 +17,17 @@ VIATOR_RULES = """\
 VENDOR RULES — VIATOR ON LINE:
 
 - This is a DAY TOUR booking — not a multi-day land package.
+- confirmationNumber: ALWAYS the reference that begins with "BR" (e.g. "BR-123456789").
+  Look for this at the top of the invoice or in the booking reference section.
+- Individual activity/itinerary numbers (if shown) go into invoiceRemarks — NOT confirmationNumber.
 - Default commission is 8% of the base price in CAD unless the invoice explicitly
   states a different percentage or dollar amount.
 - A single Viator booking may contain MULTIPLE individual day tours (separate activities).
   You MUST produce one Screen 2 section for EACH individual day tour/activity on the invoice.
-- commission field: calculate 8% of basePrice (in CAD) unless overridden by invoice.
-- If the invoice is NOT in CAD: convert basePrice and commission to CAD using the provided
-  exchange rate, then populate agentRemarks with:
+- commission field: calculate 8% of the original invoice price (before any conversion) unless
+  overridden by invoice. Record commission in the original invoice currency — do NOT convert to CAD.
+- If the invoice is NOT in CAD: convert basePrice to CAD using the provided exchange rate,
+  then populate agentRemarks with:
     DEPOSIT PAID: $[CAD amount] CAD
     COMMISSION: [raw amount] [currency]
     Invoiced in [currency] by Supplier
@@ -50,18 +54,18 @@ One section only. Covers the overall booking.
 {{
   "dateReserved": "MM/DD/YY",
   "vendor": "Viator on Line",
-  "confirmationNumber": "Booking reference / order number",
+  "confirmationNumber": "The reference beginning with 'BR' (e.g. 'BR-123456789') — always use this, not the individual activity numbers",
   "duration": "Number of days the booking spans (string)",
   "numberOfTravellers": "String",
   "tripType": "International | Transborder | Domestic",
   "basePrice": "Total base price in CAD, 2 decimal places",
-  "commission": "8% of basePrice in CAD (or invoice-stated amount), 2 decimal places",
+  "commission": "8% of the original invoice price in original currency (or invoice-stated amount) — do NOT convert to CAD, 2 decimal places",
   "finalPaymentDue": "MM/DD/YY — use \"\" if not stated on invoice",
   "serviceProviderName": "Viator on Line",
   "startDate": "MM/DD/YY — date of the earliest day tour",
   "endDate": "MM/DD/YY — date of the latest day tour",
   "description": "Short overall description of the booking (1–2 sentences)",
-  "invoiceRemarks": "Client-facing notes (promotions, inclusions summary, voucher info)",
+  "invoiceRemarks": "Client-facing notes — include individual activity/itinerary numbers here (e.g. 'Activity #123456789'), promotions, inclusions summary, voucher info",
   "agentremarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD — use \"\" if CAD)"
 }}
 

@@ -37,7 +37,7 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | VIA Rail            | VIA, VIA Rail Canada                                              |
 | Amtrak              | Amtrak, National Railroad Passenger                               |
 | Eurostar            | Eurostar                                                          |
-| Rail Europe         | Eurail, Rail Europe, The Trainline                                |
+| Rail Europe Inc     | Eurail, Rail Europe, The Trainline                                |
 | Service Fee         | Internal agency fee invoice                                       |
 
 RULE SET KEY MAPPING (must use these exact strings):

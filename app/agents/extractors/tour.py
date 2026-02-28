@@ -17,8 +17,9 @@ TRAVEL_BRANDS_RULES = """\
 VENDOR RULES — TRAVEL BRANDS / INTAIR (Tour):
 
 - Use the tour confirmation code as confirmationNumber.
-- If the invoice is NOT in CAD: convert totalBase (basePrice) and commission to CAD
-  using the best available exchange rate, then populate agentRemarks with:
+- If the invoice is NOT in CAD: convert totalBase (basePrice) to CAD using the exchange rate.
+  Do NOT convert commission — record it in the original invoice currency.
+  Then populate agentRemarks with:
     DEPOSIT PAID: $[CAD amount] CAD
     COMMISSION: [raw amount] [currency]
     Invoiced in [currency] by Supplier
@@ -60,7 +61,7 @@ SCHEMA — 2 sections required
   "numberOfTravellers": "String",
   "tripType": "International | Transborder | Domestic",
   "basePrice": "Amount in CAD, 2 decimal places (convert if needed)",
-  "commission": "Amount in CAD, 2 decimal places",
+  "commission": "Amount in original invoice currency, 2 decimal places — do NOT convert to CAD",
   "finalPaymentDue": "MM/DD/YY",
   "invoiceRemarks": "Client-facing notes (discounts, inclusions summary)",
   "agentRemarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD)"
