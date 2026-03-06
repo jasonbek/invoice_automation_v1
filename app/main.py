@@ -33,6 +33,7 @@ image = (
         "python-multipart>=0.0.9",
     )
     .add_local_python_source("app")
+    .add_local_dir("docs/Commissions", remote_path="/commission_docs")
 )
 
 ANTHROPIC_SECRET = modal.Secret.from_name("anthropic")
@@ -162,6 +163,7 @@ _FORM_HTML = """\
           <option value="day_tour">Day Tour (Viator)</option>
           <option value="hotel">Hotel</option>
           <option value="cruise">Cruise</option>
+          <option value="seat_selection">Seat Selection</option>
           <option value="insurance">Insurance</option>
           <option value="new_traveller">New Traveller Profile</option>
         </select>

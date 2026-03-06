@@ -73,6 +73,9 @@ BOOKING TYPE DETECTION SIGNALS
 - new_traveller: customer profile with personal contact details; no booking data
 - rail         : train ticket, rail reservation number, train segments with departure/arrival stations,
                  seat/car/coach number, rail pass, VIA Rail, Amtrak, Eurostar, Eurail, Rail Europe, SNCF
+- seat_selection: standalone seat selection fee invoice — contains seat assignment charges without a full
+                 flight itinerary; keywords like "seat selection", "seat fee", "seat charge", assigned
+                 seat numbers with dollar amounts, no PNR segments or flight times
 
 IMPORTANT: A single invoice may contain BOTH flights and a tour (air + land package).
 List ALL detected booking types in the bookingTypes array.

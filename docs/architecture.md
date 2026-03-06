@@ -1,6 +1,6 @@
 # Invoice Automation — Architecture & Developer Reference
 
-> **Last updated:** 2026-02-22
+> **Last updated:** 2026-03-06
 > Use this document as the primary reference when making any code changes.
 
 ---
@@ -67,17 +67,29 @@ app/
 └── agents/
     ├── markdown_agent.py          ← Agent 1: any file → LABEL:value text
     ├── routing_agent.py           ← Agent 2: text → {vendor, ruleSet, bookingTypes[]}
+    ├── commissions/
+    │   ├── __init__.py            ← Package marker
+    │   └── loader.py              ← load_all(): reads all .md files from /commission_docs/
     └── extractors/
         ├── __init__.py            ← Orchestrator: asyncio.gather(), rate fetch, date inject
         ├── base.py                ← GLOBAL_RULES + call_claude() shared by all extractors
         ├── currency.py            ← Live exchange rate from frankfurter.app
-        ├── flight.py              ← Flight: 3 sections
+        ├── flight.py              ← Flight: 2–5 sections (vendor-dependent)
         ├── tour.py                ← Tour/land: 2 sections
         ├── hotel.py               ← Hotel: 2 sections
         ├── cruise.py              ← Cruise: 2 sections
         ├── insurance.py           ← Insurance (Manulife): 2 sections
         ├── service_fee.py         ← Service fee: 2 sections (generated, not LLM-extracted)
-        └── new_traveller.py       ← New traveller profile: 3–4 sections
+        ├── new_traveller.py       ← New traveller profile: 3–4 sections
+        ├── rail.py                ← Rail: 1 + N sections (one Screen 2 per segment)
+        ├── day_tour.py            ← Day Tour (Viator): 1 + N sections (one Screen 2 per activity)
+        └── seat_selection.py      ← Standalone seat selection invoice: 2 sections
+
+docs/
+└── Commissions/                   ← Drop .md files here; loaded at runtime by loader.py
+    ├── Air-Canada-Commissions.md  ← AC Accolades rate tables (Appendices 4–11)
+    ├── Westjet.md                 ← WestJet RBD commission table
+    └── Lufthansa -Promotion.md    ← LH Group Business promo (Mar–Jun 2026)
 ```
 
 ---
@@ -149,6 +161,7 @@ These apply to **every extractor** via the `GLOBAL_RULES` constant:
 | Manulife Insurance | Any insurance policy document | `manulife` |
 | Viator on Line | Viator | `viator` |
 | Tourcan Vacations | TOURCAN VACATIONS, Tourcan | `tourcan` |
+| VIA Rail / Amtrak / Eurostar / Rail Europe Inc | VIA, Amtrak, Eurostar, Eurail, Rail Europe, SNCF, The Trainline | `generic` |
 | generic | Everything else | `generic` |
 
 **ADX vs. Intair decision logic:**
@@ -160,15 +173,17 @@ These apply to **every extractor** via the `GLOBAL_RULES` constant:
 
 ## Extractor Schemas & Vendor Rules
 
-### Flight (`flight.py`) — 3 sections
+### Flight (`flight.py`) — 2–5 sections (vendor-dependent)
 
 **Sections:**
 
-| # | sectionTitle | Data shape |
-|---|---|---|
-| 1 | Flight Screen 1 (Summary) | Object: reservationDate, vendorName, confirmationNumber, recordLocator, duration, totalBase, totalTax, totalCommission, invoiceRemarks |
-| 2 | Flight Screen 2 (Segments) | Array: one object per leg (IATA codes, times, flight number) |
-| 3 | Flight Screen 3 (Passengers) | Array: one object per passenger (name, ticket#, base/tax/commission per pax) |
+| # | sectionTitle | Data shape | Vendors |
+|---|---|---|---|
+| 1 | Flight Screen 1 (Summary) | Object: reservationDate, vendorName, confirmationNumber, recordLocator, duration, [totalBase, totalTax, totalCommission for non-ticketing vendors], invoiceRemarks | All |
+| 2 | Flight Screen 2 (Segments) | Array: one object per leg (IATA codes, times, flight number) | All |
+| 3 | Flight Screen 3 (Passengers) | Array: one object per passenger (name, ticket#, base/tax/commission per pax) | AC, WJ, ADX only — **not Tourcan** |
+| 4 | Seat Screen 1 (Summary) | Object: seat charge financials | Conditional — only if seat charges on invoice |
+| 5 | Seat Screen 2 (Details) | Object: per-flight seat list | Conditional — only if seat charges on invoice |
 
 **invoiceRemarks** must always contain a seat map block:
 ```
@@ -184,11 +199,13 @@ AC456: Seat: N/A  (check airline site)
 
 | ruleSet | Rule |
 |---|---|
-| `air_canada` | Commission by fare class + route. 0% (Basic/BA/BV/BQ/LGT), 3% (NA Standard/TG or Interline), 4% (NA all other), 5% (Intl Online JV). Mixed fares → lowest rate for NA, international class ignores domestic feeder. |
-| `westjet` | Commission by RBD class + route. Mixed fares → higher rate. Call Centre = 0% always. |
+| `air_canada` | Rates loaded from `docs/Commissions/Air-Canada-Commissions.md` + any promotion files at runtime. Business logic (inclusions, exclusions, ACTOT, mixed fare, online/interline) is in `flight.py`. Agent includes rationale line in `invoiceRemarks`. |
+| `westjet` | Rates loaded from `docs/Commissions/Westjet.md` at runtime. Mixed fares → higher rate. Call Centre = 0% always. Agent includes rationale line in `invoiceRemarks`. |
 | `adx_intair` | Use the exact `COMMISSION: $X.XX` figure verbatim. No calculation. Also: confirmationNumber = TRIP REF, recordLocator = PNR, ticketNumber = TICKET NUMBER. |
-| `tourcan` | `TOTAL CREDIT -[number]` line = commission (take absolute value). No calculation. |
+| `tourcan` | `TOTAL CREDIT -[number]` line = commission (absolute value). **Not a discount** — never appears in invoiceRemarks. No passenger screen (Screen 3) is generated for Tourcan. |
 | `expedia` / `generic` | Extract as shown on invoice. |
+
+**Commission doc update workflow:** Drop a `.md` file in `docs/Commissions/` and run `modal deploy app/main.py`. The loader reads all `.md` files alphabetically — no code changes needed. Only `air_canada` and `westjet` ruleSets use the loader; all others extract directly from the invoice.
 
 ---
 
@@ -244,6 +261,19 @@ AC456: Seat: N/A  (check airline site)
 | 2 | Cruise Screen 2 (Details) | shipName, startDate, endDate, category, deck, cabinNumber, diningTime, bedding, description, clientItinerary (full text block) |
 
 No vendor-specific rules currently. Generic only.
+
+---
+
+### Seat Selection (`seat_selection.py`) — 2 sections
+
+Used when the supplier sends a **standalone seat selection invoice** (no full flight itinerary). The routing agent detects keywords like "seat selection", "seat fee", "seat charge" with dollar amounts and no PNR segments.
+
+| # | sectionTitle | Key fields |
+|---|---|---|
+| 1 | Seat Screen 1 (Summary) | reservationDate, vendorName, confirmationNumber, duration, noofpax, noofunits, tripType, totalBase, totalTax, commissionAmount (always "0%"), includegst |
+| 2 | Seat Screen 2 (Details) | serviceProviderName, startDate, endDate, description (per-flight seat list) |
+
+These are the same CBO screens produced by `flight.py` sections 4 & 5 when seat charges appear alongside a full flight invoice.
 
 ---
 
