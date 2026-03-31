@@ -26,15 +26,35 @@ Example output:
 
 async def _get_invoice_context(markdown: str) -> dict:
     """Single Claude call to extract pax count and trip dates from invoice."""
-    import json, re, anthropic
+    import asyncio, json, re, anthropic
 
-    client = anthropic.AsyncAnthropic()
-    message = await client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=64,
-        system=_CONTEXT_PROMPT_SYSTEM,
-        messages=[{"role": "user", "content": markdown}],
-    )
+    client = anthropic.AsyncAnthropic(max_retries=6)
+    app_retries = 8
+    for attempt in range(app_retries + 1):
+        try:
+            message = await client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=64,
+                system=_CONTEXT_PROMPT_SYSTEM,
+                messages=[{"role": "user", "content": markdown}],
+            )
+            break
+        except (anthropic.APIConnectionError, anthropic.APITimeoutError) as e:
+            if attempt < app_retries:
+                delay = min(30 * (2 ** attempt), 300)
+                print(f"[service_fee] {type(e).__name__}, retrying in {delay}s "
+                      f"(attempt {attempt + 1}/{app_retries})")
+                await asyncio.sleep(delay)
+                continue
+            raise
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < app_retries:
+                delay = min(30 * (2 ** attempt), 300)
+                print(f"[service_fee] Anthropic overloaded (529), retrying in {delay}s "
+                      f"(attempt {attempt + 1}/{app_retries})")
+                await asyncio.sleep(delay)
+                continue
+            raise
     raw = message.content[0].text.strip()
     raw = re.sub(r"^```(?:json)?\s*", "", raw)
     raw = re.sub(r"\s*```\s*$", "", raw)

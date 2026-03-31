@@ -10,6 +10,7 @@ Reads the invoice Markdown and classifies:
 Returns a plain dict (parsed from the model's JSON output).
 """
 
+import asyncio
 import json
 import re
 import anthropic
@@ -112,12 +113,32 @@ async def run(markdown: str, vendor_hint: str, booking_type_hint: str) -> dict:
         "Return only the JSON classification object."
     )
 
-    message = await client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=512,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": user_content}],
-    )
+    app_retries = 8
+    for attempt in range(app_retries + 1):
+        try:
+            message = await client.messages.create(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=512,
+                system=SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": user_content}],
+            )
+            break
+        except (anthropic.APIConnectionError, anthropic.APITimeoutError) as e:
+            if attempt < app_retries:
+                delay = min(30 * (2 ** attempt), 300)
+                print(f"[routing_agent] {type(e).__name__}, retrying in {delay}s "
+                      f"(attempt {attempt + 1}/{app_retries})")
+                await asyncio.sleep(delay)
+                continue
+            raise
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < app_retries:
+                delay = min(30 * (2 ** attempt), 300)
+                print(f"[routing_agent] Anthropic overloaded (529), retrying in {delay}s "
+                      f"(attempt {attempt + 1}/{app_retries})")
+                await asyncio.sleep(delay)
+                continue
+            raise
 
     raw = message.content[0].text.strip()
 

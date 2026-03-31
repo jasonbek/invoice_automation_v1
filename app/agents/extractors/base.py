@@ -5,6 +5,7 @@ Shared utilities for all extractor agents.
   call_claude()  — makes a Claude API call and parses the JSON array response
 """
 
+import asyncio
 import json
 import re
 import anthropic
@@ -64,12 +65,34 @@ async def call_claude(
     # max_retries=6 gives ~60s total backoff — handles Tier 1 rate limits automatically
     client = anthropic.AsyncAnthropic(max_retries=6)
 
-    message = await client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=max_tokens,
-        system=system_prompt,
-        messages=[{"role": "user", "content": user_content}],
-    )
+    # Application-level retries for transient failures (overload, connection, timeout).
+    # Exponential backoff: 30s → 60s → 120s → 240s (capped at 300s).
+    app_retries = 8
+    for attempt in range(app_retries + 1):
+        try:
+            message = await client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=max_tokens,
+                system=system_prompt,
+                messages=[{"role": "user", "content": user_content}],
+            )
+            break  # success
+        except (anthropic.APIConnectionError, anthropic.APITimeoutError) as e:
+            if attempt < app_retries:
+                delay = min(30 * (2 ** attempt), 300)
+                print(f"[call_claude] {type(e).__name__}, retrying in {delay}s "
+                      f"(attempt {attempt + 1}/{app_retries})")
+                await asyncio.sleep(delay)
+                continue
+            raise
+        except anthropic.APIStatusError as e:
+            if e.status_code == 529 and attempt < app_retries:
+                delay = min(30 * (2 ** attempt), 300)
+                print(f"[call_claude] Anthropic overloaded (529), retrying in {delay}s "
+                      f"(attempt {attempt + 1}/{app_retries})")
+                await asyncio.sleep(delay)
+                continue
+            raise
 
     raw = message.content[0].text.strip()
 

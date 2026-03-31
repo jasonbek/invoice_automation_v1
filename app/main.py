@@ -180,8 +180,8 @@ _FORM_HTML = """\
       <div class="field">
         <label for="files">Invoice Files</label>
         <input type="file" id="files" name="files" multiple
-               accept=".pdf,.eml,.md,.zip">
-        <p class="hint">Accepts PDF, .eml, .md, or .zip (zip is unpacked automatically).
+               accept=".pdf,.eml,.md,.txt,.zip">
+        <p class="hint">Accepts PDF, .eml, .md, .txt, or .zip (zip is unpacked automatically).
           Multiple files allowed.</p>
       </div>
 
@@ -200,11 +200,24 @@ _FORM_HTML = """\
   </div>
 
   <script>
+    var filesInput = document.getElementById('files');
+    var submitBtn = document.getElementById('submitBtn');
+
+    function updateSubmitState() {
+      submitBtn.disabled = filesInput.files.length === 0;
+    }
+
+    filesInput.addEventListener('change', updateSubmitState);
+    updateSubmitState();  // disable on page load
+
     document.getElementById('invoiceForm').addEventListener('submit', function(e) {
-      var btn = document.getElementById('submitBtn');
+      if (filesInput.files.length === 0) {
+        e.preventDefault();
+        return;
+      }
       var msg = document.getElementById('successMsg');
-      btn.disabled = true;
-      btn.textContent = 'Submitting\u2026';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting\u2026';
       // Show confirmation after a short delay to allow the form POST to fire
       setTimeout(function() {
         document.getElementById('invoiceForm').style.display = 'none';
@@ -241,6 +254,8 @@ def _expand_upload(filename: str, content_type: str, raw: bytes) -> list[dict]:
                         ct = "message/rfc822"
                     elif lower.endswith(".md"):
                         ct = "text/markdown"
+                    elif lower.endswith(".txt"):
+                        ct = "text/plain"
                     else:
                         continue  # ignore non-invoice files inside the zip
                     member_bytes = zf.read(member)

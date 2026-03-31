@@ -79,4 +79,4 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
         "Extract all cruise data and return the JSON array of 2 section objects."
     )
 
-    return await call_claude(_SYSTEM_PROMPT, user_content, max_tokens=4096)
+    return await call_claude(_SYSTEM_PROMPT, user_content, max_tokens=1500)

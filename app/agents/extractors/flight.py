@@ -124,7 +124,8 @@ _SECTION1_SUMMARY_ONLY = """\
   "confirmationNumber": "String",
   "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
   "duration": <integer — total trip days>,
-  "invoiceRemarks": "Two parts: (1) Commission rationale — one line stating the rate chosen and why (appendix/table, booking class, route, and any active promo that overrides the base rate). (2) Seat selections block (see rules below)."
+  "invoiceRemarks": "Seat selections block (see rules below).",
+  "agentremarks": "Commission rationale — one line stating the rate chosen and why (appendix/table, booking class, route, and any active promo that overrides the base rate)."
 }}\
 """
 
@@ -140,7 +141,8 @@ _SECTION1_FULL = """\
   "totalBase": <number with 2 decimal places>,
   "totalTax": <number — sum of carrier surcharges and fees>,
   "totalCommission": "String — percentage (e.g., '4%') OR exact dollar if ADX/Intair",
-  "invoiceRemarks": "Seat selections block (see rules below)"
+  "invoiceRemarks": "Seat selections block (see rules below)",
+  "agentremarks": ""
 }}\
 """
 
@@ -275,7 +277,7 @@ the ticketing date and travel date shown on the invoice.
 
 {commission_docs}
 
-RATIONALE REQUIREMENT: In invoiceRemarks (Screen 1), include one line that states:
+RATIONALE REQUIREMENT: In agentremarks (Screen 1), include one line that states:
   - The rate chosen and why (table/appendix used, booking class, route type)
   - Whether a promotion overrides the base rate, and if so which one
   Example (base rate):   "Commission: 4% — AC North America, Economy Y (Appendix 5)"
