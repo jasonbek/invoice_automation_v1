@@ -33,6 +33,14 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
   Example: "Hôtel de Varenne" → "Hotel de Varenne"
 - Booking/reservation date: If no booking or reservation date appears on the invoice,
   use the TODAY'S DATE value provided in the input. Format it as MM/DD/YY.
+- Client-facing remarks — deposit & currency disclosure (ALL booking types, ALL currencies):
+  ALWAYS prepend the following block to the client-facing remarks field
+  (invoiceRemarks for flights, tours, cruises, day tours, rail; notesForClient for hotels):
+    Deposit: $[CAD amount] CAD
+    Payments are in [currency code, e.g. USD/EUR/CAD]
+    The amount shown below is in CAD
+  If no deposit is shown on the invoice, write "Deposit: $0 CAD".
+  Do NOT include the exchange rate in this block — rate details stay in agentRemarks only.
 - Promotions and savings: If the invoice mentions any special deal, promotional discount,
   loyalty reward, price reduction, or savings amount, ALWAYS include it in the
   client-facing remarks field for that booking type:
