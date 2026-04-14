@@ -29,6 +29,7 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | Air Canada Internet | Air Canada, AC, AirCan                                            |
 | Westjet Internet    | West Jet, Westjet, WJ                                             |
 | Expedia TAAP        | Expedia, TAAP                                                     |
+| BedsonLine          | BedsOnline, Beds Online, Beds On Line, BedsonLine (hotel)         |
 | Intair              | Travel Brands — ONLY when booking type is Flight                  |
 | Travel Brands       | Travel Brands — when booking type is Tour or Land                 |
 | ADX                 | ADX, or Intair when invoice has an explicit "COMMISSION" line     |
@@ -47,6 +48,7 @@ RULE SET KEY MAPPING (must use these exact strings):
   westjet       → Westjet Internet
   adx_intair    → ADX / Intair (explicit COMMISSION line present on invoice)
   expedia       → Expedia TAAP
+  bedsonline    → BedsonLine
   travel_brands → Travel Brands / Intair (tour bookings)
   viator        → Viator on Line
   daytrip       → Daytrip

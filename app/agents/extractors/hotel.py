@@ -9,6 +9,21 @@ from app.agents.extractors.base import GLOBAL_RULES, call_claude
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
+MULTI_HOTEL_SPLIT_RULE = """\
+MULTI-HOTEL SPLIT RULE (Expedia TAAP and BedsonLine):
+- If the invoice contains MULTIPLE distinct hotel stays under a single booking
+  number / itinerary / confirmation, treat each hotel stay as a SEPARATE booking.
+- For EVERY hotel stay on the invoice, output its OWN pair of screens: one
+  Screen 1 (Summary) + one Screen 2 (Details). Pair them in order:
+  Hotel A → Screen 1 + Screen 2, Hotel B → Screen 1 + Screen 2, etc.
+- Financials (baseAmount, taxAmount, commissionAmount, deposit, total, amount
+  owing) must be allocated PER hotel — use the per-hotel amounts from the
+  invoice, NOT the invoice grand total.
+- The shared invoice-level confirmation number is reused on each Screen 1.
+  If a hotel-specific confirmation number also exists, use that on its own
+  Screen 1 instead.\
+"""
+
 EXPEDIA_RULES = """\
 VENDOR RULES — EXPEDIA TAAP (Hotel):
 
@@ -33,6 +48,13 @@ Due at property:
   "Due at property: CA $X.XX (city/local tax)"\
 """
 
+BEDSONLINE_RULES = """\
+VENDOR RULES — BEDSONLINE (Hotel):
+- vendor on Screen 1 = "BedsonLine".
+- Extract baseAmount, taxAmount, and commission exactly as shown on the invoice.
+- Apply the MULTI-HOTEL SPLIT RULE below when the invoice has more than one hotel.\
+"""
+
 GENERIC_HOTEL_RULES = """\
 VENDOR RULES — GENERIC HOTEL:
 Extract base amount, tax amount, and commission exactly as shown on the invoice.
@@ -41,7 +63,8 @@ notesForClient — do NOT add it to taxAmount.\
 """
 
 RULE_SET_MAP = {
-    "expedia": EXPEDIA_RULES,
+    "expedia":    EXPEDIA_RULES,
+    "bedsonline": BEDSONLINE_RULES,
 }
 
 # ── System prompt ──────────────────────────────────────────────────────────────
@@ -51,6 +74,8 @@ You are a hotel booking data extraction specialist for a travel agency (ClientBa
 Extract data from the Markdown invoice and return ONLY a JSON array of section objects.
 
 {vendor_rules}
+
+{multi_hotel_rule}
 
 {global_rules}
 
@@ -106,6 +131,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
 
     system = _SYSTEM_PROMPT_TEMPLATE.format(
         vendor_rules=vendor_rules,
+        multi_hotel_rule=MULTI_HOTEL_SPLIT_RULE,
         global_rules=GLOBAL_RULES,
     )
 
