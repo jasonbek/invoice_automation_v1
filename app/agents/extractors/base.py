@@ -55,6 +55,10 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
     · flights, tours, cruises → invoiceRemarks
     · hotels                  → notesForClient
   Example: "Special deal applied: 15% off (CA $224.91 savings)"
+- Supplier name normalization: When writing vendor / serviceProviderName / supplier
+  fields, use the exact legal name below whenever you detect a match (case-insensitive,
+  any variation of the short name):
+    · "Insight Vacations" → "Insight Vacations (Canada) Ltd"
 - Output: Return ONLY the JSON array described in the schema. No prose, no code fences.\
 """
 
