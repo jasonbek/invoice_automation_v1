@@ -19,11 +19,17 @@ VENDOR RULES — VIATOR ON LINE:
 - This is a DAY TOUR booking — not a multi-day land package.
 - confirmationNumber: ALWAYS the reference that begins with "BR" (e.g. "BR-123456789").
   Look for this at the top of the invoice or in the booking reference section.
-- Individual activity/itinerary numbers (if shown) go into invoiceRemarks — NOT confirmationNumber.
+- MULTI-BOOKING RULE: Each distinct BR-#### on the invoice is a SEPARATE booking,
+  even if the invoice shares a single itinerary number across them. For every BR-####
+  found on the invoice, you MUST output its OWN pair of screens: one Screen 1
+  (Summary) AND one Screen 2 (Details). If the invoice has 3 BR-#### references,
+  output 3 Screen 1 sections + 3 Screen 2 sections (6 sections total), paired in
+  order: Screen 1 for BR-A, Screen 2 for BR-A, Screen 1 for BR-B, Screen 2 for BR-B, etc.
+  Financials (basePrice, commission, deposit, total, amount owing) must be allocated
+  per BR — use the per-activity amounts from the invoice, NOT the invoice grand total.
+- Itinerary numbers (if shown, distinct from the BR reference) go into invoiceRemarks — NOT confirmationNumber.
 - Default commission is 8% of the base price in CAD unless the invoice explicitly
   states a different percentage or dollar amount.
-- A single Viator booking may contain MULTIPLE individual day tours (separate activities).
-  You MUST produce one Screen 2 section for EACH individual day tour/activity on the invoice.
 - commission field: calculate 8% of the original invoice price (before any conversion) unless
   overridden by invoice. Record commission in the original invoice currency — do NOT convert to CAD.
 - If the invoice is NOT in CAD: convert basePrice to CAD using the provided exchange rate,
@@ -48,8 +54,9 @@ Extract data from the Markdown invoice and return ONLY a JSON array of section o
 SCHEMA — 1 + N sections required
 ═══════════════════════════════════════════════
 
-### SECTION 1 — Day Tour Screen 1 (Summary)
-One section only. Covers the overall booking.
+### SECTION 1 — Day Tour Screen 1 (Summary) — ONE PER BR-####
+Output one Screen 1 section for EACH distinct BR-#### on the invoice.
+Pair it immediately with its matching Screen 2 before moving to the next BR-####.
 
 {{
   "dateReserved": "MM/DD/YY",
@@ -69,9 +76,9 @@ One section only. Covers the overall booking.
   "agentremarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD — use \"\" if CAD)"
 }}
 
-### SECTION 2 — Day Tour Screen 2 (Details) — ONE PER INDIVIDUAL DAY TOUR
-Repeat this section for EACH separate day tour / activity on the invoice.
-If there are 3 individual tours on the booking, output 3 Screen 2 sections.
+### SECTION 2 — Day Tour Screen 2 (Details) — ONE PER BR-####
+Repeat this section for EACH BR-####, paired with its Screen 1 above.
+If there are 3 BR-#### on the invoice, output 3 Screen 2 sections (total 6 sections with Screen 1s).
 
 {{
   "serviceProviderName": "End supplier / operator name (not Viator — the actual activity provider)",
@@ -108,7 +115,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
         f"INVOICE MARKDOWN:\n{markdown}\n"
         f"{rate_line}\n"
         "Extract all day tour data and return the JSON array. "
-        "Remember: one Screen 2 section per individual day tour/activity on this booking."
+        "Remember: each BR-#### is a separate booking — output one Screen 1 + one Screen 2 per BR-####, paired in order."
     )
 
     return await call_claude(_SYSTEM_PROMPT, user_content, max_tokens=4096)
