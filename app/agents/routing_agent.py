@@ -34,6 +34,7 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | ADX                 | ADX, or Intair when invoice has an explicit "COMMISSION" line     |
 | Manulife Insurance  | Any insurance policy document                                     |
 | Viator on Line      | Viator (bookingType: day_tour — NOT tour)                         |
+| Daytrip             | Daytrip, mydaytrip.com (bookingType: day_tour)                    |
 | Tourcan Vacations   | TOURCAN VACATIONS, Tourcan                                        |
 | VIA Rail            | VIA, VIA Rail Canada                                              |
 | Amtrak              | Amtrak, National Railroad Passenger                               |
@@ -48,6 +49,7 @@ RULE SET KEY MAPPING (must use these exact strings):
   expedia       → Expedia TAAP
   travel_brands → Travel Brands / Intair (tour bookings)
   viator        → Viator on Line
+  daytrip       → Daytrip
   manulife      → Manulife Insurance
   tourcan       → Tourcan Vacations
   generic       → all others (including all rail vendors — VIA Rail, Amtrak, Eurostar, Rail Europe)
@@ -66,8 +68,10 @@ BOOKING TYPE DETECTION SIGNALS
 - flight       : airline ticket, PNR locator, flight segments with departure/arrival cities and times
 - tour         : multi-day land package, tour code, land arrangements, accommodation + guided activities
                  (Travel Brands, Intair, generic tour operators — NOT Viator)
-- day_tour     : Viator on Line invoice; single-day excursion, shore excursion, or day activity;
-                 may contain multiple individual activities on one booking — always use day_tour for Viator
+- day_tour     : single-day excursion, shore excursion, or day activity from Viator on Line,
+                 Daytrip, or any other day-tour operator. Use ruleSet "viator" for Viator,
+                 "daytrip" for Daytrip, otherwise "generic". Do NOT force the vendor name to
+                 "Viator on Line" for non-Viator day tours.
 - hotel        : accommodation-only booking, check-in/check-out dates, no flights included
 - cruise       : ship name, cabin number, embarkation/debarkation ports, cruise line
 - insurance    : policy number, premium amount, coverage start/end dates
