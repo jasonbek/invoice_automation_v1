@@ -34,8 +34,12 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 - Booking/reservation date: If no booking or reservation date appears on the invoice,
   use the TODAY'S DATE value provided in the input. Format it as MM/DD/YY.
 - Client-facing remarks — currency disclosure + financial summary (ALL booking types, ALL currencies including CAD):
-  ALWAYS prepend the following block to the client-facing remarks field
-  (invoiceRemarks for flights, tours, cruises, day tours, rail; notesForClient for hotels):
+  ALWAYS prepend the following block to the invoiceRemarks field on Screen 1
+  (applies to EVERY booking type — flights, tours, cruises, day tours, rail,
+  hotels, insurance). The financial block NEVER belongs on Screen 2 (details).
+  For hotels specifically: the Screen 2 notesForClient field is ONLY for hotel
+  contact info (address, phone, email) and 'Due at property' items — NO
+  financial summary, NO deposit, NO totals there.
     Payments are in [currency code, e.g. USD/EUR/CAD]
     The amount shown below is in CAD
     Deposit: $[amount] [currency]
@@ -51,9 +55,7 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
   those belong ONLY on Screen 2 in clientFeedback / clientItinerary.
 - Promotions and savings: If the invoice mentions any special deal, promotional discount,
   loyalty reward, price reduction, or savings amount, ALWAYS include it in the
-  client-facing remarks field for that booking type:
-    · flights, tours, cruises → invoiceRemarks
-    · hotels                  → notesForClient
+  Screen 1 invoiceRemarks field for every booking type (including hotels).
   Example: "Special deal applied: 15% off (CA $224.91 savings)"
 - Supplier name normalization: When writing vendor / serviceProviderName / supplier
   fields, use the exact legal name below whenever you detect a match (case-insensitive,

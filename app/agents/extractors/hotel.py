@@ -71,6 +71,7 @@ SCHEMA — 2 sections required
   "baseAmount": "Number (2 decimal places, in CAD — convert if needed)",
   "taxAmount": "Number (2 decimal places)",
   "commissionAmount": "Number (2 decimal places)",
+  "invoiceRemarks": "Client-facing financial summary block per global rules (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing) plus any promotions or savings.",
   "agentRemarks": "Currency conversion details (REQUIRED if invoice is not in CAD — see global rules)"
 }}
 
@@ -84,7 +85,7 @@ SCHEMA — 2 sections required
   "roomCategory": "Room category or class code",
   "roomDescription": "Room type description",
   "beddingType": "e.g., King, 2 Queens, Twin",
-  "notesForClient": "MUST include: (1) full hotel address, phone number, and email; (2) any amount due at the property (e.g. city/local tax not included in the booking total — format as 'Due at property: CA $X.XX (city/local tax)'); (3) any promotional savings or special deals applied (e.g. 'Special deal: 15% off — CA $224.91 savings')"
+  "notesForClient": "Hotel contact + property-only info ONLY. MUST include: (1) full hotel address, phone number, and email; (2) any amount due at the property (e.g. city/local tax not included in the booking total — format as 'Due at property: CA $X.XX (city/local tax)'). DO NOT include deposit, total, amount owing, commission, savings/promotions, or any other financial summary — those belong in Screen 1 invoiceRemarks."
 }}
 
 ═══════════════════════════════════════════════
