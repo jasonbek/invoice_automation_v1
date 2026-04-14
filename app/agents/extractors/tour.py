@@ -109,4 +109,4 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
         "Extract all tour data and return the JSON array of 2 section objects."
     )
 
-    return await call_claude(system, user_content, max_tokens=2000)
+    return await call_claude(system, user_content, max_tokens=8192)
