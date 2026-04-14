@@ -14,6 +14,12 @@ Extract data from the Markdown invoice and return ONLY a JSON array of section o
 
 {GLOBAL_RULES}
 
+FINANCIAL PLACEMENT RULE: ALL financial figures — totalBase, totalTax, totalCommission,
+deposits, port charges, gratuities, discounts, savings, fare breakdowns — belong on
+SCREEN 1 ONLY. Screen 2 (Cruise Details) must contain ZERO currency amounts and ZERO
+financial figures. Do not leak pricing into clientItinerary, description, or any other
+Screen 2 field.
+
 CURRENCY NOTE: If the invoice is NOT in CAD, convert totalBase to CAD using the best
 available exchange rate and populate agentRemarks:
   DEPOSIT PAID: $[CAD amount] CAD
@@ -53,7 +59,7 @@ SCHEMA — 2 sections required
   "diningTime": "String",
   "bedding": "String",
   "description": "Stateroom description",
-  "clientItinerary": "Plain text block — full itinerary at a glance, port days, inclusions, formatted with line breaks"
+  "clientItinerary": "Chronological day-by-day cruise itinerary as a plain text block. Do NOT include any financial figures (fares, taxes, commission, deposits, port charges, gratuities, discounts) — those belong on Screen 1 ONLY.\\n\\nBegin with this exact header on its own lines:\\n  Itinerary at a glance\\n  ----------------------\\n\\nThen one entry per day from embarkation to debarkation in this exact format (NO times):\\n\\nDay 1 - MM/DD/YYYY - [Port/Location]\\nDay 2 - MM/DD/YYYY - [Port/Location or 'At Sea']\\nDay 3 - MM/DD/YYYY - [Port/Location]\\n...continue through the final day.\\n\\nRules:\\n- Mark the first day as the embarkation port and the last day as the debarkation port.\\n- Sea days: write 'At Sea' as the location.\\n- Use the four-digit year (YYYY), not two-digit.\\n- No arrival/departure times. No prices. No currency amounts.\\n- After the day list, optionally add a short 'Inclusions:' line listing non-financial inclusions (dining package, beverage package, WiFi, shore credits as counts — never dollar amounts)."
 }}
 
 ═══════════════════════════════════════════════
