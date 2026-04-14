@@ -195,15 +195,34 @@ SCHEMA — {section_count} sections required
 {section1_schema}
 
 SEAT MAPPING RULES for invoiceRemarks:
-  - Scan the ENTIRE document for seat assignments
+  - First, check whether the invoice contains ANY seat assignments or seat charges.
+  - If NO seats appear anywhere on the invoice: OMIT the seat block entirely — do
+    not add a "Seat Selections" header, do not write "N/A" lines. Leave the
+    invoiceRemarks field to carry only the non-seat content (or "" if no other
+    content applies after the global disclosure block).
+  - If seats ARE present: scan the ENTIRE document and output one line per segment
+    with assignments. Do NOT invent "N/A" entries for segments that are simply
+    not mentioned — only list segments where the invoice actually shows a seat.
   - Format per line: [Flight Number]: [Pax Name] ([Seat]) | [Pax Name] ([Seat])
-  - One line per flight segment
-  - If seats unknown for a segment: [Flight Number]: Seat: N/A  (check airline site)
-  Example:
+  Example (only when at least one seat exists):
     Seat Selections
     ---------------
     AC123: J. Smith (12A) | M. Smith (12B)
-    AC456: Seat: N/A
+
+SEGMENT DATE CONTINUITY (overnight / next-day arrivals):
+  - Invoices often mark overnight arrivals with "+1" or a later arrival date
+    (e.g. depart 09/26/26, arrive 09/27/26 — common on flights to Europe).
+  - The NEXT segment's startdate MUST be >= the PREVIOUS segment's enddate.
+    Never let the departure date of a later leg revert to a day earlier than
+    the arrival date of the preceding leg.
+  - Example: Leg 1 = YYZ 09/26/26 → LHR 09/27/26. Leg 2 (LHR → CDG connection)
+    starts 09/27/26 — NOT 09/26/26 — even if the invoice shows only a time for
+    the connection without repeating the date.
+  - Apply the same rule across the whole itinerary (outbound, connections, returns):
+    each leg's startdate is anchored to the prior leg's enddate unless the invoice
+    explicitly shows a later date (layover day, stopover, etc.).
+  - If the invoice shows only times for a connection, infer the date from the prior
+    segment's arrival date plus any stated layover/overnight.
 
 ### SECTION 2 — Flight Segments (array — one object per flight leg)
 [
