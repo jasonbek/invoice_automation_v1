@@ -61,6 +61,7 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
   fields, use the exact legal name below whenever you detect a match (case-insensitive,
   any variation of the short name):
     · "Insight Vacations" → "Insight Vacations (Canada) Ltd"
+    · "Beds Online" / "BedsOnline" / "Beds On Line" → "BedsonLine"
 - Output: Return ONLY the JSON array described in the schema. No prose, no code fences.\
 """
 
