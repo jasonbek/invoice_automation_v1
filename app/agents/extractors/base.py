@@ -52,7 +52,7 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
   If the amount owing is not explicitly shown, compute it as Total − Deposit.
   Do NOT include the exchange rate in this block — rate details stay in agentRemarks only.
   Do NOT add any itinerary, booking details, day-by-day info, or routing info here —
-  those belong ONLY on Screen 2 in clientFeedback / clientItinerary.
+  those belong ONLY on Screen 2 in clientFeedback.
 - Promotions and savings: If the invoice mentions any special deal, promotional discount,
   loyalty reward, price reduction, or savings amount, ALWAYS include it in the
   Screen 1 invoiceRemarks field for every booking type (including hotels).

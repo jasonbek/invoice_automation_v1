@@ -2,7 +2,7 @@
 Agent 3d: Cruise Extractor
 
 Outputs 2 sections: Summary, Details.
-Cruise invoices often include itinerary text blocks — preserve these in clientItinerary.
+Cruise invoices often include itinerary text blocks — preserve these in clientFeedback.
 Non-CAD invoices must have agentRemarks with conversion details.
 """
 
@@ -17,7 +17,7 @@ Extract data from the Markdown invoice and return ONLY a JSON array of section o
 FINANCIAL PLACEMENT RULE: ALL financial figures — totalBase, totalTax, totalCommission,
 deposits, port charges, gratuities, discounts, savings, fare breakdowns — belong on
 SCREEN 1 ONLY. Screen 2 (Cruise Details) must contain ZERO currency amounts and ZERO
-financial figures. Do not leak pricing into clientItinerary, description, or any other
+financial figures. Do not leak pricing into clientFeedback, description, or any other
 Screen 2 field.
 
 CURRENCY NOTE: If the invoice is NOT in CAD, convert totalBase to CAD using the best
@@ -59,7 +59,7 @@ SCHEMA — 2 sections required
   "diningTime": "String",
   "bedding": "String",
   "description": "Stateroom description",
-  "clientItinerary": "Chronological day-by-day cruise itinerary as a plain text block. Do NOT include any financial figures (fares, taxes, commission, deposits, port charges, gratuities, discounts) — those belong on Screen 1 ONLY.\\n\\nBegin with this exact header on its own lines:\\n  Itinerary at a glance\\n  ----------------------\\n\\nThen one entry per day from embarkation to debarkation in this exact format (NO times):\\n\\nDay 1 - MM/DD/YYYY - [Port/Location]\\nDay 2 - MM/DD/YYYY - [Port/Location or 'At Sea']\\nDay 3 - MM/DD/YYYY - [Port/Location]\\n...continue through the final day.\\n\\nRules:\\n- Mark the first day as the embarkation port and the last day as the debarkation port.\\n- Sea days: write 'At Sea' as the location.\\n- Use the four-digit year (YYYY), not two-digit.\\n- No arrival/departure times. No prices. No currency amounts.\\n- After the day list, optionally add a short 'Inclusions:' line listing non-financial inclusions (dining package, beverage package, WiFi, shore credits as counts — never dollar amounts)."
+  "clientFeedback": "Chronological day-by-day cruise itinerary as a plain text block, built ONLY from explicit information in the supplier document. Do NOT hallucinate shore excursions or activities. Do NOT include any financial figures — those belong on Screen 1 ONLY.\\n\\nBegin with this exact header on its own lines:\\n  Itinerary at a glance\\n  ----------------------\\n\\nThen one entry per day in this exact pipe-delimited format (four columns):\\n\\nDay [N] | MM/DD/YYYY | [Location] | [Headline]\\n\\nDAY NUMBERING — use the supplier document's OWN 'Day N' numbering exactly as printed. Do NOT renumber. If the document's numbering skips, the output MUST reflect that gap.\\n\\nHEADLINE PRIORITY (use the highest-priority source available; append additional same-day items with '; '):\\n  1. PER-DAY HEADING / PORT-CALL text — itinerary table rows or headings like 'Day N: Civitavecchia (Rome) - Embark' or bold port lines. Use the port/heading text VERBATIM (preserve supplier wording).\\n  2. Sea days as the document labels them: 'At Sea'.\\n  3. Embark/Debark annotations from the document.\\n\\nOWN ARRANGEMENTS RULE — strict:\\n- If a heading or range says 'OWN ARRANGEMENTS', 'Own arrangements', or 'Own arrangement', SKIP those days ENTIRELY — no row emitted, leave a gap in the day numbering.\\n- NEVER substitute 'At Sea' or 'At leisure' for a skipped Own-Arrangements day. A skipped day produces NO row.\\n\\nOTHER RULES:\\n- Every date, port, and ship activity MUST come from the supplier document. Never invent.\\n- NEVER fabricate days that are not present in the document.\\n- No times, no prices, no currency amounts.\\n\\nAt the very end of the block, append this exact disclaimer on its own line (blank line before it):\\n\\nPlease refer to the supplier documentation for further detail; it takes precedence over this outline in the event of any discrepancies."
 }}
 
 ═══════════════════════════════════════════════

@@ -41,7 +41,9 @@ VENDOR RULES — DAYTRIP:
   (often labelled "Booking ID", "Reservation", or similar). DO NOT prefix with "BR-".
 - One Screen 1 + one Screen 2 per booking on the invoice. If the invoice contains
   multiple separate Daytrip bookings, pair them in order (Screen 1 + Screen 2 per booking).
-- Extract commission exactly as shown on the invoice; if not stated, leave as "".
+- Commission: ALWAYS set commission to "0.00" for Daytrip invoices, even if the
+  invoice explicitly states a commission amount or percentage. Daytrip bookings
+  are treated as non-commissionable by this agency.
 - Do NOT apply the Viator BR-#### rule.\
 """
 

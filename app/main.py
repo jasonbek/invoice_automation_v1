@@ -31,6 +31,7 @@ image = (
         "anthropic>=0.40.0",
         "httpx>=0.27.0",
         "python-multipart>=0.0.9",
+        "mammoth>=1.8.0",
     )
     .add_local_python_source("app")
     .add_local_dir("docs/Commissions", remote_path="/commission_docs")
@@ -180,8 +181,8 @@ _FORM_HTML = """\
       <div class="field">
         <label for="files">Invoice Files</label>
         <input type="file" id="files" name="files" multiple
-               accept=".pdf,.eml,.md,.txt,.zip">
-        <p class="hint">Accepts PDF, .eml, .md, .txt, or .zip (zip is unpacked automatically).
+               accept=".pdf,.eml,.md,.txt,.docx,.zip">
+        <p class="hint">Accepts PDF, .eml, .docx, .md, .txt, or .zip (zip is unpacked automatically).
           Multiple files allowed.</p>
       </div>
 
@@ -256,6 +257,8 @@ def _expand_upload(filename: str, content_type: str, raw: bytes) -> list[dict]:
                         ct = "text/markdown"
                     elif lower.endswith(".txt"):
                         ct = "text/plain"
+                    elif lower.endswith(".docx"):
+                        ct = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     else:
                         continue  # ignore non-invoice files inside the zip
                     member_bytes = zf.read(member)

@@ -71,7 +71,7 @@
     {
       "Command": "type",
       "Target": "name=clientfeedback",
-      "Value": "${jsonData.clientItinerary}",
+      "Value": "${jsonData.clientFeedback}",
       "Description": "Enter Client Itinerary"
     }
   ]

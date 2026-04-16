@@ -2,7 +2,11 @@
 Agent 1: Markdown Specialist
 
 Converts one or more invoice files into a compact, data-only text extract.
-Supports: PDF, .eml (email), plain text / .md files.
+Supports: PDF, .eml (email), .docx (Word), plain text / .md files.
+
+.docx files are converted to Markdown server-side via `mammoth`, which maps
+Word heading styles (Heading 1/2/3) to Markdown #/##/### — preserving the
+document hierarchy that downstream itinerary extractors rely on.
 
 .eml files are parsed with Python's built-in email module — the email body text
 and any embedded PDF attachments are extracted separately before sending to Claude.
@@ -135,6 +139,17 @@ async def run(files_b64: list[dict]) -> str:
                         "title": pdf["filename"],
                     }
                 )
+
+        elif (
+            "wordprocessingml" in ct.lower()
+            or filename.lower().endswith(".docx")
+        ):
+            # Word document — convert to Markdown with heading hierarchy preserved
+            import io
+            import mammoth
+            raw_bytes = base64.b64decode(f["content_b64"])
+            result = mammoth.convert_to_markdown(io.BytesIO(raw_bytes))
+            content.append({"type": "text", "text": result.value})
 
         else:
             # Plain text or .md file
