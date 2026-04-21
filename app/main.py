@@ -464,8 +464,9 @@ async def run_pipeline(
     error = None
 
     try:
-        # Step 1: Convert all files to structured Markdown
-        markdown = await markdown_run(files_b64)
+        # Step 1: Convert all files to a {extract, source_blocks} payload
+        payload = await markdown_run(files_b64)
+        markdown = payload.get("extract", "")
 
         # Agents 1 & 2 use haiku; Agent 3+ use sonnet — separate rate limit pools.
         await asyncio.sleep(5)
@@ -475,8 +476,10 @@ async def run_pipeline(
 
         await asyncio.sleep(5)
 
-        # Step 3: Run all required extractors in parallel
-        sections = await run_all(markdown, routing, service_fee)
+        # Step 3: Run all required extractors in parallel. Tour / cruise extractors
+        # re-read the raw source_blocks from the payload to build the day-by-day
+        # itinerary block; every other extractor uses the compact extract only.
+        sections = await run_all(payload, routing, service_fee)
 
     except Exception as exc:
         status = "error"

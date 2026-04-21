@@ -6,8 +6,11 @@ Currency detection and live exchange rate fetching.
   build_rate_note()  — returns a formatted string to inject into extractor user_content,
                        or None if the invoice is already in CAD
 
-frankfurter.app is free, requires no API key, and sources daily rates from the
+frankfurter.dev is free, requires no API key, and sources daily rates from the
 European Central Bank. httpx is already a project dependency.
+
+Note: the old `api.frankfurter.app` host now returns HTTP 301 → `api.frankfurter.dev/v1/...`.
+We hit the new canonical URL directly; don't regress back to the .app host.
 """
 
 import re
@@ -15,7 +18,7 @@ from datetime import date
 
 import httpx
 
-FRANKFURTER_URL = "https://api.frankfurter.app/latest"
+FRANKFURTER_URL = "https://api.frankfurter.dev/v1/latest"
 
 
 def detect_currency(markdown: str) -> str:
@@ -70,8 +73,10 @@ async def build_rate_note(markdown: str) -> str | None:
 
     try:
         rate = await fetch_rate(currency)
-    except Exception:
-        # API unreachable — return None, Claude falls back to training knowledge
+    except Exception as exc:
+        # API unreachable — return None, Claude falls back to training knowledge.
+        # Log so we notice the next time the upstream moves or breaks.
+        print(f"[currency] fetch_rate({currency}) failed: {type(exc).__name__}: {exc}")
         return None
 
     today = date.today().strftime("%m/%d/%y")

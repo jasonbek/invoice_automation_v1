@@ -62,20 +62,24 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
   any variation of the short name):
     · "Insight Vacations" → "Insight Vacations (Canada) Ltd"
     · "Beds Online" / "BedsOnline" / "Beds On Line" → "BedsonLine"
+    · "Intrepid" → "Intrepid Travel"
 - Output: Return ONLY the JSON array described in the schema. No prose, no code fences.\
 """
 
 
 async def call_claude(
     system_prompt: str,
-    user_content: str,
+    user_content: str | list[dict],
     max_tokens: int = 4096,
 ) -> list[dict]:
     """Make a Claude API call and parse the JSON array response.
 
     Args:
         system_prompt: The focused extractor system prompt.
-        user_content:  Invoice markdown + routing context.
+        user_content:  Either a plain string OR a list of Anthropic content blocks
+                       (e.g. PDF document blocks + text instruction blocks). When
+                       tour/cruise extractors need to read the raw document, they
+                       pass source_blocks + an instruction block as a list.
         max_tokens:    Token budget for the response.
 
     Returns:

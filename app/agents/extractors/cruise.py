@@ -73,16 +73,39 @@ Return ONLY the JSON array. No prose, no markdown fences.\
 """
 
 
-async def run(markdown: str, routing: dict, exchange_rate_note: str | None = None, today_date: str = "") -> list[dict]:
-    """Extract cruise sections from invoice Markdown."""
+async def run(
+    markdown: str,
+    routing: dict,
+    exchange_rate_note: str | None = None,
+    today_date: str = "",
+    source_blocks: list[dict] | None = None,
+) -> list[dict]:
+    """Extract cruise sections from invoice Markdown.
+
+    When source_blocks are provided, Sonnet re-reads the raw supplier document
+    directly — needed for the port-by-port "Itinerary at a glance" block, which
+    Agent 1's LABEL:value filter strips out.
+    """
     rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
     date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
-    user_content = (
+
+    instruction_text = (
         f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"{date_line}\n"
-        f"INVOICE MARKDOWN:\n{markdown}\n"
+        f"COMPACT EXTRACT (from Agent 1 — cross-reference for confirmation numbers, "
+        f"pricing, passenger names):\n{markdown}\n"
         f"{rate_line}\n"
-        "Extract all cruise data and return the JSON array of 2 section objects."
+        "The attached supplier document above is the authoritative source for the "
+        "port-by-port itinerary (clientFeedback). Use it for the 'Itinerary at a glance' "
+        "block. Use the compact extract above for confirming fields on Screen 1. "
+        "Return the JSON array of 2 section objects."
     )
+
+    if source_blocks:
+        user_content: str | list[dict] = list(source_blocks) + [
+            {"type": "text", "text": instruction_text}
+        ]
+    else:
+        user_content = instruction_text
 
     return await call_claude(_SYSTEM_PROMPT, user_content, max_tokens=4096)

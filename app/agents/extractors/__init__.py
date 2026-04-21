@@ -44,17 +44,26 @@ EXTRACTOR_MAP = {
 }
 
 
-async def run_all(markdown: str, routing: dict, service_fee_amount: float) -> list[dict]:
+_NARRATIVE_BOOKING_TYPES = {"tour", "cruise"}
+
+
+async def run_all(payload: dict, routing: dict, service_fee_amount: float) -> list[dict]:
     """Run all required extractors in parallel; return flat ordered list of sections.
 
     Args:
-        markdown:           Full invoice Markdown from Agent 1.
+        payload:            Agent 1 output — {"extract": str, "source_blocks": list}.
+                            Tour / cruise extractors re-read the raw source_blocks
+                            directly (most accurate day-by-day itinerary); every
+                            other extractor only needs the compact extract string.
         routing:            Classification result from Agent 2.
         service_fee_amount: Service fee dollar amount from the form (0 = no fee).
 
     Returns:
         Flat list of section dicts sorted by booking type order, then service fee last.
     """
+    markdown = payload.get("extract", "") if isinstance(payload, dict) else payload
+    source_blocks = payload.get("source_blocks", []) if isinstance(payload, dict) else []
+
     # Fetch live exchange rate once — shared by all extractors in this run.
     # Returns None if invoice is in CAD (no conversion needed).
     exchange_rate_note = await build_rate_note(markdown)
@@ -67,7 +76,17 @@ async def run_all(markdown: str, routing: dict, service_fee_amount: float) -> li
     for booking_type in routing.get("bookingTypes", []):
         extractor_fn = EXTRACTOR_MAP.get(booking_type)
         if extractor_fn:
-            tasks.append(extractor_fn(markdown, routing, exchange_rate_note, today_date))
+            if booking_type in _NARRATIVE_BOOKING_TYPES and source_blocks:
+                tasks.append(
+                    extractor_fn(
+                        markdown, routing, exchange_rate_note, today_date,
+                        source_blocks=source_blocks,
+                    )
+                )
+            else:
+                tasks.append(
+                    extractor_fn(markdown, routing, exchange_rate_note, today_date)
+                )
         else:
             # Unknown booking type — skip with a warning section
             tasks.append(

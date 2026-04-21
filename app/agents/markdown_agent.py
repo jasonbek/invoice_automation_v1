@@ -1,7 +1,17 @@
 """
 Agent 1: Markdown Specialist
 
-Converts one or more invoice files into a compact, data-only text extract.
+Converts one or more invoice files into two artefacts:
+
+  1. extract       — compact LABEL: value data block (Haiku pass). Used by the
+                     routing agent and by every extractor that only needs the
+                     structured field set (flights, rail, hotel, insurance, …).
+  2. source_blocks — the raw Anthropic content blocks (PDF documents + mammoth
+                     Markdown + email body text) that were fed to Haiku. These
+                     are preserved so narrative-heavy extractors (tour, cruise)
+                     can re-read the untouched document with Sonnet to build
+                     the day-by-day "Itinerary at a glance" block.
+
 Supports: PDF, .eml (email), .docx (Word), plain text / .md files.
 
 .docx files are converted to Markdown server-side via `mammoth`, which maps
@@ -88,26 +98,22 @@ def _parse_eml(raw_bytes: bytes) -> tuple[str, list[dict]]:
     return "\n".join(body_parts), pdf_attachments
 
 
-async def run(files_b64: list[dict]) -> str:
-    """Convert one or more invoice files to a compact data extract.
+def build_source_blocks(files_b64: list[dict]) -> list[dict]:
+    """Build the Anthropic content-block list from uploaded files.
 
-    Args:
-        files_b64: List of dicts with keys: filename, content_type, content_b64
-
-    Returns:
-        Compact LABEL: value string containing all extracted invoice fields.
+    The same list is sent to Haiku (for the compact extract) and reused
+    downstream by tour/cruise extractors when they need the full document
+    narrative. Does NOT include any trailing instruction text — callers
+    append their own instruction block.
     """
-    client = anthropic.AsyncAnthropic(max_retries=6)
-
-    content = []
+    blocks: list[dict] = []
 
     for f in files_b64:
         ct = f.get("content_type", "application/octet-stream")
         filename = f.get("filename", "")
 
         if "pdf" in ct.lower():
-            # Native PDF — Claude reads it directly
-            content.append(
+            blocks.append(
                 {
                     "type": "document",
                     "source": {
@@ -120,15 +126,14 @@ async def run(files_b64: list[dict]) -> str:
             )
 
         elif "rfc822" in ct.lower() or filename.lower().endswith(".eml"):
-            # Email file — parse MIME structure to extract body + PDF attachments
             raw_bytes = base64.b64decode(f["content_b64"])
             body_text, pdf_attachments = _parse_eml(raw_bytes)
 
             if body_text.strip():
-                content.append({"type": "text", "text": body_text})
+                blocks.append({"type": "text", "text": body_text})
 
             for pdf in pdf_attachments:
-                content.append(
+                blocks.append(
                     {
                         "type": "document",
                         "source": {
@@ -144,20 +149,39 @@ async def run(files_b64: list[dict]) -> str:
             "wordprocessingml" in ct.lower()
             or filename.lower().endswith(".docx")
         ):
-            # Word document — convert to Markdown with heading hierarchy preserved
             import io
             import mammoth
             raw_bytes = base64.b64decode(f["content_b64"])
             result = mammoth.convert_to_markdown(io.BytesIO(raw_bytes))
-            content.append({"type": "text", "text": result.value})
+            blocks.append({"type": "text", "text": result.value})
 
         else:
-            # Plain text or .md file
             raw_bytes = base64.b64decode(f["content_b64"])
             text = raw_bytes.decode("utf-8", errors="replace")
-            content.append({"type": "text", "text": text})
+            blocks.append({"type": "text", "text": text})
 
-    content.append(
+    return blocks
+
+
+async def run(files_b64: list[dict]) -> dict:
+    """Convert one or more invoice files to a compact data extract + raw source.
+
+    Args:
+        files_b64: List of dicts with keys: filename, content_type, content_b64
+
+    Returns:
+        {
+          "extract":       compact LABEL: value string (Haiku-filtered),
+          "source_blocks": list of Anthropic content blocks — raw PDFs + mammoth
+                           Markdown + email body text, ready to reuse downstream.
+        }
+    """
+    client = anthropic.AsyncAnthropic(max_retries=6)
+
+    source_blocks = build_source_blocks(files_b64)
+
+    # Haiku call gets the source blocks + a trailing instruction block.
+    haiku_content = list(source_blocks) + [
         {
             "type": "text",
             "text": (
@@ -165,7 +189,7 @@ async def run(files_b64: list[dict]) -> str:
                 "Output only LABEL: value lines. No prose, no headers, no extra text."
             ),
         }
-    )
+    ]
 
     app_retries = 8
     for attempt in range(app_retries + 1):
@@ -174,7 +198,7 @@ async def run(files_b64: list[dict]) -> str:
                 model="claude-haiku-4-5-20251001",
                 max_tokens=8192,
                 system=SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": content}],
+                messages=[{"role": "user", "content": haiku_content}],
             )
             break
         except (anthropic.APIConnectionError, anthropic.APITimeoutError) as e:
@@ -194,4 +218,7 @@ async def run(files_b64: list[dict]) -> str:
                 continue
             raise
 
-    return message.content[0].text
+    return {
+        "extract": message.content[0].text,
+        "source_blocks": source_blocks,
+    }
