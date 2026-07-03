@@ -1,7 +1,8 @@
 """
 Agent 3a: Flight Extractor
 
-Handles: Air Canada Internet, Westjet Internet, ADX/Intair, Expedia TAAP, Tourcan Vacations, generic airlines.
+Handles: Air Canada Internet, Westjet Internet, ADX/Intair, Intair Transit, Expedia TAAP,
+Tourcan Vacations, generic airlines.
 Outputs 3 sections: Summary, Segments (array), Passenger Details (array).
 
 Commission rates for Air Canada and WestJet are loaded at runtime from
@@ -79,6 +80,20 @@ Locator fields (map from invoice labels):
   ticketNumber       = value next to "TICKET NUMBER" label on invoice\
 """
 
+INTAIR_TRANSIT_RULES = """\
+VENDOR RULES — INTAIR TRANSIT (Travel Brands flight booking, no explicit COMMISSION line):
+
+Locator fields (map from invoice labels):
+  confirmationNumber = value next to "File No.:" label on invoice
+  recordLocator      = the record locator (PNR) is generally NOT in a separate summary field —
+    look for it within the flight segment/itinerary information itself (e.g. printed next to or
+    below the flight details block) and use that value.
+
+Commission: extract commission exactly as shown on the invoice (percentage or dollar amount).
+  If the invoice DOES have an explicit "COMMISSION" line, it should have been routed to ADX
+  instead — flag the discrepancy in agentremarks if one appears here.\
+"""
+
 TOURCAN_RULES = """\
 VENDOR RULES — TOURCAN VACATIONS:
 
@@ -99,6 +114,7 @@ RULE_SET_MAP = {
     "air_canada": AIR_CANADA_RULES,
     "westjet": WESTJET_RULES,
     "adx_intair": ADX_INTAIR_RULES,
+    "travel_brands": INTAIR_TRANSIT_RULES,
     "expedia": GENERIC_FLIGHT_RULES,
     "tourcan": TOURCAN_RULES,
 }

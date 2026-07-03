@@ -26,11 +26,13 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 
 | Official Name       | Aliases / Triggers                                                |
 |---------------------|-------------------------------------------------------------------|
-| Air Canada Internet | Air Canada, AC, AirCan                                            |
-| Westjet Internet    | West Jet, Westjet, WJ                                             |
+| Air Canada Internet | Air Canada, AC, AirCan (standalone flight ticket — no hotel)      |
+| Air Canada Vacations| Air Canada Vacations, ACV, AC Vacations (packaged air + hotel)    |
+| Westjet Internet    | West Jet, Westjet, WJ (standalone flight ticket — no hotel)       |
+| Westjet Vacations   | Westjet Vacations, WestJet Vacations, WJ Vacations, WJV (packaged air + hotel) |
 | Expedia TAAP        | Expedia, TAAP                                                     |
 | BedsonLine          | BedsOnline, Beds Online, Beds On Line, BedsonLine (hotel)         |
-| Intair              | Travel Brands — ONLY when booking type is Flight                  |
+| Intair Transit      | Intair, Travel Brands — ONLY when booking type is Flight           |
 | Travel Brands       | Travel Brands — when booking type is Tour or Land                 |
 | ADX                 | ADX, or Intair when invoice has an explicit "COMMISSION" line     |
 | Manulife Insurance  | Any insurance policy document                                     |
@@ -44,32 +46,55 @@ Use the HINT from the form as a starting point, but trust the invoice content.
 | Service Fee         | Internal agency fee invoice                                       |
 
 RULE SET KEY MAPPING (must use these exact strings):
-  air_canada    → Air Canada Internet
-  westjet       → Westjet Internet
-  adx_intair    → ADX / Intair (explicit COMMISSION line present on invoice)
-  expedia       → Expedia TAAP
-  bedsonline    → BedsonLine
-  travel_brands → Travel Brands / Intair (tour bookings)
-  viator        → Viator on Line
-  daytrip       → Daytrip
-  manulife      → Manulife Insurance
-  tourcan       → Tourcan Vacations
-  generic       → all others (including all rail vendors — VIA Rail, Amtrak, Eurostar, Rail Europe)
+  air_canada       → Air Canada Internet (standalone flight ticket)
+  westjet          → Westjet Internet (standalone flight ticket)
+  vacation_package → Air Canada Vacations OR Westjet Vacations (packaged air + hotel — see below)
+  adx_intair       → ADX / Intair (explicit COMMISSION line present on invoice)
+  expedia          → Expedia TAAP
+  bedsonline       → BedsonLine
+  travel_brands    → Travel Brands (tour bookings) / Intair Transit (flight bookings)
+  viator           → Viator on Line
+  daytrip          → Daytrip
+  manulife         → Manulife Insurance
+  tourcan          → Tourcan Vacations
+  generic          → all others (including all rail vendors — VIA Rail, Amtrak, Eurostar, Rail Europe)
+
+VACATION PACKAGE DECISION (Air Canada Vacations / Westjet Vacations vs. plain Internet flight):
+  - Invoice letterhead/branding says "Air Canada Vacations" AND bundles a flight + hotel (+ maybe
+    transfers/insurance) under one package price → vendor = "Air Canada Vacations",
+    ruleSet = "vacation_package", bookingTypes = ["vacation_package"].
+  - Invoice letterhead/branding says "WestJet Vacations" / "Westjet Vacations" AND bundles a flight +
+    hotel under one package price → vendor = "Westjet Vacations", ruleSet = "vacation_package",
+    bookingTypes = ["vacation_package"].
+  - Plain "Air Canada" e-ticket/itinerary with ONLY flight segments, no hotel bundled →
+    vendor = "Air Canada Internet", ruleSet = "air_canada", bookingTypes = ["flight"] (unchanged).
+  - Plain "WestJet" e-ticket/itinerary with ONLY flight segments, no hotel bundled →
+    vendor = "Westjet Internet", ruleSet = "westjet", bookingTypes = ["flight"] (unchanged).
+  - For vacation_package invoices, bookingTypes MUST be exactly ["vacation_package"] — do NOT also add
+    "flight", "hotel", "tour", or "insurance" for the same invoice. The vacation_package extractor
+    produces the flight and hotel sections itself, even if the client purchased optional insurance as
+    part of the package.
 
 ADX vs INTAIR DECISION:
   - Invoice header says "Intair" or "Travel Brands" AND has an explicit line labelled
     "COMMISSION" with a dollar amount → vendor = "ADX", ruleSet = "adx_intair"
   - Invoice header says "Travel Brands" + booking is a Tour (no COMMISSION line)
     → vendor = "Travel Brands", ruleSet = "travel_brands"
-  - Invoice header says "Travel Brands" + booking is a Flight (no COMMISSION line)
-    → vendor = "Intair", ruleSet = "travel_brands"
+  - Invoice header says "Intair" or "Travel Brands" + booking is a Flight (no COMMISSION line)
+    → vendor = "Intair Transit", ruleSet = "travel_brands"
 
 ═══════════════════════════════════════════════
 BOOKING TYPE DETECTION SIGNALS
 ═══════════════════════════════════════════════
 - flight       : airline ticket, PNR locator, flight segments with departure/arrival cities and times
+- vacation_package: Air Canada Vacations or WestJet Vacations invoice — flight(s) + hotel bundled
+                 under one package price, optionally with transfers and/or optional trip insurance
+                 included. Use ruleSet "vacation_package". See VACATION PACKAGE DECISION above —
+                 do NOT confuse with plain Air Canada Internet / Westjet Internet flight tickets.
 - tour         : multi-day land package, tour code, land arrangements, accommodation + guided activities
-                 (Travel Brands, Intair, generic tour operators — NOT Viator)
+                 (Travel Brands, generic tour operators — NOT Viator, NOT Air Canada Vacations
+                 or Westjet Vacations — those use "vacation_package" instead; NOT Intair Transit,
+                 which is flight-only — see ADX vs INTAIR DECISION above)
 - day_tour     : single-day excursion, shore excursion, or day activity from Viator on Line,
                  Daytrip, or any other day-tour operator. Use ruleSet "viator" for Viator,
                  "daytrip" for Daytrip, otherwise "generic". Do NOT force the vendor name to

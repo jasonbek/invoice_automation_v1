@@ -42,7 +42,7 @@
         ▼              ▼              ▼
    flight.py      tour.py       hotel.py
    cruise.py   insurance.py  service_fee.py
-              new_traveller.py
+   new_traveller.py    vacation_package.py
         │   (all Model: Sonnet 4.6)   │
         └──────────────┬──────────────┘
                        │  flat list of sections
@@ -83,11 +83,12 @@ app/
         ├── new_traveller.py       ← New traveller profile: 3–4 sections
         ├── rail.py                ← Rail: 1 + N sections (one Screen 2 per segment)
         ├── day_tour.py            ← Day Tour (Viator): 1 + N sections (one Screen 2 per activity)
-        └── seat_selection.py      ← Standalone seat selection invoice: 2 sections
+        ├── seat_selection.py      ← Standalone seat selection invoice: 2 sections
+        └── vacation_package.py    ← AC Vacations / WestJet Vacations: Tour Screen 1 + Flight Screen 2 + N × Hotel Screen 2
 
 docs/
 └── Commissions/                   ← Drop .md files here; loaded at runtime by loader.py
-    ├── Air-Canada-Commissions.md  ← AC Accolades rate tables (Appendices 4–11)
+    ├── Air_Canada_Commission.md   ← AC Accolades rate tables (Appendices 4–11)
     ├── Westjet.md                 ← WestJet RBD commission table
     └── Lufthansa -Promotion.md    ← LH Group Business promo (Mar–Jun 2026)
 ```
@@ -152,10 +153,12 @@ These apply to **every extractor** via the `GLOBAL_RULES` constant:
 
 | Official Name | Triggers on Invoice | ruleSet key |
 |---|---|---|
-| Air Canada Internet | Air Canada, AC, AirCan | `air_canada` |
-| Westjet Internet | West Jet, Westjet, WJ | `westjet` |
+| Air Canada Internet | Air Canada, AC, AirCan — standalone flight ticket, no hotel | `air_canada` |
+| Air Canada Vacations | Air Canada Vacations, ACV, AC Vacations — packaged air + hotel | `vacation_package` |
+| Westjet Internet | West Jet, Westjet, WJ — standalone flight ticket, no hotel | `westjet` |
+| Westjet Vacations | Westjet Vacations, WJ Vacations, WJV — packaged air + hotel | `vacation_package` |
 | Expedia TAAP | Expedia, TAAP | `expedia` |
-| Intair | Travel Brands (flight booking, no COMMISSION line) | `travel_brands` |
+| Intair Transit | Intair, Travel Brands (flight booking, no COMMISSION line) | `travel_brands` |
 | Travel Brands | Travel Brands (tour/land, no COMMISSION line) | `travel_brands` |
 | ADX | ADX, or Travel Brands/Intair + explicit COMMISSION line | `adx_intair` |
 | Manulife Insurance | Any insurance policy document | `manulife` |
@@ -199,9 +202,10 @@ AC456: Seat: N/A  (check airline site)
 
 | ruleSet | Rule |
 |---|---|
-| `air_canada` | Rates loaded from `docs/Commissions/Air-Canada-Commissions.md` + any promotion files at runtime. Business logic (inclusions, exclusions, ACTOT, mixed fare, online/interline) is in `flight.py`. Agent includes rationale line in `invoiceRemarks`. |
+| `air_canada` | Rates loaded from `docs/Commissions/Air_Canada_Commission.md` + any promotion files at runtime. Business logic (inclusions, exclusions, ACTOT, mixed fare, online/interline) is in `flight.py`. Agent includes rationale line in `invoiceRemarks`. |
 | `westjet` | Rates loaded from `docs/Commissions/Westjet.md` at runtime. Mixed fares → higher rate. Call Centre = 0% always. Agent includes rationale line in `invoiceRemarks`. |
 | `adx_intair` | Use the exact `COMMISSION: $X.XX` figure verbatim. No calculation. Also: confirmationNumber = TRIP REF, recordLocator = PNR, ticketNumber = TICKET NUMBER. |
+| `travel_brands` (Intair Transit) | confirmationNumber = "File No.:" label. recordLocator = PNR generally found within the flight segment/itinerary block itself, not a separate summary field. Commission extracted as shown (no COMMISSION line — that case routes to `adx_intair` instead). |
 | `tourcan` | `TOTAL CREDIT -[number]` line = commission (absolute value). **Not a discount** — never appears in invoiceRemarks. No passenger screen (Screen 3) is generated for Tourcan. |
 | `expedia` / `generic` | Extract as shown on invoice. |
 
@@ -225,6 +229,33 @@ AC456: Seat: N/A  (check airline site)
 | `travel_brands` | Use tour confirmation code as confirmationNumber. Non-CAD: convert + agentRemarks. |
 | `viator` | Default commission = 8% of basePrice unless invoice overrides. Vendor name = "Viator on Line". |
 | `generic` | Extract commission as shown. Non-CAD: convert + agentRemarks. |
+
+---
+
+### Vacation Package (`vacation_package.py`) — 1 + 1 + N sections
+
+Handles Air Canada Vacations and Westjet Vacations — packaged air + hotel invoices, ruleSet
+`vacation_package`. **Not** used for plain Air Canada Internet / Westjet Internet flight
+tickets (those stay on `flight.py`, ruleSets `air_canada` / `westjet`, unchanged).
+
+Unlike a normal `tour.py` booking, there is no Tour Screen 2 narrative. The financials live
+entirely on Tour Screen 1; Flight and Hotel screens are itinerary/detail only.
+
+**Sections:**
+
+| # | sectionTitle | Key fields |
+|---|---|---|
+| 1 | Tour Screen 1 (Summary) | dateReserved, vendor, confirmationNumber (package-level), duration, numberOfTravellers, tripType, basePrice (CAD), commission, finalPaymentDue, invoiceRemarks, agentRemarks |
+| 2 | Flight Screen 2 (Segments) | Array, one object per flight leg — same shape as `flight.py` Screen 2. No Flight Screen 1 or Screen 3. |
+| 3+ | Hotel Screen 2 (Details) | One section per hotel stay — same shape as `hotel.py` Screen 2. No Hotel Screen 1 (financials stay on Tour Screen 1). |
+
+**notesForClient on Hotel Screen 2** carries, in addition to the usual hotel contact info:
+- Transfer details for that stay, if the invoice mentions any (e.g. `"Transfers: Private roundtrip airport transfer included"`)
+- A one-line summary if the client opted into trip insurance as part of the package (e.g. `"Insurance: WestJet Vacations Protection Plan included"`)
+
+**Insurance Screen 1/2 are never created here** — even when the package includes optional
+insurance. Standalone Insurance screens (`insurance.py`) are reserved exclusively for
+invoices where the vendor is literally Manulife Insurance.
 
 ---
 

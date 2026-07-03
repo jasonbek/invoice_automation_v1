@@ -27,6 +27,7 @@ from app.agents.extractors import (
     new_traveller as nt_ext,
     rail as rail_ext,
     seat_selection as seat_selection_ext,
+    vacation_package as vacation_package_ext,
 )
 from app.agents.extractors.currency import build_rate_note
 
@@ -41,6 +42,7 @@ EXTRACTOR_MAP = {
     "new_traveller": nt_ext.run,
     "rail": rail_ext.run,
     "seat_selection": seat_selection_ext.run,
+    "vacation_package": vacation_package_ext.run,
 }
 
 
