@@ -31,6 +31,10 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 - Accented characters: Replace with their unaccented ASCII equivalent in ALL string fields.
   Examples: é→e, è→e, ê→e, ë→e, à→a, â→a, ô→o, î→i, û→u, ç→c, ü→u, ñ→n, etc.
   Example: "Hôtel de Varenne" → "Hotel de Varenne"
+- Arrow characters: ClientBase Online renders Unicode arrows (→, ➔, ➞, ⟶, ➜, ➝, etc.)
+  as question marks. Replace any arrow character with "->" (hyphen + greater-than) in
+  ALL string fields — route indicators, seat selections, itinerary notes, everywhere.
+  Example: "YEG → YYZ" → "YEG -> YYZ"
 - Booking/reservation date: If no booking or reservation date appears on the invoice,
   use the TODAY'S DATE value provided in the input. Format it as MM/DD/YY.
 - Client-facing remarks — currency disclosure + financial summary (ALL booking types, ALL currencies including CAD):
