@@ -22,7 +22,15 @@ Analyze the invoice Markdown and return ONLY a JSON object — no prose, no code
 ═══════════════════════════════════════════════
 VENDOR NORMALIZATION TABLE
 ═══════════════════════════════════════════════
-Use the HINT from the form as a starting point, but trust the invoice content.
+PRECEDENCE: If the VENDOR HINT from the form exactly (or closely) names one of the
+Official Names or Aliases in this table — e.g., the form says "Intair Transit" — use
+THAT exact vendor identity in your output. Do not override it with a different vendor
+based on your own reading of the invoice content, even if the invoice content seems
+ambiguous or points elsewhere. The person submitting the invoice already knows which
+supplier this is; your job is to fill in ruleSet and bookingTypes around that fact, not
+to re-litigate the vendor. Only infer the vendor purely from invoice content when the
+hint is blank, generic (e.g., a bare carrier code, "invoice", "unknown"), or does not
+match any Official Name/alias in this table.
 
 | Official Name       | Aliases / Triggers                                                |
 |---------------------|-------------------------------------------------------------------|
@@ -75,13 +83,19 @@ VACATION PACKAGE DECISION (Air Canada Vacations / Westjet Vacations vs. plain In
     produces the flight and hotel sections itself, even if the client purchased optional insurance as
     part of the package.
 
-ADX vs INTAIR DECISION:
+ADX vs INTAIR DECISION (only applies when the VENDOR HINT does NOT already name ADX,
+Travel Brands, or Intair Transit specifically — see PRECEDENCE above; if the hint already
+picked one of these three, use it as-is and skip this content-based decision):
   - Invoice header says "Intair" or "Travel Brands" AND has an explicit line labelled
     "COMMISSION" with a dollar amount → vendor = "ADX", ruleSet = "adx_intair"
   - Invoice header says "Travel Brands" + booking is a Tour (no COMMISSION line)
     → vendor = "Travel Brands", ruleSet = "travel_brands"
   - Invoice header says "Intair" or "Travel Brands" + booking is a Flight (no COMMISSION line)
     → vendor = "Intair Transit", ruleSet = "travel_brands"
+  - If the VENDOR HINT says "Intair Transit" specifically, keep vendor = "Intair Transit",
+    ruleSet = "travel_brands" even if you notice what might be a COMMISSION line — do NOT
+    silently reroute to ADX. The flight extractor already flags that discrepancy in
+    agentremarks instead of you swapping the vendor.
 
 ═══════════════════════════════════════════════
 BOOKING TYPE DETECTION SIGNALS

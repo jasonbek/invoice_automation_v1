@@ -20,6 +20,14 @@ SCREEN 1 ONLY. Screen 2 (Cruise Details) must contain ZERO currency amounts and 
 financial figures. Do not leak pricing into clientFeedback, description, or any other
 Screen 2 field.
 
+TOTALBASE RULE: totalBase is always the Gross Amount for the booking — the invoice's
+grand total (all cabins, all passengers, taxes, port charges, gratuities, and fees
+included) — NOT the cruise fare alone. Convert to CAD if the invoice is not in CAD.
+
+NOTES EXCLUSIONS: Do NOT print the cancellation policy/schedule, and do NOT list guest
+or passenger names, anywhere in invoiceRemarks or clientFeedback. These are cruise-only
+exclusions — keep notes focused on inclusions, discounts, and the itinerary.
+
 CURRENCY NOTE: If the invoice is NOT in CAD, convert totalBase to CAD using the best
 available exchange rate and populate agentRemarks:
   DEPOSIT PAID: $[CAD amount] CAD
@@ -39,12 +47,11 @@ SCHEMA — 2 sections required
   "duration": "Number of nights (string)",
   "noofpax": "String (number of passengers)",
   "noofunit": "String (number of cabins)",
-  "tripType": "International | Transborder | Domestic",
-  "totalBase": "Amount in CAD, 2 decimal places",
+  "totalBase": "Gross Amount (grand total) for the booking, in CAD, 2 decimal places",
   "totalTax": "String",
   "totalCommission": "String (in supplier currency)",
   "finalpymntduedate": "MM/DD/YY",
-  "invoiceRemarks": "Client-facing notes, discounts, included items",
+  "invoiceRemarks": "Client-facing notes, discounts, included items. Do NOT include the cancellation policy/schedule or guest/passenger names.",
   "agentRemarks": "Currency conversion and financial notes"
 }}
 

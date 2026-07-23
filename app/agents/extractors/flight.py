@@ -48,7 +48,11 @@ Online vs Interline:
 COMMISSION RATE LOOKUP: Use the official commission tables in the COMMISSION DOCUMENTS section
   below to determine the correct rate. Match the booking class and route type to the correct
   appendix. Check whether any active promotions override the base rate for this ticket's
-  plating carrier, booking class, and travel/ticketing dates.\
+  plating carrier, booking class, and travel/ticketing dates.
+
+COMMISSION OUTPUT (commpercent): Always the raw percentage rate from the table above (e.g.
+  "3%") — never compute or output a dollar amount. This rate is calculated on the passenger's
+  base fare only — never against surcharges, taxes, fees, or the passenger's all-in total.\
 """
 
 WESTJET_RULES = """\
@@ -64,7 +68,12 @@ Networks:
   Transatlantic/RoW — any segment to/from Europe, Middle East, Africa, Asia-Pacific, etc.
 
 COMMISSION RATE LOOKUP: Use the official commission tables in the COMMISSION DOCUMENTS section
-  below to match the RBD booking class and network to the correct rate.\
+  below to match the RBD booking class and network to the correct rate.
+
+COMMISSION OUTPUT (commpercent): Always the raw percentage rate from the table above (e.g.
+  "5%") — never compute or output a dollar amount. This rate is calculated on the passenger's
+  base fare only ("At Source Base Commission") — never against surcharges, taxes, fees, or the
+  passenger's all-in total.\
 """
 
 ADX_INTAIR_RULES = """\
@@ -91,7 +100,12 @@ Locator fields (map from invoice labels):
 
 Commission: extract commission exactly as shown on the invoice (percentage or dollar amount).
   If the invoice DOES have an explicit "COMMISSION" line, it should have been routed to ADX
-  instead — flag the discrepancy in agentremarks if one appears here.\
+  instead — flag the discrepancy in agentremarks if one appears here.
+
+Booking Fee / Ticket Fee: Intair Transit invoices often show a "Booking Fee" and/or "Ticket Fee"
+  as separate line items per passenger, distinct from the base fare and taxes. Do NOT list these
+  as their own line or field. Add their dollar amounts into that passenger's taxPerPassenger
+  total on Screen 3 (Passenger Details), along with the actual taxes/carrier fees.\
 """
 
 TOURCAN_RULES = """\
@@ -128,6 +142,10 @@ _TICKETING_VENDORS = {"air_canada", "westjet", "adx_intair"}
 
 # Vendors that do NOT use a passenger details screen (Screen 3) at all.
 _NO_PASSENGER_SCREEN_VENDORS = {"tourcan"}
+
+# Vendors whose Screen 3 commission field is a looked-up rate (commpercent), not an
+# invoice-extracted value (commission).
+_COMMPERCENT_VENDORS = {"air_canada", "westjet"}
 
 # ── Section 1 schema variants ──────────────────────────────────────────────────
 
@@ -175,6 +193,22 @@ _SECTION3_PASSENGERS = """\
 }}\
 """
 
+# Air Canada / WestJet only: commission is never extracted from the invoice — it's looked up
+# from the COMMISSION DOCUMENTS tables. Field is a raw rate, never a computed dollar amount.
+_SECTION3_PASSENGERS_COMMPERCENT = """\
+### SECTION 3 — Passenger Details (one object per passenger)
+{{
+  "passengerName": "Full Name",
+  "ticketNumber": "String — omit the first 3 digits (airline code prefix); e.g. '0141234567890' → '1234567890'",
+  "basePricePerPassenger": <base fare for this passenger from invoice, 2 decimal places>,
+  "taxPerPassenger": <taxes and carrier fees for this passenger from invoice, 2 decimal places>,
+  "commpercent": "The commission RATE looked up from the COMMISSION DOCUMENTS tables for this
+    passenger's booking class and route (e.g. '3%'). Always a raw percentage — never a dollar
+    amount, never a value computed against taxPerPassenger or the total price. This rate applies
+    to basePricePerPassenger only."
+}}\
+"""
+
 _OUTPUT_FORMAT_WITH_PASSENGERS = """\
 [
   {{"sectionTitle": "Flight Screen 1 (Summary)", "data": {{ ... }}}},
@@ -219,6 +253,17 @@ SEAT MAPPING RULES for invoiceRemarks:
   - If seats ARE present: scan the ENTIRE document and output one line per segment
     with assignments. Do NOT invent "N/A" entries for segments that are simply
     not mentioned — only list segments where the invoice actually shows a seat.
+  - Invoices often list seats grouped by PASSENGER rather than by flight: each
+    passenger's name is followed by ALL of their segment seats in itinerary order
+    (route code then seat, repeated per leg) before the next passenger's block
+    begins. Do NOT assume list position lines up across passengers. For each seat
+    shown, identify which flight it belongs to by matching the route (departure/
+    arrival codes) next to that seat against Section 2's segments — never by
+    counting position in a flattened list.
+  - Self-check before finalizing: each flight number should end up with exactly one
+    seat per passenger who has one, and no single seat value should appear against
+    two different flight numbers for the same passenger. If it does, you have
+    mismatched passenger-major data into flight-major rows — redo the mapping.
   - Format per line: [Flight Number]: [Pax Name] ([Seat]) | [Pax Name] ([Seat])
   Example (only when at least one seat exists):
     Seat Selections
@@ -256,6 +301,21 @@ SEGMENT DATE CONTINUITY (overnight / next-day arrivals):
     "endtime": "H:MM AM/PM"
   }}
 ]
+
+PER-PASSENGER PRICING (Section 3 — basePricePerPassenger / taxPerPassenger):
+  - Airline invoices commonly show fare/tax lines as "Label — Adult ($X x2) — $Y"
+    where $X is already the PER-PASSENGER (per-adult) amount and $Y = $X × (number
+    of adults) is just that line's total. $X is the number for one passenger — do
+    NOT divide it again by the passenger count.
+  - basePricePerPassenger = that passenger's base fare exactly as shown (the
+    per-adult figure, not the "x2" total, and not divided further).
+  - taxPerPassenger = the SUM of that passenger's per-adult tax/fee/surcharge lines
+    (each already a per-adult figure) — add them together, do not average or halve.
+  - Sanity check before finalizing: basePricePerPassenger + taxPerPassenger (+ any
+    surcharge folded into base) should reconcile to that passenger's share of the
+    invoice's own stated grand total, if one is shown per passenger. If your
+    numbers come out to roughly HALF of that stated total, you have divided twice
+    somewhere — recheck before outputting.
 
 {section3_schema}
 ═══════════════════════════════════════════════
@@ -342,7 +402,9 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
 
     # Tourcan has no passenger details screen; all other vendors do.
     no_pax_screen = rule_set in _NO_PASSENGER_SCREEN_VENDORS
-    section3_schema = "" if no_pax_screen else _SECTION3_PASSENGERS
+    section3_schema = "" if no_pax_screen else (
+        _SECTION3_PASSENGERS_COMMPERCENT if rule_set in _COMMPERCENT_VENDORS else _SECTION3_PASSENGERS
+    )
     output_format = _OUTPUT_FORMAT_NO_PASSENGERS if no_pax_screen else _OUTPUT_FORMAT_WITH_PASSENGERS
     section_count = "2" if no_pax_screen else "3"
 
