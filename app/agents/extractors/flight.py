@@ -303,19 +303,24 @@ SEGMENT DATE CONTINUITY (overnight / next-day arrivals):
 ]
 
 PER-PASSENGER PRICING (Section 3 — basePricePerPassenger / taxPerPassenger):
-  - Airline invoices commonly show fare/tax lines as "Label — Adult ($X x2) — $Y"
-    where $X is already the PER-PASSENGER (per-adult) amount and $Y = $X × (number
-    of adults) is just that line's total. $X is the number for one passenger — do
-    NOT divide it again by the passenger count.
-  - basePricePerPassenger = that passenger's base fare exactly as shown (the
-    per-adult figure, not the "x2" total, and not divided further).
-  - taxPerPassenger = the SUM of that passenger's per-adult tax/fee/surcharge lines
-    (each already a per-adult figure) — add them together, do not average or halve.
-  - Sanity check before finalizing: basePricePerPassenger + taxPerPassenger (+ any
-    surcharge folded into base) should reconcile to that passenger's share of the
-    invoice's own stated grand total, if one is shown per passenger. If your
-    numbers come out to roughly HALF of that stated total, you have divided twice
-    somewhere — recheck before outputting.
+  - Airline invoices commonly show fare/surcharge/tax lines as "Label — Adult ($X x2)
+    — $Y" where $X is already the PER-PASSENGER (per-adult) amount and $Y = $X ×
+    (number of adults) is just that line's total. $X is the number for one
+    passenger — do NOT divide it again by the passenger count, and do NOT use $Y.
+  - basePricePerPassenger = ONLY the "Base fare" line's per-adult amount. Never add
+    carrier surcharges, taxes, or fees into this field — base fare alone.
+  - taxPerPassenger = EVERYTHING ELSE for that passenger: carrier surcharges PLUS
+    every line under "Taxes, Fees and Charges" (each already a per-adult figure —
+    sum them all). Carrier surcharges belong in taxPerPassenger even though they're
+    listed under a separate heading from the taxes on the invoice — do not fold
+    them into basePricePerPassenger and do not drop them.
+  - REQUIRED verification: if the invoice states a per-passenger grand total
+    anywhere (e.g. a "Jane Doe .......... $5,105.17" line near the bottom of the
+    purchase summary), basePricePerPassenger + taxPerPassenger MUST equal that
+    figure exactly. If it doesn't, you have mis-bucketed a line — find and fix the
+    discrepancy before outputting; do not output numbers that fail this check.
+    If no per-passenger total is shown, use (invoice grand total ÷ number of
+    passengers) as the target to reconcile against instead.
 
 {section3_schema}
 ═══════════════════════════════════════════════
