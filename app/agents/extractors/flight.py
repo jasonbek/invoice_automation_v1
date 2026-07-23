@@ -250,20 +250,34 @@ SEAT MAPPING RULES for invoiceRemarks:
     not add a "Seat Selections" header, do not write "N/A" lines. Leave the
     invoiceRemarks field to carry only the non-seat content (or "" if no other
     content applies after the global disclosure block).
-  - If seats ARE present: scan the ENTIRE document and output one line per segment
-    with assignments. Do NOT invent "N/A" entries for segments that are simply
-    not mentioned — only list segments where the invoice actually shows a seat.
-  - Invoices often list seats grouped by PASSENGER rather than by flight: each
-    passenger's name is followed by ALL of their segment seats in itinerary order
-    (route code then seat, repeated per leg) before the next passenger's block
-    begins. Do NOT assume list position lines up across passengers. For each seat
-    shown, identify which flight it belongs to by matching the route (departure/
-    arrival codes) next to that seat against Section 2's segments — never by
-    counting position in a flattened list.
-  - Self-check before finalizing: each flight number should end up with exactly one
-    seat per passenger who has one, and no single seat value should appear against
-    two different flight numbers for the same passenger. If it does, you have
-    mismatched passenger-major data into flight-major rows — redo the mapping.
+  - If seats ARE present, build the mapping with this exact procedure. Do NOT
+    eyeball it or zip two passengers' seat lists together by position — that is
+    what causes seats to get swapped between passengers:
+      1. Work through the invoice ONE PASSENGER AT A TIME, fully, before moving to
+         the next passenger. Invoices commonly group all of one passenger's seats
+         together (route code then seat, repeated per leg) before the next
+         passenger's block starts — process that whole block before touching the
+         next passenger's block.
+      2. For that passenger, go down their seat rows top-to-bottom. Each row shows
+         a route (e.g. "YEG → YYZ") next to a seat. Find the Section 2 segment
+         whose departcitycode/arrivecitycode match that route, and record the
+         triple (flight number, this passenger, this seat).
+      3. If the SAME route appears more than once for that passenger (e.g. an
+         outbound and a return over the same city pair), match them in
+         chronological order: their 1st seat row for that route → the earliest
+         segment with that route, their 2nd seat row for that route → the next
+         segment with that route, and so on.
+      4. A passenger sitting in the SAME seat number on two different flights
+         (e.g. the same seat on both the outbound and return of a leg) is normal
+         and expected — airlines frequently reissue the identical seat on a
+         repeated route. Do NOT treat a repeated seat value as a sign of error and
+         do NOT "fix" it by swapping in a value from the other passenger.
+      5. Only after every passenger has been fully processed independently, merge
+         the results into one line per flight number. Each passenger's entry on
+         that line must come from that passenger's own seat rows — never borrowed
+         from another passenger's list to fill a gap or "balance" the row.
+  - Do NOT invent "N/A" entries for segments that are simply not mentioned — only
+    list segments where the invoice actually shows a seat.
   - Format per line: [Flight Number]: [Pax Name] ([Seat]) | [Pax Name] ([Seat])
   Example (only when at least one seat exists):
     Seat Selections
