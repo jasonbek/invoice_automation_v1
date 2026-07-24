@@ -30,27 +30,46 @@ Mandatory Tour Code: ACTOT is required in the tour code box for ALL destinations
   North America and Sun destinations. If ACTOT is missing or incorrect, add this to
   invoiceRemarks: "ACTOT REQUIRED — VERIFY: ticketing error fee applies (min $50)"
 
-Service Combination Rule: If the itinerary mixes "Service Canada" with any other service,
-  the LOWER rate between Service Canada and the other service applies to the entire ticket.
+COMMISSION RATE LOOKUP — the COMMISSION DOCUMENTS section below is a structured lookup
+  table built for this exact 4-step procedure. Do NOT skip a step, do NOT eyeball the
+  rate, and do NOT recall a rate from a prior invoice — tables get revised, so always
+  re-derive the rate from the current documents.
 
-Mixed Fare Class — North America/Sun: Mixed booking classes on same ticket → apply LOWEST rate.
-Mixed Fare Class — International: Apply rate based on the LOWEST booking class of the
-  international segments only. Domestic "feeder" legs do NOT downgrade international commission.
+  STEP 1 — Region: Using the ticket's FULL origin/destination (not just one segment),
+    pick ONE region from the doc's "STEP 1 — Pick the region" table (North America, Sun,
+    South America, Transatlantic, Mainland China, Transpacific, or
+    Transatlantic/Transpacific). Any itinerary touching Europe, the Middle East, Africa,
+    India, Pakistan, Bangladesh, CIS, or Russia is ALWAYS Transatlantic — never North
+    America or Sun — even if a segment connects through the US or Canada.
 
-JV Carriers — Transatlantic: Air Canada, Lufthansa, Austrian, Swiss, Brussels Airlines,
-  Edelweiss, Discover, United.
-JV Carriers — Mainland China: Air Canada and Air China.
+  STEP 2 — Online vs Interline: Check the marketing/operating carrier of every segment
+    that qualifies the region (see the doc's "STEP 2" section). Online = those segments
+    are marketed AND operated by that region's required carrier(s) (Air Canada Carriers,
+    or the Transatlantic/China JV carriers where applicable). Interline = a MIX — the
+    qualifying segment is still on the required carrier, but up to 2 segments per
+    direction are on other, non-JV airlines. North America and Sun have no interline rate.
 
-Online vs Interline:
-  Online  = all segments marketed/operated by Air Canada Carriers (or JV carriers for Transatlantic/China).
-  Interline = some segments on non-JV partners (max 2 segments per direction).
+  STEP 3 — Booking class code: For each passenger, find the fare/cabin code shown in
+    parentheses on the invoice next to the cabin name (e.g. "Cabin: Business (Z)" or
+    "Class: Economy (Q)") — the LETTER in parentheses is the booking class code. Match
+    that exact code to a row in the region's rate table (from Step 1) at the
+    Online/Interline column (from Step 2). Never infer the row from the cabin name alone
+    — a "BA…" fare basis in a Business cabin is Economy Basic (0%), not the Business rate.
 
-COMMISSION RATE LOOKUP: Use the official commission tables in the COMMISSION DOCUMENTS section
-  below to determine the correct rate. Match the booking class and route type to the correct
-  appendix. Check whether any active promotions override the base rate for this ticket's
-  plating carrier, booking class, and travel/ticketing dates.
+  STEP 4 — Mixed booking classes on one ticket: North America/Sun — the LOWEST rate
+    across the WHOLE ticket applies. All other regions — the LOWEST rate among the
+    INTERNATIONAL segments only applies; domestic feeder legs do not downgrade it.
 
-COMMISSION OUTPUT (commpercent): Always the raw percentage rate from the table above (e.g.
+  Service Combination Rule: If the itinerary mixes "Service Canada" with any other
+    service, the LOWER rate between Service Canada and the other service applies to the
+    entire ticket.
+
+  Active promotions: only apply a promotion listed in the commission documents if BOTH
+    the ticketing date and travel date on THIS invoice fall inside that promo's stated
+    windows, and the plating carrier matches. If a promo's window has already passed
+    (check against TODAY'S DATE), ignore it and use the Step 3 base rate.
+
+COMMISSION OUTPUT (commpercent): Always the raw percentage rate from Step 3/4 above (e.g.
   "3%") — never compute or output a dollar amount. This rate is calculated on the passenger's
   base fare only — never against surcharges, taxes, fees, or the passenger's all-in total.\
 """
@@ -159,7 +178,7 @@ _SECTION1_SUMMARY_ONLY = """\
   "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
   "duration": <integer — total trip days>,
   "invoiceRemarks": "Seat selections block (see rules below).",
-  "agentremarks": "Commission rationale — one line stating the rate chosen and why (appendix/table, booking class, route, and any active promo that overrides the base rate)."
+  "agentremarks": "Commission QA trail — see RATIONALE REQUIREMENT below for the required format (Air Canada/WestJet). For other vendors, leave empty."
 }}\
 """
 
@@ -323,18 +342,15 @@ PER-PASSENGER PRICING (Section 3 — basePricePerPassenger / taxPerPassenger):
     passenger — do NOT divide it again by the passenger count, and do NOT use $Y.
   - basePricePerPassenger = ONLY the "Base fare" line's per-adult amount. Never add
     carrier surcharges, taxes, or fees into this field — base fare alone.
-  - taxPerPassenger = EVERYTHING ELSE for that passenger: carrier surcharges PLUS
-    every line under "Taxes, Fees and Charges" (each already a per-adult figure —
-    sum them all). Carrier surcharges belong in taxPerPassenger even though they're
-    listed under a separate heading from the taxes on the invoice — do not fold
-    them into basePricePerPassenger and do not drop them.
-  - REQUIRED verification: if the invoice states a per-passenger grand total
-    anywhere (e.g. a "Jane Doe .......... $5,105.17" line near the bottom of the
-    purchase summary), basePricePerPassenger + taxPerPassenger MUST equal that
-    figure exactly. If it doesn't, you have mis-bucketed a line — find and fix the
-    discrepancy before outputting; do not output numbers that fail this check.
+  - Total Charged Per Passenger = the invoice's stated per-passenger grand total (e.g.
+    a "Jane Doe .......... $5,105.17" line near the bottom of the purchase summary).
     If no per-passenger total is shown, use (invoice grand total ÷ number of
-    passengers) as the target to reconcile against instead.
+    passengers) instead.
+  - taxPerPassenger = Total Charged Per Passenger MINUS basePricePerPassenger. This is
+    the ONLY way to compute this field — do NOT sum individual surcharge/tax/fee line
+    items by hand. Subtraction automatically captures every charge that is not base
+    fare (carrier surcharges, taxes, fees, everything under "Taxes, Fees and Charges"),
+    so there is nothing left to individually classify or accidentally drop or double-count.
 
 {section3_schema}
 ═══════════════════════════════════════════════
@@ -391,12 +407,36 @@ the ticketing date and travel date shown on the invoice.
 
 {commission_docs}
 
-RATIONALE REQUIREMENT: In agentremarks (Screen 1), include one line that states:
-  - The rate chosen and why (table/appendix used, booking class, route type)
-  - Whether a promotion overrides the base rate, and if so which one
-  Example (base rate):   "Commission: 4% — AC North America, Economy Y (Appendix 5)"
-  Example (promo):       "Commission: 8% — LH Group promo Mar2026, Business J, plating LH220 (overrides 5% base)"
-  Example (call centre): "Commission: 0% — WestJet Call Centre booking (non-commissionable)"\
+RATIONALE REQUIREMENT: agentremarks (Screen 1) MUST contain a full commission QA trail so a
+human reviewer can check the logic against the invoice without redoing the lookup
+themselves. Write one "Commission QA" block for the ticket — or one block per passenger if
+passengers carry different booking classes/rates. Include every line below; do not compress
+this into a single summary sentence:
+  Region/Network: <name> — <the specific cities/countries that placed it there>
+  Online/Interline: <Online|Interline> — <which segments and their marketing/operating
+    carriers drove this call> (WestJet: state the Network instead, e.g. Transborder)
+  Booking class: <code> (<cabin>) — the exact code found in parentheses on the invoice
+  Rate applied: <rate>% — <which table/region and column (Online/Interline) it came from>
+  Promo check: "No active promo applies" OR the promo name applied and why its ticketing/
+    travel-date windows and plating carrier match this invoice
+
+Example (Air Canada, base rate):
+  Commission QA — Region: Transatlantic (YYZ-LHR, UK). Online/Interline: Online — all
+  segments marketed and operated by Air Canada (AC 014). Booking class: Z (Business). Rate
+  applied: 4% (Transatlantic table, Online column). Promo check: No active promo applies.
+
+Example (Air Canada, promo overrides base rate — only when the COMMISSION DOCUMENTS
+section actually lists an active promotion matching this invoice's dates and plating
+carrier):
+  Commission QA — Region: Transatlantic (YUL-FRA, Germany). Online/Interline: Online — all
+  segments marketed and operated by the promo's required plating carrier. Booking class: J
+  (Business). Rate applied: <promo rate>% (<promo name>, overrides <base rate>% base —
+  ticketing date and travel date both fall inside the promo's stated windows). Promo
+  check: <promo name> applied.
+
+Example (WestJet, call centre):
+  Commission QA — Network: n/a (WestJet Call Centre booking). Booking class: n/a. Rate
+  applied: 0% — non-commissionable, no further lookup needed. Promo check: n/a.\
 """
 
 

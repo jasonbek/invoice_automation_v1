@@ -88,9 +88,9 @@ app/
 
 docs/
 └── Commissions/                   ← Drop .md files here; loaded at runtime by loader.py
-    ├── Air_Canada_Commission.md   ← AC Accolades rate tables (Appendices 4–11)
-    ├── Westjet.md                 ← WestJet RBD commission table
-    └── Lufthansa -Promotion.md    ← LH Group Business promo (Mar–Jun 2026)
+    ├── Air_Canada_Commission.md   ← AC commission rates, structured as a region/online-
+    │                                 interline/booking-class lookup table (Regions 1–7)
+    └── Westjet.md                 ← WestJet RBD commission table
 ```
 
 ---
