@@ -20,7 +20,7 @@ pip install modal
 # Authenticate with Modal
 modal setup
 
-# Deploy the app (from project root)
+# Deploy the app manually (from project root) — normally NOT needed, see Deployment below
 modal deploy app/main.py
 
 # Run locally for testing (serves on localhost)
@@ -29,9 +29,24 @@ modal serve app/main.py
 # Set the Anthropic API key as a Modal secret
 modal secret create anthropic ANTHROPIC_API_KEY=sk-ant-...
 
-# Syntax check all Python files
-python -m py_compile app/main.py app/agents/markdown_agent.py app/agents/routing_agent.py app/agents/extractors/base.py app/agents/extractors/flight.py app/agents/extractors/tour.py app/agents/extractors/hotel.py app/agents/extractors/cruise.py app/agents/extractors/insurance.py app/agents/extractors/service_fee.py app/agents/extractors/new_traveller.py
+# Syntax check all Python files (same check the CI workflow runs before deploying)
+python -m compileall -q app
 ```
+
+## Deployment
+- **Auto-deploy is live**: pushing to `main` triggers `.github/workflows/deploy.yml`,
+  which runs the syntax check above and then `modal deploy app/main.py` automatically.
+  Commit + push to `main` is enough — no manual `modal deploy` needed for normal changes.
+  If the syntax check fails, the deploy step is skipped (production is left untouched).
+- This also picks up `docs/Commissions/*.md` (Air Canada / WestJet commission rate docs)
+  since that folder is bundled into the container via `add_local_dir()` in `main.py` at
+  deploy time — editing a commission doc and pushing to `main` makes the new rates live.
+- CI auth: GitHub repo secrets `MODAL_TOKEN_ID` / `MODAL_TOKEN_SECRET` (Settings → Secrets
+  and variables → Actions) authenticate the GitHub Actions runner to Modal. These are
+  separate from the `anthropic` Modal secret below, which authenticates the running app
+  to the Anthropic API — don't confuse the two when debugging deploy vs. runtime failures.
+- Manual `modal deploy app/main.py` is only for out-of-band testing (e.g. deploying from
+  a branch other than `main` before it's merged).
 
 ## Architecture (Pipeline)
 ```
