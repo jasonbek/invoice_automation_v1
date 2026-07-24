@@ -18,8 +18,8 @@ jobs:
       - name: Syntax check all Python files
         run: python -m compileall -q app
 
-      - name: Install Modal CLI
-        run: pip install modal
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Deploy to Modal
         env:

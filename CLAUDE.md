@@ -47,6 +47,13 @@ python -m compileall -q app
   to the Anthropic API — don't confuse the two when debugging deploy vs. runtime failures.
 - Manual `modal deploy app/main.py` is only for out-of-band testing (e.g. deploying from
   a branch other than `main` before it's merged).
+- The CI runner installs `requirements.txt` (not just the `modal` package) before
+  deploying. `modal deploy` locally imports `app/main.py` to register the App object, and
+  `main.py` imports `fastapi` at module level (which in turn pulls in `anthropic` via the
+  extractor modules) — without those installed in the runner's env, the import fails
+  before Modal ever gets to auth, and the deploy step fails fast with no useful Modal-side
+  error. `image.pip_install(...)` inside `main.py` only installs packages *inside* the
+  remote container; it does nothing for the CI machine doing the importing.
 
 ## Architecture (Pipeline)
 ```
