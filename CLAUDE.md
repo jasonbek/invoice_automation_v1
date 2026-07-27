@@ -98,6 +98,7 @@ agentmdv2.txt                        # Original monolithic instructions — sour
 |---|---|
 | `air_canada` | Air Canada Internet |
 | `westjet` | Westjet Internet |
+| `vacation_package` | Air Canada Vacations / Westjet Vacations / Sunwing Vacations (packaged air + hotel) |
 | `adx_intair` | ADX (has explicit COMMISSION line) |
 | `expedia` | Expedia TAAP |
 | `travel_brands` | Travel Brands / Intair (tours) |

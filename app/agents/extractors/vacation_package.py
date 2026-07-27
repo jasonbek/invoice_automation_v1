@@ -1,9 +1,9 @@
 """
 Agent 3: Vacation Package Extractor
 
-Handles: Air Canada Vacations, Westjet Vacations — packaged air + hotel bookings
-(flight(s) + hotel stay(s) sold together under one package price, optionally with
-transfers and/or optional trip insurance bundled in).
+Handles: Air Canada Vacations, Westjet Vacations, Sunwing Vacations — packaged air +
+hotel bookings (flight(s) + hotel stay(s) sold together under one package price,
+optionally with transfers and/or optional trip insurance bundled in).
 
 NOTE: Do NOT route here for plain Air Canada Internet / Westjet Internet flight
 tickets — those keep using flight.py with ruleSet "air_canada" / "westjet".
@@ -28,17 +28,31 @@ from app.agents.extractors.base import GLOBAL_RULES, call_claude
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
 PACKAGE_RULES = """\
-VENDOR RULES — AIR CANADA VACATIONS / WESTJET VACATIONS (packaged air + hotel):
+VENDOR RULES — AIR CANADA VACATIONS / WESTJET VACATIONS / SUNWING VACATIONS (packaged air + hotel):
 
 Confirmation number: use the PACKAGE confirmation/booking number (the one that covers the
   whole trip) as confirmationNumber on Tour Screen 1 — NOT an individual flight PNR or a
   hotel-only confirmation number, unless the invoice only shows one number for everything.
+
+BASEPRICE RULE: basePrice is always the GROSS price for the entire booking — the full
+  retail/package price the client is charged for the whole trip (all travellers, flights,
+  hotel, and any bundled transfers/insurance included), converted to CAD if needed. These
+  supplier invoices often ALSO show a lower net/agency-cost figure (the amount left after
+  commission is deducted) — do NOT use that net figure as basePrice. basePrice minus
+  commission should approximately equal that net/agency-cost figure, not the other way
+  around. If the invoice only ever shows one total figure, use that one.
 
 Financials: apply ALL package financials (base price, commission, deposit, total, amount
   owing) on Tour Screen 1 ONLY, exactly as the normal tour rules and GLOBAL_RULES describe
   (invoiceRemarks = client-facing financial block, agentRemarks = currency conversion /
   commission notes if not in CAD). Flight Screen 2 and Hotel Screen 2 carry NO financial
   fields — they are itinerary/detail screens only.
+
+FINAL PAYMENT DUE — invoiceRemarks: ALWAYS append a line to invoiceRemarks (after the
+  GLOBAL_RULES client-facing financial block) in this exact format:
+    Final Payment Due: [MM/DD/YY]
+  Use the same date as finalPaymentDue. If no final payment / balance due date is stated
+  anywhere on the invoice, write "Final Payment Due: Paid in Full" instead.
 
 Screens required — exactly these, nothing else:
   1. ONE "Tour Screen 1 (Summary)" section.
@@ -63,8 +77,8 @@ Optional insurance purchased as part of the package: if the invoice shows the cl
   (plan name, coverage dates/amount if shown) in notesForClient on Hotel Screen 2 — do NOT
   create Insurance Screen 1/2 for this. Insurance screens are ONLY created when the vendor
   on the invoice is literally Manulife Insurance / Manulife (a separate, standalone
-  invoice) — never for insurance bundled into an Air Canada Vacations / Westjet Vacations
-  package.\
+  invoice) — never for insurance bundled into an Air Canada Vacations / Westjet Vacations /
+  Sunwing Vacations package.\
 """
 
 RULE_SET_MAP = {
@@ -89,15 +103,15 @@ SCHEMA
 ### Tour Screen 1 (Summary) — exactly one
 {{
   "dateReserved": "MM/DD/YY",
-  "vendor": "Air Canada Vacations | Westjet Vacations — as classified by the routing agent",
+  "vendor": "Air Canada Vacations | Westjet Vacations | Sunwing Vacations — as classified by the routing agent",
   "confirmationNumber": "String — the PACKAGE confirmation number covering the whole trip",
   "duration": "Number of days (string)",
   "numberOfTravellers": "String",
   "tripType": "International | Transborder | Domestic",
-  "basePrice": "Amount in CAD, 2 decimal places (convert if needed)",
+  "basePrice": "GROSS amount in CAD, 2 decimal places (convert if needed) — the full package price the client pays, NOT the post-commission net/agency-cost figure. See BASEPRICE RULE above.",
   "commission": "Amount in original invoice currency, 2 decimal places — do NOT convert to CAD",
   "finalPaymentDue": "MM/DD/YY",
-  "invoiceRemarks": "Client-facing financial block per GLOBAL RULES (deposit/total/amount owing) plus any promotions or savings.",
+  "invoiceRemarks": "Client-facing financial block per GLOBAL RULES (deposit/total/amount owing) plus any promotions or savings, plus a 'Final Payment Due: [MM/DD/YY]' line per FINAL PAYMENT DUE rule above.",
   "agentRemarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD)"
 }}
 

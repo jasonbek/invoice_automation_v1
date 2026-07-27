@@ -38,6 +38,7 @@ match any Official Name/alias in this table.
 | Air Canada Vacations| Air Canada Vacations, ACV, AC Vacations (packaged air + hotel)    |
 | Westjet Internet    | West Jet, Westjet, WJ (standalone flight ticket — no hotel)       |
 | Westjet Vacations   | Westjet Vacations, WestJet Vacations, WJ Vacations, WJV (packaged air + hotel) |
+| Sunwing Vacations   | Sunwing, Sunwing Vacations, Sunwing Airlines Vacations (packaged air + hotel, all-inclusive) |
 | Expedia TAAP        | Expedia, TAAP                                                     |
 | BedsonLine          | BedsOnline, Beds Online, Beds On Line, BedsonLine (hotel)         |
 | Intair Transit      | Intair, Travel Brands — ONLY when booking type is Flight           |
@@ -56,7 +57,7 @@ match any Official Name/alias in this table.
 RULE SET KEY MAPPING (must use these exact strings):
   air_canada       → Air Canada Internet (standalone flight ticket)
   westjet          → Westjet Internet (standalone flight ticket)
-  vacation_package → Air Canada Vacations OR Westjet Vacations (packaged air + hotel — see below)
+  vacation_package → Air Canada Vacations OR Westjet Vacations OR Sunwing Vacations (packaged air + hotel — see below)
   adx_intair       → ADX / Intair (explicit COMMISSION line present on invoice)
   expedia          → Expedia TAAP
   bedsonline       → BedsonLine
@@ -74,6 +75,9 @@ VACATION PACKAGE DECISION (Air Canada Vacations / Westjet Vacations vs. plain In
   - Invoice letterhead/branding says "WestJet Vacations" / "Westjet Vacations" AND bundles a flight +
     hotel under one package price → vendor = "Westjet Vacations", ruleSet = "vacation_package",
     bookingTypes = ["vacation_package"].
+  - Invoice letterhead/branding says "Sunwing" / "Sunwing Vacations" AND bundles a flight + hotel
+    (all-inclusive resort stay) under one package price → vendor = "Sunwing Vacations",
+    ruleSet = "vacation_package", bookingTypes = ["vacation_package"].
   - Plain "Air Canada" e-ticket/itinerary with ONLY flight segments, no hotel bundled →
     vendor = "Air Canada Internet", ruleSet = "air_canada", bookingTypes = ["flight"] (unchanged).
   - Plain "WestJet" e-ticket/itinerary with ONLY flight segments, no hotel bundled →

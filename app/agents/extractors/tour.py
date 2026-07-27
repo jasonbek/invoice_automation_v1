@@ -23,6 +23,21 @@ from app.agents.extractors.base import GLOBAL_RULES, call_claude
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
+BASEPRICE_AND_FINAL_PAYMENT_RULES = """\
+BASEPRICE RULE: basePrice is always the GROSS price for the entire booking — the full
+  retail/package price the client is charged (all travellers, all inclusions), converted
+  to CAD if needed. Tour supplier invoices often ALSO show a lower net/agency-cost figure
+  (the amount left after commission is deducted) — do NOT use that net figure as basePrice.
+  basePrice minus commission should approximately equal that net/agency-cost figure, not
+  the other way around. If the invoice only ever shows one total figure, use that one.
+
+FINAL PAYMENT DUE — invoiceRemarks: ALWAYS append a line to invoiceRemarks (after the
+  GLOBAL_RULES client-facing financial block) in this exact format:
+    Final Payment Due: [MM/DD/YY]
+  Use the same date as finalPaymentDue. If no final payment / balance due date is stated
+  anywhere on the invoice, write "Final Payment Due: Paid in Full" instead.\
+"""
+
 TRAVEL_BRANDS_RULES = """\
 VENDOR RULES — TRAVEL BRANDS / INTAIR (Tour):
 
@@ -34,15 +49,17 @@ VENDOR RULES — TRAVEL BRANDS / INTAIR (Tour):
     COMMISSION: [raw amount] [currency]
     Invoiced in [currency] by Supplier
     Amounts in CB Converted to CAD on [MM/DD/YY] @ rate of 1 [currency] : [rate] CAD
-- finalPaymentDue: use the "Final Payment Due" or "Balance Due" date on the invoice.\
-"""
+- finalPaymentDue: use the "Final Payment Due" or "Balance Due" date on the invoice.
+
+""" + BASEPRICE_AND_FINAL_PAYMENT_RULES
 
 GENERIC_TOUR_RULES = """\
 VENDOR RULES — GENERIC TOUR OPERATOR:
 
 - Extract commission exactly as shown on the invoice.
-- If invoice is not in CAD, convert to CAD and populate agentRemarks with conversion details.\
-"""
+- If invoice is not in CAD, convert to CAD and populate agentRemarks with conversion details.
+
+""" + BASEPRICE_AND_FINAL_PAYMENT_RULES
 
 RULE_SET_MAP = {
     "travel_brands": TRAVEL_BRANDS_RULES,
@@ -70,10 +87,10 @@ SCHEMA — 2 sections required
   "duration": "Number of days (string)",
   "numberOfTravellers": "String",
   "tripType": "International | Transborder | Domestic",
-  "basePrice": "Amount in CAD, 2 decimal places (convert if needed)",
+  "basePrice": "GROSS amount in CAD, 2 decimal places (convert if needed) — the full package price the client pays, NOT the post-commission net/agency-cost figure. See BASEPRICE RULE above.",
   "commission": "Amount in original invoice currency, 2 decimal places — do NOT convert to CAD",
   "finalPaymentDue": "MM/DD/YY",
-  "invoiceRemarks": "Client-facing notes (discounts, inclusions summary)",
+  "invoiceRemarks": "Client-facing notes (discounts, inclusions summary), plus a 'Final Payment Due: [MM/DD/YY]' line per FINAL PAYMENT DUE rule above.",
   "agentRemarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD)"
 }}
 
