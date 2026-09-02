@@ -27,16 +27,34 @@ MULTI-HOTEL SPLIT RULE (Expedia TAAP and BedsonLine):
 EXPEDIA_RULES = """\
 VENDOR RULES — EXPEDIA TAAP (Hotel):
 
+Step 1 — Find the TAAP SUBTOTAL first:
+  The "TAAP subtotal" is the amount actually charged/collected through Expedia TAAP
+  at time of booking. It is usually labelled "Room price" or "Subtotal" and it
+  INCLUDES "Taxes & fees" but does NOT include anything paid directly to the hotel.
+  It is NOT necessarily the same as a "Total" or "Grand Total" line on the invoice —
+  some invoice layouts print a Total that adds "Due at property" / "City tax" /
+  "Local tax" on top of the TAAP subtotal. If that happens, the Total is HIGHER
+  than the TAAP subtotal and must NOT be used for baseAmount or taxAmount.
+
+  DO NOT include in the TAAP subtotal, under any label: "Due at property",
+  "City tax", "Local tax", "Resort fee (payable at hotel)", or any other amount
+  the invoice says is collected BY THE HOTEL rather than by Expedia/TAAP.
+
 Base amount calculation:
-  The "Room price" or "Subtotal" line on Expedia invoices INCLUDES taxes and fees.
-  Do NOT use it directly as baseAmount.
-  baseAmount = Subtotal (Room price) − Taxes & fees
-  Example: Room price CA $1,402.02 − Taxes & fees CA $127.44 = baseAmount $1,274.58
+  baseAmount = TAAP subtotal − Taxes & fees
+  Example: Room price (TAAP subtotal) CA $1,402.02 − Taxes & fees CA $127.44
+           = baseAmount $1,274.58
 
 Tax amount:
-  taxAmount = the "Taxes & fees" line only.
-  Do NOT include "Due at property" or "City/local tax" — those are paid by the client
-  directly at the hotel and must not appear in taxAmount.
+  taxAmount = the "Taxes & fees" line only (the portion of the TAAP subtotal that
+  is tax). Do NOT include "Due at property" or "City/local tax" — those are paid
+  by the client directly at the hotel and must not appear in taxAmount.
+
+Self-check before finalizing (do this every time):
+  baseAmount + taxAmount MUST equal the TAAP subtotal, and that sum must NOT
+  include any "Due at property" / local / city tax amount. If your baseAmount +
+  taxAmount is larger than the "Room price"/"Subtotal" line, you have
+  accidentally folded in a due-at-property amount — remove it and recompute.
 
 Commission:
   Look for a line labelled "Total Earnings" — this is the commission amount for
@@ -44,8 +62,8 @@ Commission:
 
 Due at property:
   Any "Due at property" or "City/local tax" line is paid by the client directly at
-  the hotel. Do NOT include it in taxAmount. Note it in notesForClient instead:
-  "Due at property: CA $X.XX (city/local tax)"\
+  the hotel. Do NOT include it in baseAmount or taxAmount. Note it in
+  notesForClient instead: "Due at property: CA $X.XX (city/local tax)"\
 """
 
 BEDSONLINE_RULES = """\

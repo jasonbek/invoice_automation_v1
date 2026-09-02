@@ -41,9 +41,18 @@ VENDOR RULES — DAYTRIP:
   (often labelled "Booking ID", "Reservation", or similar). DO NOT prefix with "BR-".
 - One Screen 1 + one Screen 2 per booking on the invoice. If the invoice contains
   multiple separate Daytrip bookings, pair them in order (Screen 1 + Screen 2 per booking).
-- Commission: ALWAYS set commission to "0.00" for Daytrip invoices, even if the
-  invoice explicitly states a commission amount or percentage. Daytrip bookings
-  are treated as non-commissionable by this agency.
+- Commission field: ALWAYS set commission to "0.00" for Daytrip invoices, even if the
+  invoice explicitly states a commission amount or percentage. Daytrip bookings are
+  treated as non-commissionable by this agency — the commission field itself must
+  NEVER carry a Daytrip commission figure.
+- Commission in agentremarks: If the invoice states a commission amount or percentage
+  anywhere, do NOT discard it — record it in agentremarks (never in the commission
+  field) as its own line:
+    "Commission per invoice: [amount or %] (not applied — Daytrip is non-commissionable)"
+  This applies whether or not the invoice is in CAD — it overrides the schema's
+  default of agentremarks = "" for CAD invoices; for Daytrip, agentremarks is only
+  "" if the invoice states no commission AND no currency conversion is needed.
+  If the invoice states no commission at all, do not fabricate this line.
 - Do NOT apply the Viator BR-#### rule.\
 """
 
