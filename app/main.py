@@ -391,17 +391,23 @@ async def receive_inbound_email(request: Request):
         request.headers.get("svix-timestamp", ""),
         request.headers.get("svix-signature", ""),
     ):
+        print("[inbound-email] rejected: invalid webhook signature")
         raise HTTPException(status_code=401, detail="invalid signature")
 
     event = json.loads(raw_body)
-    if event.get("type") != "email.received":
+    event_type = event.get("type")
+    if event_type != "email.received":
+        print(f"[inbound-email] ignored event type: {event_type}")
         return {"status": "ignored"}
 
     data = event.get("data", {})
-    dispatch_inbound_email.spawn(
-        email_id=data.get("email_id", ""),
-        webhook_attachments=data.get("attachments", []),
+    email_id = data.get("email_id", "")
+    attachments = data.get("attachments", [])
+    print(
+        f"[inbound-email] received email_id={email_id} from={data.get('from')} "
+        f"subject={data.get('subject')!r} attachments={len(attachments)}"
     )
+    dispatch_inbound_email.spawn(email_id=email_id, webhook_attachments=attachments)
 
     return {"status": "accepted"}
 
@@ -482,6 +488,10 @@ async def dispatch_inbound_email(email_id: str, webhook_attachments: list[dict])
 
     files_b64 = await build_files_b64(
         email_id, webhook_attachments, os.environ["RESEND_API_KEY"]
+    )
+    print(
+        f"[dispatch_inbound_email] email_id={email_id} built "
+        f"{len(files_b64)} file(s): {[f['filename'] for f in files_b64]}"
     )
 
     run_pipeline.spawn(

@@ -98,6 +98,30 @@ def _parse_eml(raw_bytes: bytes) -> tuple[str, list[dict]]:
     return "\n".join(body_parts), pdf_attachments
 
 
+_IMAGE_MEDIA_TYPES = {"image/jpeg", "image/png", "image/gif", "image/webp"}
+
+
+def _guess_image_media_type(content_type: str, filename: str) -> str | None:
+    """Return a Claude-supported image media type if this file is an image.
+
+    Checks content_type first, then falls back to the filename extension —
+    some sources (e.g. an email attachment) report a generic content_type.
+    """
+    ct = content_type.lower()
+    if ct in _IMAGE_MEDIA_TYPES:
+        return ct
+    lower_name = filename.lower()
+    if lower_name.endswith((".jpg", ".jpeg")):
+        return "image/jpeg"
+    if lower_name.endswith(".png"):
+        return "image/png"
+    if lower_name.endswith(".gif"):
+        return "image/gif"
+    if lower_name.endswith(".webp"):
+        return "image/webp"
+    return None
+
+
 def build_source_blocks(files_b64: list[dict]) -> list[dict]:
     """Build the Anthropic content-block list from uploaded files.
 
@@ -156,9 +180,30 @@ def build_source_blocks(files_b64: list[dict]) -> list[dict]:
             blocks.append({"type": "text", "text": result.value})
 
         else:
-            raw_bytes = base64.b64decode(f["content_b64"])
-            text = raw_bytes.decode("utf-8", errors="replace")
-            blocks.append({"type": "text", "text": text})
+            image_media_type = _guess_image_media_type(ct, filename)
+            if image_media_type:
+                # Real image content (photographed/scanned invoices, or a
+                # decorative itinerary graphic) — send as vision input, not
+                # text. Claude downscales large images internally, so this
+                # costs at most ~1-2k tokens regardless of file size; decoding
+                # the raw bytes as UTF-8 text (the old behavior) could turn a
+                # multi-MB image into hundreds of thousands of garbage tokens.
+                blocks.append(
+                    {
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": image_media_type,
+                            "data": f["content_b64"],
+                        },
+                    }
+                )
+            elif ct.lower().startswith("text/") or filename.lower().endswith((".txt", ".md")):
+                raw_bytes = base64.b64decode(f["content_b64"])
+                text = raw_bytes.decode("utf-8", errors="replace")
+                blocks.append({"type": "text", "text": text})
+            # else: unrecognized binary format — skip rather than risk
+            # garbling it into the prompt as text.
 
     return blocks
 
