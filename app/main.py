@@ -14,11 +14,15 @@ the pipeline also POSTs the JSON payload to that URL.
 
 import base64
 import io
+import json
+import os
 import zipfile
 
 import modal
-from fastapi import FastAPI, File, Form, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse
+
+from app.inbound import verify_resend_signature
 
 # ── Modal app setup ────────────────────────────────────────────────────────────
 
@@ -39,6 +43,7 @@ image = (
 
 ANTHROPIC_SECRET = modal.Secret.from_name("anthropic")
 RESEND_SECRET = modal.Secret.from_name("resend")
+RESEND_WEBHOOK_SECRET = modal.Secret.from_name("resend_webhook")
 
 # ── Web form HTML ──────────────────────────────────────────────────────────────
 
@@ -369,6 +374,38 @@ async def receive_invoice_json(request: Request):
     return {"status": "accepted", "files_received": len(body.get("files", []))}
 
 
+@web_app.post("/inbound-email", status_code=202)
+async def receive_inbound_email(request: Request):
+    """
+    Resend "Receiving" webhook target — lets an invoice be processed by
+    forwarding the supplier email to a Resend receiving address instead of
+    using /form. Verifies the webhook signature, then hands off the actual
+    fetch-and-process work to dispatch_inbound_email() so this responds fast.
+    """
+    raw_body = await request.body()
+
+    if not verify_resend_signature(
+        os.environ["RESEND_WEBHOOK_SECRET"],
+        raw_body,
+        request.headers.get("svix-id", ""),
+        request.headers.get("svix-timestamp", ""),
+        request.headers.get("svix-signature", ""),
+    ):
+        raise HTTPException(status_code=401, detail="invalid signature")
+
+    event = json.loads(raw_body)
+    if event.get("type") != "email.received":
+        return {"status": "ignored"}
+
+    data = event.get("data", {})
+    dispatch_inbound_email.spawn(
+        email_id=data.get("email_id", ""),
+        webhook_attachments=data.get("attachments", []),
+    )
+
+    return {"status": "accepted"}
+
+
 # ── Traveller name extraction ──────────────────────────────────────────────────
 
 def _extract_traveller_name(sections: list[dict], markdown: str = "") -> str:
@@ -429,6 +466,31 @@ def _extract_traveller_name(sections: list[dict], markdown: str = "") -> str:
                 return name
 
     return "Unknown"
+
+
+# ── Inbound email dispatch (Resend Receiving → run_pipeline) ───────────────────
+
+@app.function(image=image, secrets=[RESEND_SECRET], timeout=60)
+async def dispatch_inbound_email(email_id: str, webhook_attachments: list[dict]):
+    """
+    Fetch a received email's body/attachments from Resend, then spawn the same
+    run_pipeline() the manual /form upload uses. Kept separate from the
+    /inbound-email route so the webhook responds immediately (Resend expects a
+    fast ack) instead of waiting on attachment downloads.
+    """
+    from app.inbound import build_files_b64
+
+    files_b64 = await build_files_b64(
+        email_id, webhook_attachments, os.environ["RESEND_API_KEY"]
+    )
+
+    run_pipeline.spawn(
+        vendor="",
+        callback_url="",
+        service_fee=0.0,
+        booking_type_hint="",
+        files_b64=files_b64,
+    )
 
 
 # ── Background pipeline function ───────────────────────────────────────────────
@@ -513,7 +575,7 @@ async def run_pipeline(
 
 # ── Modal ASGI entrypoint ──────────────────────────────────────────────────────
 
-@app.function(image=image, secrets=[ANTHROPIC_SECRET, RESEND_SECRET])
+@app.function(image=image, secrets=[ANTHROPIC_SECRET, RESEND_SECRET, RESEND_WEBHOOK_SECRET])
 @modal.asgi_app()
 def fastapi_entrypoint():
     return web_app

@@ -126,6 +126,17 @@ agentmdv2.txt                        # Original monolithic instructions — sour
 }
 ```
 
+## Inbound Email (Resend Receiving)
+`POST /inbound-email` lets an invoice be processed by forwarding the supplier email to a
+Resend receiving address, instead of using `/form`. Resend POSTs an `email.received`
+webhook (metadata only — sender, subject, attachment list); `app/inbound.py` verifies the
+Svix-based webhook signature, then fetches the actual body/attachment content via the
+Resend Receiving API and hands off to the same `run_pipeline()` the manual upload uses.
+See `app/inbound.py` for the fetch/verify logic and `app/main.py`'s
+`receive_inbound_email` / `dispatch_inbound_email` for the route + dispatch split (the
+route responds immediately; attachment fetching happens in the spawned function so the
+webhook ack isn't held up).
+
 ## Adding New Vendors or Booking Types
 1. Add vendor alias to `SYSTEM_PROMPT` in `app/agents/routing_agent.py`
 2. Add a new `ruleSet` key and rules constant in the relevant extractor file
@@ -134,3 +145,8 @@ agentmdv2.txt                        # Original monolithic instructions — sour
 
 ## Modal Secrets Required
 - `anthropic` → contains `ANTHROPIC_API_KEY`
+- `resend` → contains `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` (outbound results email
+  via `app/email_sender.py`, and inbound Receiving API calls via `app/inbound.py`)
+- `resend_webhook` → contains `RESEND_WEBHOOK_SECRET` (the `whsec_...` signing secret
+  Resend issues for the inbound Receiving webhook — verifies `POST /inbound-email`
+  requests are actually from Resend; see `app/inbound.py`)
