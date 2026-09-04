@@ -43,7 +43,7 @@ image = (
 
 ANTHROPIC_SECRET = modal.Secret.from_name("anthropic")
 RESEND_SECRET = modal.Secret.from_name("resend")
-RESEND_WEBHOOK_SECRET = modal.Secret.from_name("resend_webhook")
+RESEND_WEBHOOK_SECRET = modal.Secret.from_name("Invoice_Automation_v2")
 
 # ── Web form HTML ──────────────────────────────────────────────────────────────
 

@@ -147,6 +147,6 @@ webhook ack isn't held up).
 - `anthropic` → contains `ANTHROPIC_API_KEY`
 - `resend` → contains `RESEND_API_KEY`, `FROM_EMAIL`, `TO_EMAIL` (outbound results email
   via `app/email_sender.py`, and inbound Receiving API calls via `app/inbound.py`)
-- `resend_webhook` → contains `RESEND_WEBHOOK_SECRET` (the `whsec_...` signing secret
-  Resend issues for the inbound Receiving webhook — verifies `POST /inbound-email`
+- `Invoice_Automation_v2` → contains `RESEND_WEBHOOK_SECRET` (the `whsec_...` signing
+  secret Resend issues for the inbound Receiving webhook — verifies `POST /inbound-email`
   requests are actually from Resend; see `app/inbound.py`)
