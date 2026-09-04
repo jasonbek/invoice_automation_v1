@@ -67,7 +67,9 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
     · "Insight Vacations" → "Insight Vacations (Canada) Ltd"
     · "Beds Online" / "BedsOnline" / "Beds On Line" → "BedsonLine"
     · "Intrepid" → "Intrepid Travel"
-- Output: Return ONLY the JSON array described in the schema. No prose, no code fences.\
+- Output: Return ONLY the JSON array described in the schema. No prose, no code fences,
+  and nothing after the array's closing bracket — no repeated/alternate version of the
+  array, no explanation, no commentary of any kind.\
 """
 
 
@@ -139,12 +141,22 @@ async def call_claude(
         raw = raw.strip()
 
     try:
-        parsed = json.loads(raw)
+        # Parse only the first valid JSON value and ignore anything after it.
+        # Claude occasionally appends extra content after a complete, correctly
+        # closed array (self-correction, restated output, stray commentary) —
+        # json.loads() would hard-fail on that "extra data" even though the
+        # array itself parsed fine. raw_decode() tolerates a trailing tail.
+        parsed, end_index = json.JSONDecoder().raw_decode(raw)
+        trailing = raw[end_index:].strip()
+        if trailing:
+            safe_trailing = trailing[:1000].encode("ascii", "replace").decode("ascii")
+            print(f"[call_claude] ignoring {len(trailing)} chars of trailing data "
+                  f"after a valid JSON value: {safe_trailing!r}")
     except json.JSONDecodeError as e:
-        safe_preview = raw[:500].encode("ascii", "replace").decode("ascii")
+        safe_preview = raw[:2000].encode("ascii", "replace").decode("ascii")
         print(f"[call_claude] JSON parse failed: {e}")
         print(f"[call_claude] stop_reason={message.stop_reason!r}  content_length={len(raw)}")
-        print(f"[call_claude] raw response (first 500 chars): {safe_preview!r}")
+        print(f"[call_claude] raw response (first 2000 chars): {safe_preview!r}")
         raise
 
     if not isinstance(parsed, list):
