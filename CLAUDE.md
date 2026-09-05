@@ -127,15 +127,42 @@ agentmdv2.txt                        # Original monolithic instructions — sour
 ```
 
 ## Inbound Email (Resend Receiving)
-`POST /inbound-email` lets an invoice be processed by forwarding the supplier email to a
-Resend receiving address, instead of using `/form`. Resend POSTs an `email.received`
-webhook (metadata only — sender, subject, attachment list); `app/inbound.py` verifies the
-Svix-based webhook signature, then fetches the actual body/attachment content via the
-Resend Receiving API and hands off to the same `run_pipeline()` the manual upload uses.
-See `app/inbound.py` for the fetch/verify logic and `app/main.py`'s
-`receive_inbound_email` / `dispatch_inbound_email` for the route + dispatch split (the
-route responds immediately; attachment fetching happens in the spawned function so the
-webhook ack isn't held up).
+`POST /inbound-email` lets an invoice be processed by forwarding the supplier email to
+`invoices@invoicingtravel.beksautomate.me` (a dedicated receiving subdomain), instead of
+using `/form`. Resend POSTs an `email.received` webhook (metadata only — sender, subject,
+attachment list); `app/inbound.py` verifies the Svix-based webhook signature, then
+fetches the actual body/attachment content via the Resend Receiving API and hands off to
+the same `run_pipeline()` the manual upload uses. See `app/inbound.py` for the
+fetch/verify logic and `app/main.py`'s `receive_inbound_email` / `dispatch_inbound_email`
+for the route + dispatch split (the route responds immediately; attachment fetching
+happens in the spawned function so the webhook ack isn't held up).
+
+The route also checks the `to` address against `@invoicingtravel.beksautomate.me` and
+ignores anything else (added 2026-09-05, see git history) — this Resend account also
+receives inbound email for an unrelated project (`sds.beksautomate.me`), and that
+project's mail was observed reaching this webhook too despite being a separate
+subdomain. This filter is a defensive stopgap, not a fix for that cross-delivery — if it
+resurfaces, check the Resend dashboard's Webhooks page for how many webhooks exist and
+what each is actually scoped to.
+
+## Invoice Automation 2.0 — mobile / ClientBase agent (Phase 1)
+A separate, phone-driven agent that logs into ClientBase Online and fills in reservation
+screens from this pipeline's JSON output — replacing the manual UI.Vision paste step —
+lives in a sibling project, not this repo: `c:\Users\projectpc\clientbase-filer`
+(private repo: `github.com/jasonbek/clientbase-filer`). It's a Claude Code session driven
+via Remote Control, using the Browserbase MCP server for browser automation, with its own
+`CLAUDE.md` (hard rules: screenshot/text-summary approval before every Save, human-only
+login via a Browserbase Live View link, never touch this or that machine's login form)
+and `NAVIGATION.md` (ClientBase screen/field reference, built from the user's UI.Vision
+macros and confirmed live against real invoices, including a real ADX booking).
+
+This repo's extraction pipeline is unmodified by that work and stays the source of truth
+for JSON schemas/business rules — the ClientBase agent only consumes what this pipeline
+already produces. Full rollout plan, current phase status, and open follow-ups (a
+cost-optimization pass to cut that agent's per-invoice token spend, and a possible future
+move to a self-hosted Browserbase MCP server for persistent login) are tracked in
+this project's Claude memory, not here — ask a fresh session to check memory for
+"invoice automation 2.0" if picking this up cold.
 
 ## Adding New Vendors or Booking Types
 1. Add vendor alias to `SYSTEM_PROMPT` in `app/agents/routing_agent.py`
