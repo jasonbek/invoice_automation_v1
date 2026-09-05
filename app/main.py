@@ -401,6 +401,18 @@ async def receive_inbound_email(request: Request):
         return {"status": "ignored"}
 
     data = event.get("data", {})
+
+    # Defense in depth: only process mail actually addressed to our dedicated
+    # intake domain. This account also runs inbound email for another,
+    # unrelated project (sds.beksautomate.me) — if a webhook is ever
+    # misconfigured (or Resend delivers more broadly than expected), this
+    # keeps that project's mail from being run through this pipeline.
+    INBOUND_DOMAIN = "@invoicingtravel.beksautomate.me"
+    to_addresses = data.get("to", [])
+    if not any(addr.lower().endswith(INBOUND_DOMAIN) for addr in to_addresses):
+        print(f"[inbound-email] ignored: not addressed to {INBOUND_DOMAIN} (to={to_addresses})")
+        return {"status": "ignored"}
+
     email_id = data.get("email_id", "")
     attachments = data.get("attachments", [])
     print(
