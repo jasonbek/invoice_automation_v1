@@ -1,7 +1,7 @@
 """
 Agent 3a: Flight Extractor
 
-Handles: Air Canada Internet, Westjet Internet, ADX/Intair, Intair Transit, Expedia TAAP,
+Handles: Air Canada Internet, KLM Royal Dutch Airlines, Westjet Internet, ADX/Intair, Intair Transit, Expedia TAAP,
 Tourcan Vacations, generic airlines.
 Outputs 3 sections: Summary, Segments (array), Passenger Details (array).
 
@@ -18,6 +18,12 @@ from app.agents.commissions.loader import load_all as _load_commission_docs
 # These contain business logic (what commission applies to, exclusions, etc.).
 # Rate tables are NOT here — they come from the loaded commission documents.
 
+_ACTOT_RULE = """\
+Mandatory Tour Code: ACTOT is required in the tour code box for ALL destinations EXCEPT
+  North America and Sun destinations. If ACTOT is missing or incorrect, add this to
+  invoiceRemarks: "ACTOT REQUIRED — VERIFY: ticketing error fee applies (min $50)"\
+"""
+
 AIR_CANADA_RULES = """\
 VENDOR RULES — AIR CANADA INTERNET:
 
@@ -26,9 +32,7 @@ Exclusions: Do NOT apply commission to taxes, change fees, seat selection fees, 
   upgrades, infants not occupying a seat, SMB tickets (PN#), corporate contract tickets,
   Aeroplan redemption tickets, industry reduced rates, ACV air-only tickets, net/IT/BT fares.
 
-Mandatory Tour Code: ACTOT is required in the tour code box for ALL destinations EXCEPT
-  North America and Sun destinations. If ACTOT is missing or incorrect, add this to
-  invoiceRemarks: "ACTOT REQUIRED — VERIFY: ticketing error fee applies (min $50)"
+""" + _ACTOT_RULE + """
 
 COMMISSION RATE LOOKUP — the COMMISSION DOCUMENTS section below is a structured lookup
   table built for this exact 4-step procedure. Do NOT skip a step, do NOT eyeball the
@@ -72,6 +76,21 @@ COMMISSION RATE LOOKUP — the COMMISSION DOCUMENTS section below is a structure
 COMMISSION OUTPUT (commpercent): Always the raw percentage rate from Step 3/4 above (e.g.
   "3%") — never compute or output a dollar amount. This rate is calculated on the passenger's
   base fare only — never against surcharges, taxes, fees, or the passenger's all-in total.\
+"""
+
+# KLM invoices are handled like Air Canada Internet (same screens, same ACTOT note), but
+# there are no KLM commission tables — commission is always 0%.
+KLM_RULES = """\
+VENDOR RULES — KLM ROYAL DUTCH AIRLINES (handled like Air Canada Internet):
+
+vendorName: always "KLM Royal Dutch Airlines".
+
+""" + _ACTOT_RULE + """
+
+COMMISSION OUTPUT (commpercent): ALWAYS "0%" for every passenger ($0 commission). There are
+  no KLM commission tables — IGNORE any instruction below about looking the rate up in
+  COMMISSION DOCUMENTS; do NOT estimate or calculate a rate, and do NOT use any commission
+  figure shown on the invoice. Leave agentremarks empty (no Commission QA block).\
 """
 
 WESTJET_RULES = """\
@@ -145,6 +164,7 @@ Use the standard PNR code as recordLocator.\
 
 RULE_SET_MAP = {
     "air_canada": AIR_CANADA_RULES,
+    "klm": KLM_RULES,
     "westjet": WESTJET_RULES,
     "adx_intair": ADX_INTAIR_RULES,
     "travel_brands": INTAIR_TRANSIT_RULES,
@@ -157,18 +177,18 @@ _COMMISSION_DOC_VENDORS = {"air_canada", "westjet"}
 
 # Vendors that use per-passenger ticketing in ClientBase Screen 3 —
 # totalBase/totalTax/totalCommission are NOT needed on Screen 1 for these.
-_TICKETING_VENDORS = {"air_canada", "westjet", "adx_intair"}
+_TICKETING_VENDORS = {"air_canada", "klm", "westjet", "adx_intair"}
 
 # Vendors that do NOT use a passenger details screen (Screen 3) at all.
 _NO_PASSENGER_SCREEN_VENDORS = {"tourcan"}
 
 # Vendors whose Screen 3 commission field is a looked-up rate (commpercent), not an
 # invoice-extracted value (commission).
-_COMMPERCENT_VENDORS = {"air_canada", "westjet"}
+_COMMPERCENT_VENDORS = {"air_canada", "klm", "westjet"}
 
 # ── Section 1 schema variants ──────────────────────────────────────────────────
 
-# Used for air_canada, westjet, adx_intair — totals live in Screen 3 per passenger.
+# Used for air_canada, klm, westjet, adx_intair — totals live in Screen 3 per passenger.
 _SECTION1_SUMMARY_ONLY = """\
 ### SECTION 1 — Flight Summary
 {{

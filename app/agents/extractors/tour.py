@@ -31,11 +31,11 @@ BASEPRICE RULE: basePrice is always the GROSS price for the entire booking — t
   basePrice minus commission should approximately equal that net/agency-cost figure, not
   the other way around. If the invoice only ever shows one total figure, use that one.
 
-FINAL PAYMENT DUE — invoiceRemarks: ALWAYS append a line to invoiceRemarks (after the
-  GLOBAL_RULES client-facing financial block) in this exact format:
-    Final Payment Due: [MM/DD/YY]
-  Use the same date as finalPaymentDue. If no final payment / balance due date is stated
-  anywhere on the invoice, write "Final Payment Due: Paid in Full" instead.\
+FINAL PAYMENT DUE — invoiceRemarks: the "Final Payment Due" line is part of the GLOBAL_RULES
+  client-facing financial block — use the same date as finalPaymentDue.
+
+DESCRIPTION LENGTH: Screen 2 description MUST be 30 characters or less (count spaces).
+  Use a short tour name/label only (e.g. "Italy Highlights Tour") — never a sentence.\
 """
 
 TRAVEL_BRANDS_RULES = """\
@@ -90,7 +90,7 @@ SCHEMA — 2 sections required
   "basePrice": "GROSS amount in CAD, 2 decimal places (convert if needed) — the full package price the client pays, NOT the post-commission net/agency-cost figure. See BASEPRICE RULE above.",
   "commission": "Amount in original invoice currency, 2 decimal places — do NOT convert to CAD",
   "finalPaymentDue": "MM/DD/YY",
-  "invoiceRemarks": "Client-facing notes (discounts, inclusions summary), plus a 'Final Payment Due: [MM/DD/YY]' line per FINAL PAYMENT DUE rule above.",
+  "invoiceRemarks": "GLOBAL_RULES financial block (including the 'Final Payment Due' line), then client-facing notes (discounts, inclusions summary).",
   "agentRemarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD)"
 }}
 
@@ -100,7 +100,7 @@ SCHEMA — 2 sections required
   "startDate": "MM/DD/YY",
   "endDate": "MM/DD/YY",
   "category": "Category, class, or tier code if shown",
-  "description": "High-level tour description (1–2 sentences)",
+  "description": "Short tour name/label — 30 characters MAX (see DESCRIPTION LENGTH rule)",
   "clientFeedback": {client_feedback_rules}
 }}
 
@@ -173,8 +173,14 @@ _CLIENT_FEEDBACK_RULES = (
     "'day at leisure', 'days at leisure', or similar, AND no other Transportation / Accommodation / "
     "Tour events exist for that day, the Headline is exactly 'At leisure'. A date range such as "
     "'Tuesday October 20 – Wednesday October 21, 2026: Days at leisure' marks EACH calendar day in "
-    "that range as 'At leisure'. NEVER use 'At leisure' as a fallback for days the document does "
-    "not cover.\\n\\n"
+    "that range as 'At leisure'. NEVER use 'At leisure', 'Day at leisure', 'Free day' or any similar "
+    "wording as a fallback — ONLY when the supplier document explicitly says so for that day.\\n\\n"
+    "═══ BLANK DAY RULE ═══\\n"
+    "If a day between startDate and endDate has NO explicit information in the supplier document "
+    "(no transportation, check-in/check-out, tour, heading, or explicit 'at leisure'), still emit the "
+    "row but leave the Headline BLANK, and leave Location blank too unless the document explicitly "
+    "states a location for that day. Format: 'Day N | MM/DD/YYYY |  | '. Do NOT fill the gap with "
+    "'At leisure', 'Free day', 'Continue stay', or any other invented text.\\n\\n"
     "═══ OWN ARRANGEMENTS RULE — strict ═══\\n"
     "- If a heading or date range says 'OWN ARRANGEMENTS', 'OWN ARRAGEMENTS' (accept this misspelling), "
     "'Own arrangements', or 'Own arrangement', SKIP those days ENTIRELY. Do NOT emit a row. "

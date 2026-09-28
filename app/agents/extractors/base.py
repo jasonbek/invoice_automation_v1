@@ -49,6 +49,12 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
     Deposit: $[amount] [currency]
     Total: $[amount] [currency]
     Amount owing: $[amount] [currency]
+    Final Payment Due: [MM/DD/YY]
+  Final Payment Due is REQUIRED on every booking type (tours, cruises, hotels, flights,
+  rail, day tours, insurance, vacation packages — all of them). Use the final payment /
+  balance due date stated on the invoice (the same date as any finalPaymentDue /
+  finalpymntduedate field on the screen). If no final payment / balance due date is
+  stated anywhere on the invoice, write "Final Payment Due: Paid in Full" instead.
   All three financial lines (Deposit / Total / Amount owing) use the SUPPLIER'S
   ORIGINAL INVOICE CURRENCY — NOT converted to CAD. If the invoice IS in CAD,
   the currency is CAD.

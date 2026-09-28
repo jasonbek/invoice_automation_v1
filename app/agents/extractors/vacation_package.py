@@ -48,11 +48,8 @@ Financials: apply ALL package financials (base price, commission, deposit, total
   commission notes if not in CAD). Flight Screen 2 and Hotel Screen 2 carry NO financial
   fields — they are itinerary/detail screens only.
 
-FINAL PAYMENT DUE — invoiceRemarks: ALWAYS append a line to invoiceRemarks (after the
-  GLOBAL_RULES client-facing financial block) in this exact format:
-    Final Payment Due: [MM/DD/YY]
-  Use the same date as finalPaymentDue. If no final payment / balance due date is stated
-  anywhere on the invoice, write "Final Payment Due: Paid in Full" instead.
+FINAL PAYMENT DUE — invoiceRemarks: the "Final Payment Due" line is part of the GLOBAL_RULES
+  client-facing financial block — use the same date as finalPaymentDue.
 
 Screens required — exactly these, nothing else:
   1. ONE "Tour Screen 1 (Summary)" section.

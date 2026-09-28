@@ -97,6 +97,7 @@ agentmdv2.txt                        # Original monolithic instructions — sour
 | ruleSet | Vendor |
 |---|---|
 | `air_canada` | Air Canada Internet |
+| `klm` | KLM Royal Dutch Airlines (handled like Air Canada Internet, commission always 0%) |
 | `westjet` | Westjet Internet |
 | `vacation_package` | Air Canada Vacations / Westjet Vacations / Sunwing Vacations (packaged air + hotel) |
 | `adx_intair` | ADX (has explicit COMMISSION line) |

@@ -113,7 +113,7 @@ shows multiple distinct bookings). Pair it immediately with its matching Screen 
   "serviceProviderName": "Operator name (matches vendor field)",
   "startDate": "MM/DD/YY — date of the earliest day tour",
   "endDate": "MM/DD/YY — date of the latest day tour",
-  "description": "Short overall description of the booking (1–2 sentences)",
+  "description": "Short tour name/label — 30 characters MAX including spaces, never a sentence",
   "invoiceRemarks": "Client-facing notes — include individual activity/itinerary numbers here, promotions, inclusions summary, voucher info",
   "agentremarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD — use \"\" if CAD)"
 }
@@ -125,7 +125,7 @@ Paired with its Screen 1 above, in the same order.
   "serviceProviderName": "End supplier / operator name — the actual activity provider (this may differ from the booking vendor on Screen 1)",
   "startDate": "MM/DD/YY — tour date",
   "endDate": "MM/DD/YY — same as startDate for a single-day activity",
-  "description": "Short description of this specific tour/activity (1–2 sentences)",
+  "description": "Short name/label of this specific tour/activity — 30 characters MAX including spaces, never a sentence",
   "clientfeedback": "Everything the traveller needs to prepare: start time, meeting point, duration, what to bring, dress code, cancellation policy, voucher redemption instructions, etc. Plain text with line breaks. NO pricing or financial figures.",
   "agentremarks": "Agent notes if applicable — use \"\" if none"
 }

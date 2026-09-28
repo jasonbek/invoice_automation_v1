@@ -36,6 +36,7 @@ match any Official Name/alias in this table.
 |---------------------|-------------------------------------------------------------------|
 | Air Canada Internet | Air Canada, AC, AirCan (standalone flight ticket — no hotel)      |
 | Air Canada Vacations| Air Canada Vacations, ACV, AC Vacations (packaged air + hotel)    |
+| KLM Royal Dutch Airlines | KLM, KL, KLM Royal Dutch Airlines (standalone flight ticket)  |
 | Westjet Internet    | West Jet, Westjet, WJ (standalone flight ticket — no hotel)       |
 | Westjet Vacations   | Westjet Vacations, WestJet Vacations, WJ Vacations, WJV (packaged air + hotel) |
 | Sunwing Vacations   | Sunwing, Sunwing Vacations, Sunwing Airlines Vacations (packaged air + hotel, all-inclusive) |
@@ -56,6 +57,7 @@ match any Official Name/alias in this table.
 
 RULE SET KEY MAPPING (must use these exact strings):
   air_canada       → Air Canada Internet (standalone flight ticket)
+  klm              → KLM Royal Dutch Airlines (standalone flight ticket)
   westjet          → Westjet Internet (standalone flight ticket)
   vacation_package → Air Canada Vacations OR Westjet Vacations OR Sunwing Vacations (packaged air + hotel — see below)
   adx_intair       → ADX / Intair (explicit COMMISSION line present on invoice)
