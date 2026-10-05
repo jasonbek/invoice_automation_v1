@@ -118,8 +118,18 @@ ADX_INTAIR_RULES = """\
 VENDOR RULES — ADX / INTAIR:
 
 Commission: If the invoice has an explicit line labelled "COMMISSION" with a dollar amount
-  (e.g., "CAD $75.00"), use THAT EXACT figure for totalCommission and commission.
-  Do NOT calculate percentages — use the number verbatim.
+  (e.g., "CAD $75.00"), that is the INVOICE commission. ADX holds back 15% of it without
+  showing this on the invoice, so the commission to ENTER is the invoice amount x 0.85
+  (rounded to 2 decimals). Example: invoice says $200.00 -> enter 170.00.
+  Use the reduced figure for totalCommission and commission (per-passenger commission: apply
+  the same 15% reduction to each passenger's invoice commission amount).
+  Do NOT calculate percentages. This 15% holdback applies to ADX only.
+
+  agentremarks (Screen 1) MUST include this note, with the real amounts:
+    "Commission on the invoice is $[invoice amount], but the commission amount is entered as
+    $[invoice amount - 15%] to account for the amount held back."
+  Example: "Commission on the invoice is $200.00, but the commission amount is entered as
+    $170.00 to account for the amount held back."
 
 Locator fields (map from invoice labels):
   confirmationNumber = value next to "TRIP REF" label on invoice
@@ -198,7 +208,7 @@ _SECTION1_SUMMARY_ONLY = """\
   "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
   "duration": <integer — total trip days>,
   "invoiceRemarks": "Seat selections block (see rules below).",
-  "agentremarks": "Commission QA trail — see RATIONALE REQUIREMENT below for the required format (Air Canada/WestJet). For other vendors, leave empty."
+  "agentremarks": "Commission QA trail — see RATIONALE REQUIREMENT below for the required format (Air Canada/WestJet). For ADX, the 15% holdback commission note from the vendor rules. For other vendors, leave empty."
 }}\
 """
 
