@@ -79,7 +79,7 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 """
 
 
-async def call_claude(
+async def _call_claude_once(
     system_prompt: str,
     user_content: str | list[dict],
     max_tokens: int = 4096,
@@ -169,3 +169,25 @@ async def call_claude(
         raise ValueError(f"Expected JSON array from extractor, got: {type(parsed)}")
 
     return parsed
+
+
+async def call_claude(
+    system_prompt: str,
+    user_content: str | list[dict],
+    max_tokens: int = 4096,
+) -> list[dict]:
+    """call_claude with retries when the model replies with something that isn't JSON.
+
+    Occasionally the model answers with plain prose (e.g. just the client-facing
+    financial block) instead of the JSON array. That's non-deterministic, so a fresh
+    attempt almost always succeeds. Other errors (API failures, wrong type) still raise.
+    """
+    parse_retries = 2
+    for attempt in range(parse_retries + 1):
+        try:
+            return await _call_claude_once(system_prompt, user_content, max_tokens)
+        except json.JSONDecodeError:
+            if attempt >= parse_retries:
+                raise
+            print(f"[call_claude] non-JSON response, retrying "
+                  f"(attempt {attempt + 1}/{parse_retries})")
