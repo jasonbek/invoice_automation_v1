@@ -32,6 +32,17 @@ to re-litigate the vendor. Only infer the vendor purely from invoice content whe
 hint is blank, generic (e.g., a bare carrier code, "invoice", "unknown"), or does not
 match any Official Name/alias in this table.
 
+ULTIMATE SUPPLIER OVERRIDE (highest priority): Some flights are booked directly with the
+airline (Air Canada, KLM, WestJet — airline rules apply), but others are arranged by an
+intermediary supplier — usually ADX or Tourcan Vacations (also Intair Transit, Travel
+Brands, Expedia TAAP) — whose booking merely INCLUDES flights on airlines such as KLM or
+Air Canada. When the VENDOR HINT names such a supplier, that supplier is the ULTIMATE
+supplier: vendor and ruleSet MUST be that supplier's (e.g. ADX → "adx_intair", Tourcan →
+"tourcan"), even if the flights on the invoice are operated by KLM, Air Canada, WestJet,
+etc. Airline names, airline logos, and airline e-ticket formatting inside the invoice do
+NOT change the vendor or ruleSet. Never pick air_canada / klm / westjet in this case.
+Treat the hint as the user's explicit direction and give it heavy weight.
+
 | Official Name       | Aliases / Triggers                                                |
 |---------------------|-------------------------------------------------------------------|
 | Air Canada Internet | Air Canada, AC, AirCan (standalone flight ticket — no hotel)      |

@@ -78,14 +78,14 @@ COMMISSION OUTPUT (commpercent): Always the raw percentage rate from Step 3/4 ab
   base fare only — never against surcharges, taxes, fees, or the passenger's all-in total.\
 """
 
-# KLM invoices are handled like Air Canada Internet (same screens, same ACTOT note), but
+# KLM invoices are handled like Air Canada Internet (same screens, but no ACTOT note), and
 # there are no KLM commission tables — commission is always 0%.
 KLM_RULES = """\
 VENDOR RULES — KLM ROYAL DUTCH AIRLINES (handled like Air Canada Internet):
 
 vendorName: always "KLM Royal Dutch Airlines".
 
-""" + _ACTOT_RULE + """
+Do NOT add any ACTOT tour code note to invoiceRemarks for KLM.
 
 COMMISSION OUTPUT (commpercent): ALWAYS "0%" for every passenger ($0 commission). There are
   no KLM commission tables — IGNORE any instruction below about looking the rate up in
@@ -116,6 +116,11 @@ COMMISSION OUTPUT (commpercent): Always the raw percentage rate from the table a
 
 ADX_INTAIR_RULES = """\
 VENDOR RULES — ADX / INTAIR:
+
+SUPPLIER PRECEDENCE: ADX is the ultimate supplier. The flights on this invoice may be
+  operated by Air Canada, KLM, WestJet or others, but the AIRLINE's own vendor rules do NOT
+  apply here — no airline commission tables or rates, no KLM 0% rule, and NO ACTOT tour code
+  note ("ACTOT REQUIRED — VERIFY..."). Only the ADX rules below apply.
 
 Commission: If the invoice has an explicit line labelled "COMMISSION" with a dollar amount
   (e.g., "CAD $75.00"), that is the INVOICE commission. ADX holds back 15% of it without
@@ -158,6 +163,11 @@ Booking Fee / Ticket Fee: Intair Transit invoices often show a "Booking Fee" and
 
 TOURCAN_RULES = """\
 VENDOR RULES — TOURCAN VACATIONS:
+
+SUPPLIER PRECEDENCE: Tourcan is the ultimate supplier. The flights on this invoice may be
+  operated by Air Canada, KLM, WestJet or others, but the AIRLINE's own vendor rules do NOT
+  apply here — no airline commission tables or rates, no KLM 0% rule, and NO ACTOT tour code
+  note ("ACTOT REQUIRED — VERIFY..."). Only the Tourcan rules below apply.
 
 Commission: The invoice has a line with a negative dollar amount at the end
   (e.g., "TOTAL CREDIT -75.00"). This negative amount IS the agency commission — it is
