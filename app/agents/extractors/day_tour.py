@@ -114,7 +114,7 @@ shows multiple distinct bookings). Pair it immediately with its matching Screen 
   "startDate": "MM/DD/YY — date of the earliest day tour",
   "endDate": "MM/DD/YY — date of the latest day tour",
   "description": "Short tour name/label — 30 characters MAX including spaces, never a sentence",
-  "invoiceRemarks": "Client-facing notes — include individual activity/itinerary numbers here, promotions, inclusions summary, voucher info",
+  "invoiceRemarks": "GLOBAL_RULES financial block (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing / Final Payment Due: [same date as finalPaymentDue], or Final Payment Due: Paid in Full if no date is stated), then client-facing notes — include individual activity/itinerary numbers here, promotions, inclusions summary, voucher info",
   "agentremarks": "Currency conversion + financial notes (REQUIRED if invoice is not in CAD — use \"\" if CAD)"
 }
 

@@ -81,7 +81,7 @@ One section only. Covers the full booking overview and financials.
   "totalBase": <total rail fare, 2 decimal places>,
   "totalTax": <taxes and fees if shown on invoice, 2 decimal places — use "" if none>,
   "totalCommission": "0% — unless invoice shows an explicit commission figure",
-  "invoiceRemarks": "Client-facing notes: promotions, savings, loyalty rewards, inclusions — use \"\" if none",
+  "invoiceRemarks": "GLOBAL_RULES financial block (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing / Final Payment Due: [MM/DD/YY], or Final Payment Due: Paid in Full if no date is stated), then client-facing notes: promotions, savings, loyalty rewards, inclusions",
   "agentRemarks": "Currency conversion block — REQUIRED if invoice is not in CAD; use \"\" if CAD"
 }}
 

@@ -51,7 +51,7 @@ SCHEMA — 2 sections required
   "totalTax": "String",
   "totalCommission": "String (in supplier currency)",
   "finalpymntduedate": "MM/DD/YY",
-  "invoiceRemarks": "Client-facing notes, discounts, included items. Do NOT include the cancellation policy/schedule or guest/passenger names.",
+  "invoiceRemarks": "GLOBAL_RULES financial block (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing / Final Payment Due: [same date as finalpymntduedate], or Final Payment Due: Paid in Full if no date is stated), then client-facing notes, discounts, included items. Do NOT include the cancellation policy/schedule or guest/passenger names.",
   "agentRemarks": "Currency conversion and financial notes"
 }}
 

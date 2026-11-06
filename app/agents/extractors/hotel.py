@@ -114,7 +114,7 @@ SCHEMA — 2 sections required
   "baseAmount": "Number (2 decimal places, in CAD — convert if needed)",
   "taxAmount": "Number (2 decimal places)",
   "commissionAmount": "Number (2 decimal places)",
-  "invoiceRemarks": "Client-facing financial summary block per global rules (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing) plus any promotions or savings.",
+  "invoiceRemarks": "Client-facing financial summary block per global rules (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing / Final Payment Due: [MM/DD/YY], or 'Final Payment Due: Paid in Full' if no date is stated — the Final Payment Due line is mandatory) plus any promotions or savings.",
   "agentRemarks": "Currency conversion details (REQUIRED if invoice is not in CAD — see global rules)"
 }}
 

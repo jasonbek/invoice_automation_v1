@@ -55,6 +55,12 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
   balance due date stated on the invoice (the same date as any finalPaymentDue /
   finalpymntduedate field on the screen). If no final payment / balance due date is
   stated anywhere on the invoice, write "Final Payment Due: Paid in Full" instead.
+  MANDATORY: the "Final Payment Due:" line MUST be present in Screen 1 invoiceRemarks
+  for EVERY booking, every time. A booking's invoiceRemarks is never complete without
+  it, even when the schema description for that field mentions other content (seat
+  selections, promotions, inclusions). Other content goes AFTER the financial block.
+  Never put the Final Payment Due line only in a separate date field — it must also
+  appear as text inside invoiceRemarks.
   All three financial lines (Deposit / Total / Amount owing) use the SUPPLIER'S
   ORIGINAL INVOICE CURRENCY — NOT converted to CAD. If the invoice IS in CAD,
   the currency is CAD.

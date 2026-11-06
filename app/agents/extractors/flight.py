@@ -217,7 +217,7 @@ _SECTION1_SUMMARY_ONLY = """\
   "confirmationNumber": "String",
   "recordLocator": "String — if multiple locators exist (e.g. different carriers), join them with '/' (e.g. 'ABC123/XYZ789')",
   "duration": <integer — total trip days>,
-  "invoiceRemarks": "Seat selections block (see rules below).",
+  "invoiceRemarks": "GLOBAL_RULES financial block (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing / Final Payment Due: [MM/DD/YY], or Final Payment Due: Paid in Full if no date is stated), then the seat selections block (see rules below).",
   "agentremarks": "Commission QA trail — see RATIONALE REQUIREMENT below for the required format (Air Canada/WestJet). For ADX, the 15% holdback commission note from the vendor rules. For other vendors, leave empty."
 }}\
 """
@@ -234,7 +234,7 @@ _SECTION1_FULL = """\
   "totalBase": <number with 2 decimal places>,
   "totalTax": <number — sum of carrier surcharges and fees>,
   "totalCommission": "String — percentage (e.g., '4%') OR exact dollar if ADX/Intair",
-  "invoiceRemarks": "Seat selections block (see rules below)",
+  "invoiceRemarks": "GLOBAL_RULES financial block (Payments are in X / amount shown below is in CAD / Deposit / Total / Amount owing / Final Payment Due: [MM/DD/YY], or Final Payment Due: Paid in Full if no date is stated), then the seat selections block (see rules below)",
   "agentremarks": ""
 }}\
 """
