@@ -151,7 +151,19 @@ Locator fields (map from invoice labels):
     look for it within the flight segment/itinerary information itself (e.g. printed next to or
     below the flight details block) and use that value.
 
-Commission: extract commission exactly as shown on the invoice (percentage or dollar amount).
+Commission and client total (Intair Travel Brands layout): these invoices do NOT show
+  commission as a labelled line. When the agency earns commission, the invoice instead looks
+  like the client overpaid: "TOTAL RECEIVED" (under PAYMENTS RECEIVED) is higher than "TOTAL
+  DUE", and "BALANCE DUE" is a NEGATIVE amount (e.g., "$-100.00").
+  - The total the client actually paid = the "TOTAL RECEIVED" amount (NOT "TOTAL DUE").
+  - The commission = the absolute value of the negative "BALANCE DUE" amount. It is NOT a
+    refund, credit or overpayment. Example: BALANCE DUE "$-100.00" -> totalCommission = "100.00".
+  - Do NOT mention the negative balance as an overpayment/refund anywhere (invoiceRemarks,
+    agentremarks, etc.).
+  - If BALANCE DUE is zero or positive, there is no commission on this invoice: use "0.00"
+    for commission and treat the positive balance as an amount still owing.
+  - Do NOT use the per-ticket "COMM." column or calculate percentages; the negative
+    BALANCE DUE is the source of truth.
   If the invoice DOES have an explicit "COMMISSION" line, it should have been routed to ADX
   instead — flag the discrepancy in agentremarks if one appears here.
 
