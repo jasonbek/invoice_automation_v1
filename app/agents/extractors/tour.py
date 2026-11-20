@@ -19,7 +19,7 @@ Note on currency: If the invoice is NOT in CAD, Claude must include conversion d
 in agentRemarks (the model uses its best available rate knowledge and flags for verification).
 """
 
-from app.agents.extractors.base import GLOBAL_RULES, call_claude
+from app.agents.extractors.base import GLOBAL_RULES, call_claude, form_input_note
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
@@ -228,7 +228,7 @@ async def run(
     date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
 
     instruction_text = (
-        f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
+        f"{form_input_note(routing)}VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {rule_set}\n"
         f"{date_line}\n"
         f"COMPACT EXTRACT (from Agent 1 — cross-reference for confirmation numbers, "

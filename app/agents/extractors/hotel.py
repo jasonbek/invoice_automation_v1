@@ -5,7 +5,7 @@ Outputs 2 sections: Summary, Details.
 The Details section MUST include the full hotel address, phone, and email in notesForClient.
 """
 
-from app.agents.extractors.base import GLOBAL_RULES, call_claude
+from app.agents.extractors.base import GLOBAL_RULES, call_claude, form_input_note
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
@@ -156,7 +156,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
     rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
     date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
     user_content = (
-        f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
+        f"{form_input_note(routing)}VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {rule_set}\n"
         f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n"

@@ -22,6 +22,19 @@ Analyze the invoice Markdown and return ONLY a JSON object — no prose, no code
 ═══════════════════════════════════════════════
 VENDOR NORMALIZATION TABLE
 ═══════════════════════════════════════════════
+FORM INPUT IS FINAL (highest priority, applies to vendor AND booking type):
+  - BOOKING TYPE HINT: if it is non-blank, bookingTypes MUST be exactly that one type
+    (e.g. hint "flight" → ["flight"]). Do NOT add other types, and do NOT change it because
+    the invoice looks like something else. Only add a second type if the invoice clearly
+    and unmistakably contains a separate booking of that other type (e.g. flights AND a
+    full land tour on one invoice). Run content-based detection ONLY when the hint is blank.
+    Hint "tour" with a Travel Brands invoice → ["tour"]; hint "flight" with Intair → ["flight"].
+  - VENDOR HINT: the person's entry is the vendor identity. Match it loosely and
+    case-insensitively to the closest Official Name/alias below (e.g. "intair", "AC",
+    "travel brands flights" all resolve). If it resolves to a table entry, use it —
+    invoice letterhead, airline logos, or the "decision" sections below must NOT override it.
+  The person submitting the form already knows what this invoice is.
+
 PRECEDENCE: If the VENDOR HINT from the form exactly (or closely) names one of the
 Official Names or Aliases in this table — e.g., the form says "Intair Transit" — use
 THAT exact vendor identity in your output. Do not override it with a different vendor

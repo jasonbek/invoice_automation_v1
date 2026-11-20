@@ -10,7 +10,7 @@ Output:
     see VIATOR_RULES for the BR-#### splitting rule)
 """
 
-from app.agents.extractors.base import GLOBAL_RULES, call_claude
+from app.agents.extractors.base import GLOBAL_RULES, call_claude, form_input_note
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
@@ -169,7 +169,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
         else "Output one Screen 1 + one Screen 2 per booking on the invoice, paired in order."
     )
     user_content = (
-        f"VENDOR: {vendor}\n"
+        f"{form_input_note(routing)}VENDOR: {vendor}\n"
         f"RULE SET: {rule_set}\n"
         f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n"

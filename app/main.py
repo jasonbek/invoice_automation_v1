@@ -558,6 +558,15 @@ async def run_pipeline(
         # Step 2: Classify vendor and detect booking type(s)
         routing = await routing_run(markdown, vendor, booking_type_hint)
 
+        # Safety net: the form's booking type is final. If the router ignored it, use it.
+        hint = (booking_type_hint or "").strip()
+        if hint and hint not in (routing.get("bookingTypes") or []):
+            routing["bookingTypes"] = [hint]
+
+        # Hand the raw form values to every extractor (see base.form_input_note).
+        routing["formVendor"] = vendor
+        routing["formBookingType"] = hint
+
         await asyncio.sleep(5)
 
         # Step 3: Run all required extractors in parallel. Tour / cruise extractors

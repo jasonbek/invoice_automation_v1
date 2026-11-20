@@ -11,7 +11,7 @@ No code change is required when rates are updated — just drop a new .md file
 in docs/Commissions/ and redeploy.
 """
 
-from app.agents.extractors.base import GLOBAL_RULES, call_claude
+from app.agents.extractors.base import GLOBAL_RULES, call_claude, form_input_note
 from app.agents.commissions.loader import load_all as _load_commission_docs
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
@@ -542,7 +542,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
     date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
     seat_note = "" if no_pax_screen else ", or 5 if seat charges are present"
     user_content = (
-        f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
+        f"{form_input_note(routing)}VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {rule_set}\n"
         f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n"

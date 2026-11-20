@@ -23,7 +23,7 @@ insurance as part of the package — those screens are reserved for standalone
 Manulife Insurance invoices (ruleSet "manulife", insurance.py).
 """
 
-from app.agents.extractors.base import GLOBAL_RULES, call_claude
+from app.agents.extractors.base import GLOBAL_RULES, call_claude, form_input_note
 
 # ── Vendor-specific rules ──────────────────────────────────────────────────────
 
@@ -179,7 +179,7 @@ async def run(
     rate_line = f"\n{exchange_rate_note}\n" if exchange_rate_note else ""
     date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
     user_content = (
-        f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
+        f"{form_input_note(routing)}VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {rule_set}\n"
         f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n"

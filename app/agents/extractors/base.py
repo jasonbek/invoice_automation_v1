@@ -85,6 +85,30 @@ GLOBAL FORMATTING RULES (apply to every field without exception):
 """
 
 
+def form_input_note(routing: dict) -> str:
+    """Return a 'USER SPECIFIED' block describing what the person typed/selected on the
+    intake form (vendor + booking type), or "" if neither was provided.
+
+    Prepended to each extractor's user message so every agent knows the user's explicit
+    direction and treats it as authoritative over the invoice's own branding.
+    """
+    form_vendor = (routing.get("formVendor") or "").strip()
+    form_type = (routing.get("formBookingType") or "").strip()
+    if not form_vendor and not form_type:
+        return ""
+    lines = ["USER SPECIFIED ON THE FORM (authoritative — the person submitting knows what this is):"]
+    if form_vendor:
+        lines.append(f'  Vendor: "{form_vendor}"')
+    if form_type:
+        lines.append(f'  Booking type: "{form_type}"')
+    lines.append(
+        "Follow these over any conflicting branding or wording inside the invoice. If the "
+        "invoice content clearly contradicts them, still follow the form and add a short "
+        "note about the mismatch to agentremarks (Screen 1).\n"
+    )
+    return "\n".join(lines) + "\n"
+
+
 async def _call_claude_once(
     system_prompt: str,
     user_content: str | list[dict],

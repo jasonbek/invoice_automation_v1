@@ -7,7 +7,7 @@ These are the same CBO screens as the seat charge sections in flight.py (Section
 but used when the seat invoice arrives separately from the flight invoice.
 """
 
-from app.agents.extractors.base import GLOBAL_RULES, call_claude
+from app.agents.extractors.base import GLOBAL_RULES, call_claude, form_input_note
 
 _SYSTEM_PROMPT = f"""\
 You are a seat selection charge extraction specialist for a travel agency (ClientBase Online).
@@ -75,7 +75,7 @@ async def run(markdown: str, routing: dict, exchange_rate_note: str | None = Non
     """Extract seat selection charge sections from a standalone seat invoice."""
     date_line = f"TODAY'S DATE: {today_date}\n" if today_date else ""
     user_content = (
-        f"VENDOR: {routing.get('vendor', 'Unknown')}\n"
+        f"{form_input_note(routing)}VENDOR: {routing.get('vendor', 'Unknown')}\n"
         f"RULE SET: {routing.get('ruleSet', 'generic')}\n"
         f"{date_line}\n"
         f"INVOICE MARKDOWN:\n{markdown}\n\n"
